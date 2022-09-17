@@ -7,64 +7,75 @@
 #include "Utils.h"
 using namespace std;
 
-#define numVAOs 1
-#define numVBOs 1
+constexpr auto numVAOs = 1;
+constexpr auto numVBOs = 1;
+constexpr auto numEBOs = 1;
 
 //全局变量
 GLuint renderingProgram;
 GLuint vao[numVAOs];
 GLuint vbo[numVBOs];
+GLuint ebo[numVBOs];
 GLuint vColorLoc, vPositionLoc;
 
 //导入着色器，初始化窗口
-void init(GLFWwindow* window) 
+void init(GLFWwindow* window)
 {
 	//编译、链接着色器程序
 	renderingProgram = Utils::createShaderProgram("vertShader.glsl", "fragShader.glsl");
 
-	float vertices[12] = {
-		-0.5f, -0.5f,
-		0.5f, -0.5f,
-		-0.5f, 0.5f,
-		-0.5f, 0.5f,
-		0.5f, -0.5f,
-		0.5f, 0.5f
+	float vertices[] = {
+		0.6f, 0.6f, 0.2f, 0.1f, 0.9f,
+		-0.5f, 0.5f, 0.3f, 0.8f, 0.6f,
+		-0.6f, -0.6f, 0.5f, 0.2f, 0.8f,
+		0.5f, -0.5f, 0.9f, 0.5f, 0.2f,
 	};
-
-	glGenVertexArrays(numVAOs, vao);
-	glGenBuffers(numVBOs, vbo);
+	GLuint  indices[] = {
+		0, 1, 2, // 左上
+		2, 3, 0, // 右下
+	};
 
 	// Associate out shader variables with our data buffer    
 	vPositionLoc = glGetAttribLocation(renderingProgram, "vPosition");
+	vColorLoc = glGetAttribLocation(renderingProgram, "vColor");
 
-	//绑定当前VAO
+	// VAO
+	glGenVertexArrays(numVAOs, vao);
 	glBindVertexArray(vao[0]);
-	// Load the data into the GPU  
+	// VBO
+	glGenBuffers(numVBOs, vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	//将VBO关联给顶点着色器中相应的顶点属性
-	glVertexAttribPointer(vPositionLoc, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	// EBO
+	glGenBuffers(numEBOs, ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	// VertexAttribPointer
+	glVertexAttribPointer(vPositionLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(vPositionLoc);
+	glVertexAttribPointer(vColorLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(vColorLoc);
 
 }
 //函数绘制
-void display(GLFWwindow* window, double currentTime) 
+void display(GLFWwindow* window, double currentTime)
 {
-	glUseProgram(renderingProgram); 
+	glUseProgram(renderingProgram);
 
+	glClearColor(0.5f, 0.8f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	//绘制模型
 	glBindVertexArray(vao[0]);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
-int main(void) 
+int main(void)
 {
 	//glfw初始化
-	if (!glfwInit()) 
-	{ 
-		exit(EXIT_FAILURE); 
+	if (!glfwInit())
+	{
+		exit(EXIT_FAILURE);
 	}
 	//窗口版本
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); //主版本号
@@ -77,7 +88,7 @@ int main(void)
 	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK)//glew初始化
-	{ 
+	{
 		exit(EXIT_FAILURE);
 	}
 
@@ -85,7 +96,7 @@ int main(void)
 	init(window);
 
 	//事件循环，接收输入事件
-	while (!glfwWindowShouldClose(window)) 
+	while (!glfwWindowShouldClose(window))
 	{
 		display(window, glfwGetTime()); //绘制函数，主体
 		glfwSwapBuffers(window); //交换颜色缓存
