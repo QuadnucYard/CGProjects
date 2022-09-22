@@ -8,6 +8,8 @@
 #include <numbers>
 #include <random>
 #include "Utils.h"
+#include <roamer_engine/display/ShaderProgram.h>
+
 using namespace std;
 
 constexpr auto numVAOs = 1;
@@ -15,7 +17,7 @@ constexpr auto numVBOs = 1;
 constexpr auto numEBOs = 1;
 
 //全局变量
-GLuint renderingProgram;
+qy::cg::ShaderProgram renderingProgram;
 GLuint vao[numVAOs];
 GLuint vbo[numVBOs];
 GLuint ebo[numVBOs];
@@ -28,7 +30,7 @@ constexpr float r1 = 0.4f, r2 = 0.7f;
 void init(GLFWwindow* window)
 {
 	//编译、链接着色器程序
-	renderingProgram = Utils::createShaderProgram("vertShader.glsl", "fragShader.glsl");
+	renderingProgram = qy::cg::ShaderProgram("vertShader.glsl", "fragShader.glsl");
 
 	float vertices[numDiv * 2 * 5] {};
 	GLuint indices[numDiv * 2 * 3] {};
@@ -58,8 +60,8 @@ void init(GLFWwindow* window)
 	}
 
 	// Associate out shader variables with our data buffer    
-	vPositionLoc = glGetAttribLocation(renderingProgram, "vPosition");
-	vColorLoc = glGetAttribLocation(renderingProgram, "vColor");
+	vPositionLoc = renderingProgram.getAttribLocation("vPosition");
+	vColorLoc = renderingProgram.getAttribLocation("vColor");
 
 	// VAO
 	glGenVertexArrays(numVAOs, vao);
@@ -82,7 +84,7 @@ void init(GLFWwindow* window)
 //函数绘制
 void display(GLFWwindow* window, double currentTime)
 {
-	glUseProgram(renderingProgram);
+	renderingProgram.use();
 
 	glClearColor(0.5f, 0.8f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
