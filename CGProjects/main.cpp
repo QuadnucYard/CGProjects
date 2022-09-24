@@ -9,19 +9,14 @@
 #include <random>
 #include "Utils.h"
 #include <roamer_engine/display/ShaderProgram.h>
+#include <roamer_engine/display/MeshRenderer.h>
 
 using namespace std;
 
-constexpr auto numVAOs = 1;
-constexpr auto numVBOs = 1;
-constexpr auto numEBOs = 1;
-
 //全局变量
 qy::cg::ShaderProgram renderingProgram;
-GLuint vao[numVAOs];
-GLuint vbo[numVBOs];
-GLuint ebo[numVBOs];
-GLuint vColorLoc, vPositionLoc;
+qy::cg::MeshRenderer* meshRenderer;
+qy::cg::MeshRenderer* meshRenderer2;
 
 constexpr int numDiv = 36;
 constexpr float r1 = 0.4f, r2 = 0.7f;
@@ -29,69 +24,29 @@ constexpr float r1 = 0.4f, r2 = 0.7f;
 //导入着色器，初始化窗口
 void init(GLFWwindow* window)
 {
-	//编译、链接着色器程序
+	meshRenderer = new qy::cg::MeshRenderer();
+	meshRenderer2 = new qy::cg::MeshRenderer();
 	renderingProgram = qy::cg::ShaderProgram("vertShader.glsl", "fragShader.glsl");
+	meshRenderer->setShader(renderingProgram);
+	meshRenderer2->setShader(renderingProgram);
 
-	float vertices[numDiv * 2 * 5] {};
-	GLuint indices[numDiv * 2 * 3] {};
-
-	default_random_engine rng;
-	uniform_real_distribution<float> distrib(0.0f, 1.0f);
-	normal_distribution<float> distrib2(0.0f, 0.05f);
-
-	using namespace std::numbers;
-	for (int i = 0; i < numDiv; i++) {
-		vertices[i * 10 + 0] = (r2 + distrib2(rng)) * cos(pi * 2 * i / numDiv);
-		vertices[i * 10 + 1] = (r2 + distrib2(rng)) * sin(pi * 2 * i / numDiv);
-		vertices[i * 10 + 2] = distrib(rng);
-		vertices[i * 10 + 3] = distrib(rng);
-		vertices[i * 10 + 4] = distrib(rng);
-		vertices[i * 10 + 5] = (r1 + distrib2(rng)) * cos(pi * 2 * i / numDiv);
-		vertices[i * 10 + 6] = (r1 + distrib2(rng)) * sin(pi * 2 * i / numDiv);
-		vertices[i * 10 + 7] = distrib(rng);
-		vertices[i * 10 + 8] = distrib(rng);
-		vertices[i * 10 + 9] = distrib(rng);
-		indices[i * 6 + 0] = (i * 2 + 0) % (numDiv * 2);
-		indices[i * 6 + 1] = (i * 2 + 1) % (numDiv * 2);
-		indices[i * 6 + 2] = (i * 2 + 2) % (numDiv * 2);
-		indices[i * 6 + 3] = (i * 2 + 3) % (numDiv * 2);
-		indices[i * 6 + 4] = (i * 2 + 1) % (numDiv * 2);
-		indices[i * 6 + 5] = (i * 2 + 2) % (numDiv * 2);
-	}
-
-	// Associate out shader variables with our data buffer    
-	vPositionLoc = renderingProgram.getAttribLocation("vPosition");
-	vColorLoc = renderingProgram.getAttribLocation("vColor");
-
-	// VAO
-	glGenVertexArrays(numVAOs, vao);
-	glBindVertexArray(vao[0]);
-	// VBO
-	glGenBuffers(numVBOs, vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-	// EBO
-	glGenBuffers(numEBOs, ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo[0]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	// VertexAttribPointer
-	glVertexAttribPointer(vPositionLoc, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(vPositionLoc);
-	glVertexAttribPointer(vColorLoc, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
-	glEnableVertexAttribArray(vColorLoc);
-
+	auto&& mesh = meshRenderer->getMesh();
+	mesh.setVertices({{0.0f, 0.5f, 0.0f}, {-0.5f, -0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}});
+	mesh.setColors({{1.0f, 0.0f, 0.0f,1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}});
+	mesh.setTriangles({0, 1, 2});
+	auto&& mesh2 = meshRenderer2->getMesh();
+	mesh2.setVertices({{0.5f, 0.5f, 0.0f}, {0.0f, -0.5f, 0.0f}, {1.0f, -0.5f, 0.0f}});
+	mesh2.setColors({{1.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f, 0.5f}});
+	mesh2.setTriangles({0, 1, 2});
 }
 //函数绘制
 void display(GLFWwindow* window, double currentTime)
 {
-	renderingProgram.use();
-
 	glClearColor(0.5f, 0.8f, 0.6f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	//绘制模型
-	glBindVertexArray(vao[0]);
-	glDrawElements(GL_TRIANGLES, 6 * numDiv, GL_UNSIGNED_INT, 0);
+	meshRenderer->render();
+	meshRenderer2->render();
 }
 
 int main(void)
