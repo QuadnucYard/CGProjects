@@ -51,5 +51,11 @@
     <ClInclude Include="include\roamer_engine.h">
       <Filter>头文件\include</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\LineRenderer.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display.h">
+      <Filter>头文件\include\roamer_engine</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

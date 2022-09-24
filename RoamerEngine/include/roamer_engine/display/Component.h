@@ -3,7 +3,7 @@
 #include "../Object.h"
 
 namespace qy::cg {
-	class Component: Object {
-
+	class Component: public Object {
+		virtual void ___() {}
 	};
 }

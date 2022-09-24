@@ -5,7 +5,7 @@
 #include "Mesh.h"
 
 namespace qy::cg {
-	class MeshRenderer: Component, IRenderer {
+	class MeshRenderer: public Component, public IRenderer {
 
 	private:
 		ShaderProgram _shader;
