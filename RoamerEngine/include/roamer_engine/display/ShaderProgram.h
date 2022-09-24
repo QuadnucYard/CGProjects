@@ -3,37 +3,13 @@
 #include <gl/glew.h>
 
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <filesystem>
 #include <string_view>
 
 namespace qy::cg {
-
-	// utility function for checking shader compilation/linking errors.
-	// ------------------------------------------------------------------------
-	void checkCompileErrors(GLuint shader, std::string_view type)
-	{
-		int success;
-		char infoLog[1024];
-		if (type != "PROGRAM")
-		{
-			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-			if (!success)
-			{
-				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-			}
-		} else
-		{
-			glGetProgramiv(shader, GL_LINK_STATUS, &success);
-			if (!success)
-			{
-				glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-				std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
-			}
-		}
-	}
 
 	class Shader
 	{
@@ -90,7 +66,7 @@ namespace qy::cg {
 		}
 
 		// utility function for checking shader compilation/linking errors.
-	// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		void checkCompileErrors(GLuint shader, std::string_view type)
 		{
 			int success;
@@ -110,8 +86,10 @@ namespace qy::cg {
 	*/
 	class ShaderProgram
 	{
-	public:
+	private:
 		GLuint ID;
+
+	public:
 
 		ShaderProgram() = default;
 
@@ -126,6 +104,11 @@ namespace qy::cg {
 			glLinkProgram(ID);
 			checkCompileErrors(ID);
 		}
+
+		~ShaderProgram() {
+			//glDeleteProgram(ID);
+		}
+
 		// activate the shader
 		// ------------------------------------------------------------------------
 		void use() const
@@ -156,7 +139,7 @@ namespace qy::cg {
 
 	private:
 		// utility function for checking shader compilation/linking errors.
-	// ------------------------------------------------------------------------
+		// ------------------------------------------------------------------------
 		void checkCompileErrors(GLuint shader)
 		{
 			int success;

@@ -19,7 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\roamer_engine\display\Component.h" />
+    <ClInclude Include="include\roamer_engine\display\DisplayObject.h" />
+    <ClInclude Include="include\roamer_engine\display\IRenderer.h" />
+    <ClInclude Include="include\roamer_engine\display\Mesh.h" />
+    <ClInclude Include="include\roamer_engine\display\MeshRenderer.h" />
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.h" />
+    <ClInclude Include="include\roamer_engine\Object.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

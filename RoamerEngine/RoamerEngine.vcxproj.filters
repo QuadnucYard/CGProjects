@@ -27,5 +27,23 @@
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.h">
       <Filter>头文件\include\roamer_engine\display</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\DisplayObject.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Component.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\MeshRenderer.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Mesh.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Object.h">
+      <Filter>头文件\include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\IRenderer.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
