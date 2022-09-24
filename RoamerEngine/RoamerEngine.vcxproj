@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\roamer_engine.h" />
+    <ClInclude Include="include\roamer_engine\Application.h" />
     <ClInclude Include="include\roamer_engine\display\Component.h" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.h" />
     <ClInclude Include="include\roamer_engine\display\IRenderer.h" />
