@@ -33,11 +33,18 @@ protected:
 		mesh2.setColors({{1.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f, 0.5f}});
 		mesh2.setTriangles({0, 1, 2});
 
+		obj->addComponent<LineRenderer>()
+			->setShader(renderingProgram)
+			->setPositions({{-0.8f, -0.8f, 0.0f}, {0.8f, 0.7f, 0.0f}, {-0.6f, 0.3f, 0.0f}})
+			->setColors({{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 0.5f}})
+			->setWidth(10)
+			->setLoop(true);
+
 		std::cout << obj->getComponent<Component>() << std::endl;
 		std::cout << obj->getComponent<MeshRenderer>() << std::endl;
 		std::cout << obj->getComponent<LineRenderer>() << std::endl;
-		std::cout << isinstance<IRenderer>(meshRenderer) << std::endl;
-		std::cout << isinstance<IRenderer>(meshRenderer2) << std::endl;
+		std::cout << isinstance<Renderer>(meshRenderer) << std::endl;
+		std::cout << isinstance<Renderer>(meshRenderer2) << std::endl;
 		std::cout << obj->getComponents<MeshRenderer>().size() << std::endl;
 	}
 
