@@ -42,7 +42,7 @@
     <ClInclude Include="include\roamer_engine\Object.h">
       <Filter>头文件\include\roamer_engine</Filter>
     </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\IRenderer.h">
+    <ClInclude Include="include\roamer_engine\display\Renderer.h">
       <Filter>头文件\include\roamer_engine\display</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\Application.h">

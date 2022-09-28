@@ -24,7 +24,7 @@
     <ClInclude Include="include\roamer_engine\display.h" />
     <ClInclude Include="include\roamer_engine\display\Component.h" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.h" />
-    <ClInclude Include="include\roamer_engine\display\IRenderer.h" />
+    <ClInclude Include="include\roamer_engine\display\Renderer.h" />
     <ClInclude Include="include\roamer_engine\display\LineRenderer.h" />
     <ClInclude Include="include\roamer_engine\display\Mesh.h" />
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.h" />

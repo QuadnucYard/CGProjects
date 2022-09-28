@@ -1,11 +1,10 @@
 #pragma once
 
 #include <vector>
-#include "Component.h"
-#include "IRenderer.h"
+#include "Renderer.h"
 
 namespace qy::cg {
-	class DisplayObject {
+	class DisplayObject : public Object {
 
 	private:
 		std::vector<std::shared_ptr<Component>> m_components;
@@ -21,7 +20,7 @@ namespace qy::cg {
 		template <class T>
 		std::shared_ptr<T> getComponent() {
 			auto it = std::find_if(m_components.begin(), m_components.end(),
-				[](auto t) { return isinstance<T>(t); }
+				[](auto& t) { return isinstance<T>(t); }
 			);
 			if (it == m_components.end()) return nullptr;
 			return std::dynamic_pointer_cast<T>(*it);
@@ -30,7 +29,7 @@ namespace qy::cg {
 		template <class T>
 		std::vector<std::shared_ptr<T>> getComponents() {
 			std::vector<std::shared_ptr<T>> ret;
-			for (auto t : m_components) {
+			for (auto& t : m_components) {
 				if (isinstance<T>(t)) ret.push_back(std::dynamic_pointer_cast<T>(t));
 			}
 			return ret;
@@ -38,8 +37,8 @@ namespace qy::cg {
 
 		void render() {
 			for (auto& t : m_components) {
-				if (isinstance<IRenderer>(t)) {
-					std::dynamic_pointer_cast<IRenderer>(t)->render();
+				if (isinstance<Renderer>(t)) {
+					std::dynamic_pointer_cast<Renderer>(t)->render();
 				}
 			}
 		}

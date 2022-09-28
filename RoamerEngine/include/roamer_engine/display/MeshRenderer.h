@@ -1,11 +1,10 @@
 #pragma once
-#include "Component.h"
-#include "IRenderer.h"
+#include "Renderer.h"
 #include "ShaderProgram.h"
 #include "Mesh.h"
 
 namespace qy::cg {
-	class MeshRenderer: public Component, public IRenderer {
+	class MeshRenderer: public Renderer {
 
 	private:
 		ShaderProgram _shader;
