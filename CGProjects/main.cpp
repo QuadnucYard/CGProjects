@@ -9,7 +9,6 @@ private:
 	static constexpr int numDiv = 36;
 	static constexpr float r1 = 0.4f, r2 = 0.7f;
 
-	qy::cg::ShaderProgram renderingProgram;
 	qy::cg::DisplayObject* obj;
 
 protected:
@@ -20,9 +19,6 @@ protected:
 
 		auto meshRenderer = obj->addComponent<MeshRenderer>();
 		auto meshRenderer2 = obj->addComponent<MeshRenderer>();
-		renderingProgram = Shaders::geom_unlit;
-		meshRenderer->setShader(renderingProgram);
-		meshRenderer2->setShader(renderingProgram);
 
 		auto&& mesh = meshRenderer->getMesh();
 		mesh.setVertices({{0.0f, 0.5f, 0.0f}, {-0.5f, -0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}});
@@ -34,7 +30,6 @@ protected:
 		mesh2.setTriangles({0, 1, 2});
 
 		obj->addComponent<LineRenderer>()
-			->setShader(renderingProgram)
 			->setPositions({{-0.8f, -0.8f, 0.0f}, {0.8f, 0.7f, 0.0f}, {-0.6f, 0.3f, 0.0f}})
 			->setColors({{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 0.5f}})
 			->setWidth(10)

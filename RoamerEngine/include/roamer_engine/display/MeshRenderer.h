@@ -1,6 +1,6 @@
 #pragma once
 #include "Renderer.h"
-#include "ShaderProgram.h"
+#include "Shaders.h"
 #include "Mesh.h"
 
 namespace qy::cg {
@@ -11,6 +11,10 @@ namespace qy::cg {
 		Mesh _mesh;
 
 	public:
+		MeshRenderer() {
+			setShader(Shaders::geom_unlit);
+		}
+
 		void setShader(const ShaderProgram& shader) {
 			_shader = shader;
 			_mesh._impl->vPositionLoc = _shader.getAttribLocation("vPosition");

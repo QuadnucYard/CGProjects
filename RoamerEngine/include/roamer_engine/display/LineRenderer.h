@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Component.h"
 #include "Renderer.h"
-#include "ShaderProgram.h"
+#include "Shaders.h"
 #include <vector>
 
 namespace qy::cg {
@@ -40,6 +39,7 @@ namespace qy::cg {
 		LineRenderer() {
 			_loop = false;
 			_width = 1.0f;
+			setShader(Shaders::geom_unlit);
 		}
 
 		pointer setShader(const ShaderProgram& shader) {
@@ -84,8 +84,8 @@ namespace qy::cg {
 		void render() override {
 			glBindVertexArray(_impl.vao);
 			glLineWidth(_width);
-			if (_loop) glDrawArrays(GL_LINE_LOOP, 0, _impl.vertices.size());
-			else glDrawArrays(GL_LINE_STRIP, 0, _impl.vertices.size());
+			if (_loop) glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)_impl.vertices.size());
+			else glDrawArrays(GL_LINE_STRIP, 0, (GLsizei)_impl.vertices.size());
 		}
 	};
 }

@@ -69,7 +69,7 @@ namespace qy::cg {
 
 		void draw() const {
 			glBindVertexArray(_impl->vao);
-			glDrawElements(GL_TRIANGLES, _impl->triangles.size(), GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, (GLsizei)_impl->triangles.size(), GL_UNSIGNED_INT, 0);
 		}
 
 	private:
