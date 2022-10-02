@@ -23,14 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="vertShader.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="fragShader.glsl">
-      <Filter>资源文件</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Utils.h">
       <Filter>源文件</Filter>
     </ClInclude>

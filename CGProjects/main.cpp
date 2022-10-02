@@ -20,7 +20,7 @@ protected:
 
 		auto meshRenderer = obj->addComponent<MeshRenderer>();
 		auto meshRenderer2 = obj->addComponent<MeshRenderer>();
-		renderingProgram = qy::cg::ShaderProgram("vertShader.glsl", "fragShader.glsl");
+		renderingProgram = Shaders::geom_unlit;
 		meshRenderer->setShader(renderingProgram);
 		meshRenderer2->setShader(renderingProgram);
 
