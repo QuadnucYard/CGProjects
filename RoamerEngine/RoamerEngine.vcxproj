@@ -29,7 +29,12 @@
     <ClInclude Include="include\roamer_engine\display\Mesh.h" />
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.h" />
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.h" />
+    <ClInclude Include="include\roamer_engine\display\Shaders.h" />
     <ClInclude Include="include\roamer_engine\Object.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\geom-unlit.frag" />
+    <None Include="shaders\geom-unlit.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -67,6 +72,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
@@ -165,5 +171,6 @@
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
 </Project>

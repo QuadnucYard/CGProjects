@@ -22,6 +22,9 @@
     <Filter Include="头文件\include\roamer_engine\display">
       <UniqueIdentifier>{59188177-3dc8-4938-9744-4e7df9d4a9b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="资源文件\shaders">
+      <UniqueIdentifier>{ee6ce639-e380-402d-8a45-691591e329b5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.h">
@@ -57,5 +60,16 @@
     <ClInclude Include="include\roamer_engine\display.h">
       <Filter>头文件\include\roamer_engine</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Shaders.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\geom-unlit.frag">
+      <Filter>资源文件\shaders</Filter>
+    </None>
+    <None Include="shaders\geom-unlit.vert">
+      <Filter>资源文件\shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

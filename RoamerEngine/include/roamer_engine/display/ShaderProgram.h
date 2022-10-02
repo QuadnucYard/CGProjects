@@ -16,21 +16,24 @@ namespace qy::cg {
 	public:
 		GLuint shader;
 
-		Shader(const std::filesystem::path& path, int type, std::string_view name)
+		Shader(std::string_view code, int type, std::string_view name)
 		{
-			std::string code = readShaderFile(path);
-			const char* shaderCode = code.c_str();
+			const char* shaderCode = code.data();
 			// 2. compile shaders
 			shader = glCreateShader(type);
 			glShaderSource(shader, 1, &shaderCode, NULL);
 			glCompileShader(shader);
-			checkCompileErrors(shader, name);
+			checkCompileErrors(name);
 		}
 
 		~Shader()
 		{
 			// delete the shaders as they're linked into our program now and no longer necessary
 			glDeleteShader(shader);
+		}
+
+		static Shader load(const std::filesystem::path& path, int type, std::string_view name) {
+			return Shader(readShaderFile(path), type, name);
 		}
 
 		void attachTo(GLuint program)
@@ -40,7 +43,7 @@ namespace qy::cg {
 
 	private:
 
-		std::string readShaderFile(const std::filesystem::path& path)
+		static std::string readShaderFile(const std::filesystem::path& path)
 		{
 			// 1. retrieve the vertex/fragment source code from filePath
 			std::string code;
@@ -67,7 +70,7 @@ namespace qy::cg {
 
 		// utility function for checking shader compilation/linking errors.
 		// ------------------------------------------------------------------------
-		void checkCompileErrors(GLuint shader, std::string_view type)
+		void checkCompileErrors(std::string_view type)
 		{
 			int success;
 			char infoLog[1024];
@@ -99,14 +102,24 @@ namespace qy::cg {
 		{
 			// shader Program
 			ID = glCreateProgram();
-			Shader(vertexPath, GL_VERTEX_SHADER, "VERTEX").attachTo(ID);
-			Shader(fragmentPath, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(ID);
+			Shader::load(vertexPath, GL_VERTEX_SHADER, "VERTEX").attachTo(ID);
+			Shader::load(fragmentPath, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(ID);
 			glLinkProgram(ID);
-			checkCompileErrors(ID);
+			checkCompileErrors();
 		}
 
 		~ShaderProgram() {
 			//glDeleteProgram(ID);
+		}
+
+		static ShaderProgram create(std::string_view vert, std::string_view frag) {
+			ShaderProgram prog;
+			prog.ID = glCreateProgram();
+			Shader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(prog.ID);
+			Shader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(prog.ID);
+			glLinkProgram(prog.ID);
+			prog.checkCompileErrors();
+			return prog;
 		}
 
 		// activate the shader
@@ -140,8 +153,9 @@ namespace qy::cg {
 	private:
 		// utility function for checking shader compilation/linking errors.
 		// ------------------------------------------------------------------------
-		void checkCompileErrors(GLuint shader)
+		void checkCompileErrors()
 		{
+			GLuint shader = ID;
 			int success;
 			char infoLog[1024];
 			glGetProgramiv(shader, GL_LINK_STATUS, &success);

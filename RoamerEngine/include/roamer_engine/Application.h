@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 #include <string_view>
+#include "display/Shaders.h"
 
 namespace qy::cg {
 
@@ -48,6 +49,7 @@ namespace qy::cg {
 		}
 
 		Application* run() {
+			internal_init();
 			init();
 			//事件循环，接收输入事件
 			while (!glfwWindowShouldClose(window)) {
@@ -56,6 +58,11 @@ namespace qy::cg {
 				glfwPollEvents(); // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）
 			}
 			return this;
+		}
+
+	private:
+		void internal_init() {
+			Shaders::__INIT__();
 		}
 
 	protected:
