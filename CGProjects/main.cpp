@@ -46,6 +46,17 @@ protected:
 	void update() override {
 		using namespace qy::cg;
 		printf("%u: %lf %lf\n", Time::frameCount(), Time::deltaTime(), Time::time());
+		auto lr = obj->getComponent<LineRenderer>();
+		lr->setWidth(sin(Time::time() * 5) * 2 + 5);
+		auto mr = obj->getComponent<MeshRenderer>();
+		auto f = Time::frameCount();
+		if (f % 2 == 0) {
+			f /= 2;
+			auto&& mesh = mr->getMesh();
+			auto colors = mesh.getColors();
+			std::ranges::rotate(colors, colors.begin() + 1);
+			mesh.setColors(colors);
+		}
 	}
 
 	void display() override {
