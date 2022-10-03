@@ -39,6 +39,10 @@ namespace qy::cg {
 
 	public:
 
+		std::vector<glm::vec3> getVertices() const {
+			return _impl->vertices;
+		}
+
 		void setVertices(const std::vector<glm::vec3>& vertices) {
 			_impl->vertices = vertices;
 			const float* data = reinterpret_cast<const float*>(vertices.data());
@@ -49,6 +53,10 @@ namespace qy::cg {
 			glEnableVertexAttribArray(_impl->vPositionLoc);
 		}
 
+		std::vector<glm::vec4> getColors() const {
+			return _impl->colors;
+		}
+
 		void setColors(const std::vector<glm::vec4>& colors) {
 			_impl->colors = colors;
 			const float* data = reinterpret_cast<const float*>(colors.data());
@@ -57,6 +65,10 @@ namespace qy::cg {
 			glBufferData(GL_ARRAY_BUFFER, colors.size() * sizeof(glm::vec4), data, GL_STATIC_DRAW);
 			glVertexAttribPointer(_impl->vColorLoc, 4, GL_FLOAT, GL_FALSE, 0, 0);
 			glEnableVertexAttribArray(_impl->vColorLoc);
+		}
+
+		std::vector<GLuint> getTriangles() const {
+			return _impl->triangles;
 		}
 
 		void setTriangles(const std::vector<GLuint>& triangles) {

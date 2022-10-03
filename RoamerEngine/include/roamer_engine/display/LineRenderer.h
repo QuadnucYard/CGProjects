@@ -49,6 +49,10 @@ namespace qy::cg {
 			return this;
 		}
 
+		std::vector<glm::vec3> getPositions() const {
+			return _impl.vertices;
+		}
+
 		pointer setPositions(const std::vector<glm::vec3>& positions) {
 			_impl.vertices = positions;
 			const float* data = reinterpret_cast<const float*>(positions.data());
@@ -58,6 +62,10 @@ namespace qy::cg {
 			glVertexAttribPointer(_impl.vPositionLoc, 3, GL_FLOAT, GL_FALSE, 0, 0);
 			glEnableVertexAttribArray(_impl.vPositionLoc);
 			return this;
+		}
+
+		std::vector<glm::vec4> getColors() const {
+			return _impl.colors;
 		}
 
 		pointer setColors(const std::vector<glm::vec4>& colors) {
@@ -71,9 +79,17 @@ namespace qy::cg {
 			return this;
 		}
 
+		GLfloat getWidth() const {
+			return _width;
+		}
+
 		pointer setWidth(GLfloat width) {
 			_width = width;
 			return this;
+		}
+
+		GLfloat getLoop() const {
+			return _loop;
 		}
 
 		pointer setLoop(bool loop) {
