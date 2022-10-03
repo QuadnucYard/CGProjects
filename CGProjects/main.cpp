@@ -43,6 +43,11 @@ protected:
 		std::cout << obj->getComponents<MeshRenderer>().size() << std::endl;
 	}
 
+	void update() override {
+		using namespace qy::cg;
+		printf("%u: %lf %lf\n", Time::frameCount(), Time::deltaTime(), Time::time());
+	}
+
 	void display() override {
 		glClearColor(0.5f, 0.8f, 0.6f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
