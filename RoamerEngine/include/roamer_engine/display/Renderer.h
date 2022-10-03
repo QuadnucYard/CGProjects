@@ -1,9 +1,9 @@
 #pragma once
-#include "Component.h"
+#include "../Component.h"
 
 namespace qy::cg {
 	class Renderer : public Component {
 	public:
-		virtual void render() = 0;
+		virtual void render(const glm::mat4& mat) = 0;
 	};
 }

@@ -30,6 +30,7 @@
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.h" />
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.h" />
     <ClInclude Include="include\roamer_engine\display\Shaders.h" />
+    <ClInclude Include="include\roamer_engine\display\Transform.h" />
     <ClInclude Include="include\roamer_engine\Object.h" />
     <ClInclude Include="include\roamer_engine\Time.h" />
   </ItemGroup>

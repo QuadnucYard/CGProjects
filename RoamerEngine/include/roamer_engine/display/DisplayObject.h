@@ -2,14 +2,22 @@
 
 #include <vector>
 #include "Renderer.h"
+#include "Transform.h"
 
 namespace qy::cg {
 	class DisplayObject : public Object {
 
 	private:
 		std::vector<std::shared_ptr<Component>> m_components;
+		std::shared_ptr<Transform> m_transform;
 
 	public:
+		DisplayObject() {
+			m_transform = std::make_shared<Transform>();
+		}
+
+		auto transform() const { return m_transform; }
+
 		template <class T>
 		std::shared_ptr<T> addComponent() {
 			auto comp = std::make_shared<T>();
@@ -38,7 +46,7 @@ namespace qy::cg {
 		void render() {
 			for (auto& t : m_components) {
 				if (isinstance<Renderer>(t)) {
-					std::dynamic_pointer_cast<Renderer>(t)->render();
+					std::dynamic_pointer_cast<Renderer>(t)->render(transform()->localToWorldMatrix());
 				}
 			}
 		}

@@ -25,8 +25,9 @@ namespace qy::cg {
 			return _mesh;
 		}
 
-		void render() override {
+		void render(const glm::mat4& mat) override {
 			_shader.use();
+			_shader.setMat4("transform", mat);
 			_mesh.draw();
 		}
 	};

@@ -97,7 +97,9 @@ namespace qy::cg {
 			return this;
 		}
 
-		void render() override {
+		void render(const glm::mat4& mat) override {
+			_shader.use();
+			_shader.setMat4("transform", mat);
 			glBindVertexArray(_impl.vao);
 			glLineWidth(_width);
 			if (_loop) glDrawArrays(GL_LINE_LOOP, 0, (GLsizei)_impl.vertices.size());

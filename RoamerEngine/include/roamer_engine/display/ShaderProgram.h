@@ -1,6 +1,8 @@
 #pragma once
 
 #include <gl/glew.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <iostream>
@@ -143,6 +145,10 @@ namespace qy::cg {
 		void setFloat(std::string_view name, float value) const
 		{
 			glUniform1f(glGetUniformLocation(ID, name.data()), value);
+		}
+
+		void setMat4(std::string_view name, const glm::mat4& value) const {
+			glUniformMatrix4fv(glGetUniformLocation(ID, name.data()), 1, GL_FALSE, glm::value_ptr(value));
 		}
 
 		GLuint getAttribLocation(std::string_view name) const
