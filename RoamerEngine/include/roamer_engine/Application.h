@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <string_view>
 #include "display/Shaders.h"
+#include "Time.h"
 
 namespace qy::cg {
 
@@ -49,10 +50,12 @@ namespace qy::cg {
 		}
 
 		Application* run() {
-			internal_init();
+			internalInit();
 			init();
 			//事件循环，接收输入事件
 			while (!glfwWindowShouldClose(window)) {
+				internalUpdate();
+				update();
 				display(); //绘制函数，主体
 				glfwSwapBuffers(window); //交换颜色缓存
 				glfwPollEvents(); // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）
@@ -61,14 +64,19 @@ namespace qy::cg {
 		}
 
 	private:
-		void internal_init() {
+		void internalInit() {
 			Shaders::__INIT__();
+		}
+
+		void internalUpdate() {
+			Time::__update(glfwGetTime());
 		}
 
 	protected:
 
-		virtual void init() = 0;
-		virtual void display() = 0;
+		virtual void init() {}
+		virtual void update() {}
+		virtual void display() {}
 	};
 }
 
