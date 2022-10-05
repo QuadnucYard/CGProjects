@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="include\roamer_engine.h" />
     <ClInclude Include="include\roamer_engine\Application.h" />
+    <ClInclude Include="include\roamer_engine\Color.h" />
     <ClInclude Include="include\roamer_engine\Component.h" />
     <ClInclude Include="include\roamer_engine\display.h" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.h" />

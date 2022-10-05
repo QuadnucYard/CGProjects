@@ -69,6 +69,9 @@
     <ClInclude Include="include\roamer_engine\display\Transform.h">
       <Filter>头文件\include\roamer_engine\display</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\Color.h">
+      <Filter>头文件\include\roamer_engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag">
