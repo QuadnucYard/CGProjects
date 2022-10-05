@@ -22,7 +22,21 @@ protected:
 	}
 
 	void update() override {
-		obj1->transform()->scale() = {1, sin(qy::cg::Time::time() * 5) * 2, 1};
+		using namespace qy::cg;
+		obj1->transform()->scale() = {cos(qy::cg::Time::time() * 3) * 1.5f, sin(Time::time() * 5) * 2, 1};
+		obj2->transform()->rotation() = glm::radians(glm::vec3 {0.0f, 0.0f, 480.0f * Time::time()});
+		obj2->transform()->position() = {sin(Time::time() * 3) * 2.0f, 0.0f, 0.0f};
+
+		for (auto c : obj2->getComponents<MeshRenderer>()) {
+			auto colors = c->getMesh().getColors();
+			std::ranges::transform(colors, colors.begin(), [=](auto c) {
+				auto hsv = Color::rgb2hsv(c);
+				hsv.r += 0.005f;
+				auto rgb = Color::hsv2rgb(hsv);
+				return rgb;
+			});
+			c->getMesh().setColors(colors);
+		}
 	}
 
 	void display() override {
