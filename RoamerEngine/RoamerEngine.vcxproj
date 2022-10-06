@@ -33,6 +33,7 @@
     <ClInclude Include="include\roamer_engine\display\Shaders.h" />
     <ClInclude Include="include\roamer_engine\display\Transform.h" />
     <ClInclude Include="include\roamer_engine\Object.h" />
+    <ClInclude Include="include\roamer_engine\Random.h" />
     <ClInclude Include="include\roamer_engine\Time.h" />
   </ItemGroup>
   <ItemGroup>

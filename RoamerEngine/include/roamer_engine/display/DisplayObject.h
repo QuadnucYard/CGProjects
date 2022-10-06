@@ -43,7 +43,7 @@ namespace qy::cg {
 			return ret;
 		}
 
-		void render() {
+		virtual void render() {
 			for (auto& t : m_components) {
 				if (isinstance<Renderer>(t)) {
 					std::dynamic_pointer_cast<Renderer>(t)->render(transform()->localToWorldMatrix());
