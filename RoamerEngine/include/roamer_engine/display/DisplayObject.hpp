@@ -47,17 +47,9 @@ namespace qy::cg {
 			return ret;
 		}
 
-		virtual void update() {
-			std::ranges::for_each(m_components, &Component::update);
-		}
+		virtual void update();
 
-		virtual void render() {
-			for (auto& t : m_components) {
-				if (isinstance<Renderer>(t)) {
-					std::dynamic_pointer_cast<Renderer>(t)->render(transform()->localToWorldMatrix());
-				}
-			}
-		}
+		virtual void render();
 	};
 
 
