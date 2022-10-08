@@ -4,7 +4,7 @@
 namespace qy::cg {
 	class Color {
 	public:
-		
+
 		/// <summary>
 		/// Convert HSV to RGB.
 		/// </summary>
@@ -14,13 +14,11 @@ namespace qy::cg {
 		/// <param name="a">Alpha</param>
 		/// <returns>RGBA</returns>
 		static glm::vec4 hsv2rgb(float h, float s, float v, float a = 1) {
-			if (s == 0) {
-				return {v, v, v, a};
-			} else {
-				h = std::fmod(std::fmod(h, 1) + 1, 1);
-				int i = h * 6;
+			if (s != 0) {
+				h = std::fmod(std::fmod(h, 1.0f) + 1.0f, 1.0f);
+				int i = int(h * 6);
 				float c = v * s;
-				float x = c * (1 - std::abs(std::fmod(h * 6, 2) - 1));
+				float x = c * (1 - std::abs(std::fmod(h * 6, 2.0f) - 1));
 				glm::vec4 t {v - c, v - c, v - c, a};
 				switch (i) {
 					case 0: return t + glm::vec4 {c, x, 0, 0};
@@ -31,6 +29,7 @@ namespace qy::cg {
 					case 5: return t + glm::vec4 {c, 0, x, 0};
 				}
 			}
+			return {v, v, v, a};
 		}
 
 		/// <summary>
