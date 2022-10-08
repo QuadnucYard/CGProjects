@@ -53,6 +53,12 @@
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\LineRenderer.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Mesh.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">

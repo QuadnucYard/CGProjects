@@ -13,7 +13,7 @@ namespace qy::cg {
 		std::vector<TransformPtr> m_children;
 	};
 
-	DEFINE_OBJECT(Transform)
+	DEFINE_OBJECT(Transform);
 
 	glm::vec3 Transform::position() const { return pImpl->_position; }
 	glm::vec3& Transform::position() { return pImpl->_position; }
@@ -32,14 +32,12 @@ namespace qy::cg {
 	}
 	TransformPtr Transform::parent() const { return pImpl->m_parent; }
 
-	std::vector<std::shared_ptr<Transform>>::const_iterator Transform::begin() const { return pImpl->m_children.begin(); }
+	Transform::const_iterator Transform::begin() const { return pImpl->m_children.begin(); }
 
-	std::vector<std::shared_ptr<Transform>>::const_iterator Transform::end() const { return pImpl->m_children.end(); }
+	Transform::const_iterator Transform::end() const { return pImpl->m_children.end(); }
 
 	void Transform::add_child(pointer child) {
 		pImpl->m_children.push_back(child);
-		//auto x = obj();
-		//auto y = obj()->transform();
 		child->pImpl->m_parent = std::dynamic_pointer_cast<Transform>(shared_from_this());
 	}
 
@@ -47,5 +45,8 @@ namespace qy::cg {
 		std::erase(pImpl->m_children, child);
 		child->pImpl->m_parent = nullptr;
 	}
+
+	Transform::const_iterator begin(const TransformPtr& pt) { return pt->begin(); }
+	Transform::const_iterator end(const TransformPtr& pt) { return pt->end(); }
 
 }

@@ -7,8 +7,7 @@ namespace qy::cg {
 		std::weak_ptr<DisplayObject> obj;
 	};
 
-	Component::Component() : pImpl(std::make_unique<Component::Impl>()) {}
-	Component::~Component() = default;
+	DEFINE_OBJECT(Component);
 
 	std::shared_ptr<DisplayObject> Component::obj() { return pImpl->obj.lock(); }
 

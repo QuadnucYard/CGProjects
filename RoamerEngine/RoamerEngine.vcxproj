@@ -25,6 +25,8 @@
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp" />
+    <ClCompile Include="src\roamer_engine\display\LineRenderer.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Mesh.cpp" />
     <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />

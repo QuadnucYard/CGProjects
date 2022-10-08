@@ -7,8 +7,7 @@ namespace qy::cg {
 
 	class Component: public Object, public std::enable_shared_from_this<Component> {
 	public:
-		Component();
-		~Component();
+		DECL_OBJECT(Component);
 
 		virtual void start() {}
 		virtual void update() {}
@@ -19,8 +18,7 @@ namespace qy::cg {
 		void _setObj(std::shared_ptr<DisplayObject> _obj);
 
 	private:
-		struct Impl;
-		impl_ptr<Impl> pImpl;
+		DECL_PIMPL;
 		
 		friend class DisplayObject;
 	};

@@ -40,8 +40,12 @@ namespace qy::cg {
 	struct Impl; \
 	impl_ptr<Impl> pImpl;
 
+#define MAKE_PIMPL(class_) \
+	pImpl(std::make_unique<class_::Impl>())
+
 #define DEFINE_OBJECT(class_) \
 	class_::class_() : pImpl(std::make_unique<class_::Impl>()) {} \
 	class_::~class_() = default;
+
 
 }

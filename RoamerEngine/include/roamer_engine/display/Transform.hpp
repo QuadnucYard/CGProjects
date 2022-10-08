@@ -10,10 +10,9 @@ namespace qy::cg {
 	class Transform : public Component {
 	public:
 		using pointer = std::shared_ptr<Transform>;
+		using const_iterator = std::vector<pointer>::const_iterator;
 
-		DECL_OBJECT(Transform)
-		//Transform();
-		//~Transform();
+		DECL_OBJECT(Transform);
 
 		glm::vec3 position() const;
 		glm::vec3& position();
@@ -32,18 +31,17 @@ namespace qy::cg {
 
 		void remove_child(pointer child);
 
-		std::vector<std::shared_ptr<Transform>>::const_iterator begin() const;
-		std::vector<std::shared_ptr<Transform>>::const_iterator end() const;
+		const_iterator begin() const;
+		const_iterator end() const;
 
 	private:
-		struct Impl;
-		impl_ptr<Impl> pImpl;
+		DECL_PIMPL;
 
 	};
 
 	using TransformPtr = Transform::pointer;
 
-	//auto begin(const TransformPtr& pt) { return pt->begin(); }
-	//auto end(const TransformPtr& pt) { return pt->end(); }
+	Transform::const_iterator begin(const TransformPtr& pt);
+	Transform::const_iterator end(const TransformPtr& pt);
 	
 }
