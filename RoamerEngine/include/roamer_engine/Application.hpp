@@ -4,8 +4,8 @@
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 #include <string_view>
-#include "display/Shaders.h"
-#include "Time.h"
+#include "display/Shaders.hpp"
+#include "Time.hpp"
 
 namespace qy::cg {
 

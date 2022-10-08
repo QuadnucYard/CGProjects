@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Renderer.h"
-#include "Shaders.h"
+#include "Renderer.hpp"
+#include "Shaders.hpp"
 #include <vector>
 
 namespace qy::cg {

@@ -8,7 +8,7 @@ namespace qy::cg {
 		/// <summary>
 		/// Convert HSV to RGB.
 		/// </summary>
-		/// <param name="h">Hue</param>
+		/// <param name=.hpp">Hue</param>
 		/// <param name="s">Saturation</param>
 		/// <param name="v">Value</param>
 		/// <param name="a">Alpha</param>

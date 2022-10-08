@@ -1,5 +1,5 @@
 #pragma once
-#include "Component.h"
+#include "Component.hpp"
 
 namespace qy::cg {
 	class Renderer : public Component {

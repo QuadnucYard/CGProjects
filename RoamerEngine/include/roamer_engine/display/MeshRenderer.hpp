@@ -1,7 +1,7 @@
 #pragma once
-#include "Renderer.h"
-#include "Shaders.h"
-#include "Mesh.h"
+#include "Renderer.hpp"
+#include "Shaders.hpp"
+#include "Mesh.hpp"
 
 namespace qy::cg {
 	class MeshRenderer: public Renderer {

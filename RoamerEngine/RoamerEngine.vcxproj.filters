@@ -1,22 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="头文件">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="头文件\include">
-      <UniqueIdentifier>{e86f87b5-7477-4056-bf06-ec661f54d9b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\include\roamer_engine">
-      <UniqueIdentifier>{20e821dc-5384-4f28-9686-a1c258a9aeff}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\include\roamer_engine\display">
-      <UniqueIdentifier>{59188177-3dc8-4938-9744-4e7df9d4a9b9}</UniqueIdentifier>
     </Filter>
     <Filter Include="资源文件\shaders">
       <UniqueIdentifier>{ee6ce639-e380-402d-8a45-691591e329b5}</UniqueIdentifier>
@@ -31,59 +18,16 @@
     <Filter Include="src\roamer_engine\display">
       <UniqueIdentifier>{831f02ec-472d-4457-a4f4-1646661cfdb4}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="include\roamer_engine\display\ShaderProgram.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\DisplayObject.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\MeshRenderer.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\Mesh.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\Object.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\Renderer.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\Application.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine.h">
-      <Filter>头文件\include</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\LineRenderer.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\Shaders.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\Time.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\Transform.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\Color.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\Random.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\Scene.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\Component.h">
-      <Filter>头文件\include\roamer_engine\display</Filter>
-    </ClInclude>
+    <Filter Include="include">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="include\roamer_engine">
+      <UniqueIdentifier>{20e821dc-5384-4f28-9686-a1c258a9aeff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\roamer_engine\display">
+      <UniqueIdentifier>{59188177-3dc8-4938-9744-4e7df9d4a9b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag">
@@ -109,5 +53,58 @@
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\roamer_engine\Time.hpp">
+      <Filter>include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Application.hpp">
+      <Filter>include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Color.hpp">
+      <Filter>include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display.hpp">
+      <Filter>include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Object.hpp">
+      <Filter>include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Random.hpp">
+      <Filter>include\roamer_engine</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Transform.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Component.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\LineRenderer.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Mesh.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\MeshRenderer.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Renderer.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Scene.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\ShaderProgram.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Shaders.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

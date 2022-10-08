@@ -1,16 +1,16 @@
 #pragma once
-#include "DisplayObject.h"
+#include "DisplayObject.hpp"
 
 namespace qy::cg {
 
 	class Scene : public Object {
 	private:
 	public:
-		Scene() {  }
+		Scene() {}
+
 		static std::shared_ptr<Scene> create() { 
 			auto scene = instantiate<Scene>(); 
 			scene->m_root = instantiate<Transform>();
-			//scene->m_root->_setObj(scene);
 			return scene;
 		}
 

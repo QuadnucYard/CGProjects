@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../Object.h"
+#include "../Object.hpp"
 
 namespace qy::cg {
 

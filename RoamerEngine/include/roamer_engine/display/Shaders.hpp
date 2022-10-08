@@ -1,5 +1,5 @@
 #pragma once
-#include "ShaderProgram.h"
+#include "ShaderProgram.hpp"
 
 namespace qy::cg {
 

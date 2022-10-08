@@ -1,8 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "Renderer.h"
-#include "Transform.h"
+#include "Renderer.hpp"
+#include "Transform.hpp"
 
 namespace qy::cg {
 	class DisplayObject final : public Object, public std::enable_shared_from_this<DisplayObject> {
