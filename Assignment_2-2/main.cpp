@@ -1,8 +1,8 @@
-#include <roamer_engine.h>
+#include <roamer_engine.hpp>
 #include <cmath>
 #include <numbers>
 
-class SimpleParticle: public qy::cg::DisplayObject {
+class SimpleParticle: public qy::cg::Component {
 
 private:
 	float spawnTime;
@@ -18,7 +18,7 @@ public:
 			Color::hsv2rgb(Random::range(0.0f, 1.0f), 1.0f, 0.5f, Random::range(0.0f, 1.0f)),
 			Random::range(3, 13)
 		);
-		spawnTime = Random::range(0.0f, 5.0f) + 5;
+		spawnTime = Random::range(0.0f, 5.0f);
 		dead = false;
 		speed = Random::range(1.0f, 5.0f);
 		rotSpeed = std::sqrt(Random::range(0.3f, 8.0f));
@@ -29,15 +29,12 @@ public:
 		using namespace qy::cg;
 		float dt = Time::time() - spawnTime;
 		if (dt < 0) return;
+		if (dead) getComponent<MeshRenderer>()->enabled(true);
 		dead = false;
 		float s = std::sin(dt * speed);
-		transform()->rotation() = glm::vec3 {0.0f, 0.0f, dt * rotSpeed};
-		transform()->scale() = {s, s, s};
+		obj()-> transform()->rotation() = glm::vec3 {0.0f, 0.0f, dt * rotSpeed};
+		obj()->transform()->scale() = {s, s, s};
 		//if (s < 0) dead = true;
-	}
-
-	void render() override {
-		if (!dead) DisplayObject::render();
 	}
 
 private:
@@ -56,42 +53,45 @@ private:
 			trianles[i * 3 + 2] = (i + 1) % numDiv;
 		}
 		using namespace qy::cg;
-		auto meshRender = addComponent<MeshRenderer>();
+		auto meshRender = obj()->addComponent<MeshRenderer>();
 		auto&& mesh = meshRender->getMesh();
 		mesh.setVertices(vertices);
 		mesh.setColors(vcolors);
 		mesh.setTriangles(trianles);
+		meshRender->enabled(false);
 	}
 };
 
 class MyApplication: public qy::cg::Application {
 
 private:
-	std::vector<SimpleParticle*> objs;
+	std::vector<std::shared_ptr<qy::cg::DisplayObject>> objs;
+	std::shared_ptr<qy::cg::Scene> scene;
 
 protected:
 	void init() override {
 		using namespace qy::cg;
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glClearColor(0.4f, 0.4f, 0.2f, 1.0f);
+		scene = Scene::create();
 		for (int i = 0; i < 256; i++) {
-			auto obj = new SimpleParticle();
-			obj->init();
+			auto obj = DisplayObject::create();
+			obj->addComponent<SimpleParticle>()->init();
 			obj->transform()->position() = {Random::range(-0.9f, 0.9f), Random::range(-0.9f, 0.9f), 0};
 			objs.push_back(obj);
+			scene->root()->add_child(obj->transform());
 		}
 	}
 
 	void update() override {
 		using namespace qy::cg;
-		for (auto obj : objs) obj->update();
+		scene->dispatch_update();
 	}
 
 	void display() override {
-		glClearColor(0.4f, 0.4f, 0.2f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		for (auto obj : objs) obj->render();
+		scene->dispatch_render();
 	}
 };
 
