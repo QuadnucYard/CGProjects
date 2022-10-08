@@ -1,10 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="源文件">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
     <Filter Include="头文件">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
@@ -24,6 +20,16 @@
     </Filter>
     <Filter Include="资源文件\shaders">
       <UniqueIdentifier>{ee6ce639-e380-402d-8a45-691591e329b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="src\roamer_engine">
+      <UniqueIdentifier>{065d0ce0-63c3-4ec2-b888-22dfe0140cdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\roamer_engine\display">
+      <UniqueIdentifier>{831f02ec-472d-4457-a4f4-1646661cfdb4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -60,9 +66,6 @@
     <ClInclude Include="include\roamer_engine\display\Shaders.h">
       <Filter>头文件\include\roamer_engine\display</Filter>
     </ClInclude>
-    <ClInclude Include="include\roamer_engine\Component.h">
-      <Filter>头文件\include\roamer_engine</Filter>
-    </ClInclude>
     <ClInclude Include="include\roamer_engine\Time.h">
       <Filter>头文件\include\roamer_engine</Filter>
     </ClInclude>
@@ -75,6 +78,12 @@
     <ClInclude Include="include\roamer_engine\Random.h">
       <Filter>头文件\include\roamer_engine</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Scene.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Component.h">
+      <Filter>头文件\include\roamer_engine\display</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag">
@@ -83,5 +92,22 @@
     <None Include="shaders\geom-unlit.vert">
       <Filter>资源文件\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\roamer_engine\display\Transform.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Component.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Renderer.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

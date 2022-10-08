@@ -22,13 +22,14 @@
     <ClInclude Include="include\roamer_engine.h" />
     <ClInclude Include="include\roamer_engine\Application.h" />
     <ClInclude Include="include\roamer_engine\Color.h" />
-    <ClInclude Include="include\roamer_engine\Component.h" />
     <ClInclude Include="include\roamer_engine\display.h" />
+    <ClInclude Include="include\roamer_engine\display\Component.h" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.h" />
     <ClInclude Include="include\roamer_engine\display\Renderer.h" />
     <ClInclude Include="include\roamer_engine\display\LineRenderer.h" />
     <ClInclude Include="include\roamer_engine\display\Mesh.h" />
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.h" />
+    <ClInclude Include="include\roamer_engine\display\Scene.h" />
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.h" />
     <ClInclude Include="include\roamer_engine\display\Shaders.h" />
     <ClInclude Include="include\roamer_engine\display\Transform.h" />
@@ -39,6 +40,13 @@
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag" />
     <None Include="shaders\geom-unlit.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\roamer_engine\display\Component.cpp" />
+    <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp" />
+    <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -145,9 +153,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -163,9 +172,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

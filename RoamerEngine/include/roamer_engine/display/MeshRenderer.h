@@ -11,9 +11,8 @@ namespace qy::cg {
 		Mesh _mesh;
 
 	public:
-		MeshRenderer() {
-			setShader(Shaders::geom_unlit);
-		}
+		MeshRenderer();
+		~MeshRenderer();
 
 		void setShader(const ShaderProgram& shader) {
 			_shader = shader;
