@@ -15,21 +15,21 @@ namespace qy::cg {
 		DECL_OBJECT(Transform);
 
 		glm::vec3 position() const;
-		glm::vec3& position();
+		void position(const glm::vec3& value);
 
 		glm::vec3 scale() const;
-		glm::vec3& scale();
+		void scale(const glm::vec3& value);
 
 		glm::quat rotation() const;
-		glm::quat& rotation();
+		void rotation(const glm::quat& value);
 
 		glm::mat4x4 localToWorldMatrix() const;
 
 		pointer parent() const;
 
-		void add_child(pointer child);
+		void addChild(pointer child);
 
-		void remove_child(pointer child);
+		void removeChild(pointer child);
 
 		const_iterator begin() const;
 		const_iterator end() const;
