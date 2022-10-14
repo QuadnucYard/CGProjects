@@ -4,3 +4,4 @@
 #include "display/LineRenderer.hpp"
 #include "display/Shaders.hpp"
 #include "display/Scene.hpp"
+#include "display/Primitives.hpp"

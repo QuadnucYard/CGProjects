@@ -28,6 +28,7 @@
     <ClCompile Include="src\roamer_engine\display\LineRenderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp" />
     <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Primitives.cpp" />
     <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
   </ItemGroup>
@@ -41,6 +42,7 @@
     <ClInclude Include="include\roamer_engine\display\LineRenderer.hpp" />
     <ClInclude Include="include\roamer_engine\display\Mesh.hpp" />
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.hpp" />
+    <ClInclude Include="include\roamer_engine\display\Primitives.hpp" />
     <ClInclude Include="include\roamer_engine\display\Renderer.hpp" />
     <ClInclude Include="include\roamer_engine\display\Scene.hpp" />
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.hpp" />

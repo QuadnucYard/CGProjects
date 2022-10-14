@@ -59,6 +59,9 @@
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Primitives.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
@@ -111,6 +114,9 @@
     </ClInclude>
     <ClInclude Include="include\roamer_engine.hpp">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Primitives.hpp">
+      <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
