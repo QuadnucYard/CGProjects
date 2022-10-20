@@ -62,6 +62,9 @@
     <ClCompile Include="src\roamer_engine\display\Primitives.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Camera.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
@@ -116,6 +119,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Primitives.hpp">
+      <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Camera.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
   </ItemGroup>

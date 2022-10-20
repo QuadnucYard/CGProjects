@@ -23,6 +23,8 @@ namespace qy::cg {
 		glm::quat rotation() const;
 		void rotation(const glm::quat& value);
 
+		glm::mat4 modelMatrix() const;
+
 		glm::mat4x4 localToWorldMatrix() const;
 
 		pointer parent() const;

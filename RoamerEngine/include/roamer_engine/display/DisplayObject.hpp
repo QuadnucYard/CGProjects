@@ -48,8 +48,6 @@ namespace qy::cg {
 		}
 
 		virtual void update();
-
-		virtual void render();
 	};
 
 

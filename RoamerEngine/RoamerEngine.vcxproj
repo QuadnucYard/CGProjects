@@ -23,6 +23,7 @@
     <None Include="shaders\geom-unlit.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\roamer_engine\display\Camera.cpp" />
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp" />
     <ClCompile Include="src\roamer_engine\display\LineRenderer.cpp" />
@@ -37,6 +38,7 @@
     <ClInclude Include="include\roamer_engine\Application.hpp" />
     <ClInclude Include="include\roamer_engine\Color.hpp" />
     <ClInclude Include="include\roamer_engine\display.hpp" />
+    <ClInclude Include="include\roamer_engine\display\Camera.hpp" />
     <ClInclude Include="include\roamer_engine\display\Component.hpp" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp" />
     <ClInclude Include="include\roamer_engine\display\LineRenderer.hpp" />

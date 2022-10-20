@@ -24,14 +24,17 @@ namespace qy::cg {
 	glm::quat Transform::rotation() const { return pImpl->rotation; }
 	void Transform::rotation(const glm::quat& value) { pImpl->rotation = value; }
 
-	// TODO 这个matrix没考虑父子关系
-	glm::mat4x4 Transform::localToWorldMatrix() const {
-		// 这是model矩阵
+	glm::mat4 Transform::modelMatrix() const {
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, pImpl->position);
 		model = model * glm::mat4_cast(pImpl->rotation);
 		model = glm::scale(model, pImpl->scale);
 		return model;
+	}
+
+	// TODO 这个matrix没考虑父子关系
+	glm::mat4x4 Transform::localToWorldMatrix() const {
+		return modelMatrix();
 	}
 
 	TransformPtr Transform::parent() const { return pImpl->parent; }
