@@ -50,6 +50,9 @@
     <ClInclude Include="include\roamer_engine\display\ShaderProgram.hpp" />
     <ClInclude Include="include\roamer_engine\display\Shaders.hpp" />
     <ClInclude Include="include\roamer_engine\display\Transform.hpp" />
+    <ClInclude Include="include\roamer_engine\input.hpp" />
+    <ClInclude Include="include\roamer_engine\input\Input.hpp" />
+    <ClInclude Include="include\roamer_engine\input\KeyCode.hpp" />
     <ClInclude Include="include\roamer_engine\Object.hpp" />
     <ClInclude Include="include\roamer_engine\Random.hpp" />
     <ClInclude Include="include\roamer_engine\Time.hpp" />

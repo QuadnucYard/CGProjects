@@ -8,13 +8,10 @@
 #include "Time.hpp"
 
 namespace qy::cg {
-
 	class Application {
-
 	public:
 		static int VERSION_MAJOR;
 		static int VERSION_MINOR;
-
 
 	private:
 		GLFWwindow* window;
@@ -61,6 +58,10 @@ namespace qy::cg {
 				glfwPollEvents(); // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）
 			}
 			return this;
+		}
+
+		static GLFWwindow* mainWindow() {
+			return window;
 		}
 
 	private:

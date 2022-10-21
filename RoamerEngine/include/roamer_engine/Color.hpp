@@ -69,5 +69,4 @@ namespace qy::cg {
 			return rgb2hsv(c.r, c.g, c.b, c.a);
 		}
 	};
-
 }

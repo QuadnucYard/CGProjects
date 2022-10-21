@@ -28,6 +28,9 @@
     <Filter Include="include\roamer_engine\display">
       <UniqueIdentifier>{59188177-3dc8-4938-9744-4e7df9d4a9b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="include\roamer_engine\input">
+      <UniqueIdentifier>{28726e48-352b-4199-93af-4de290c271da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag">
@@ -123,6 +126,15 @@
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Camera.hpp">
       <Filter>include\roamer_engine\display</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\input\Input.hpp">
+      <Filter>include\roamer_engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\input\KeyCode.hpp">
+      <Filter>include\roamer_engine\input</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\input.hpp">
+      <Filter>include\roamer_engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
