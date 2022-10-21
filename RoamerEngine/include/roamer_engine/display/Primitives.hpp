@@ -5,7 +5,7 @@
 namespace qy::cg {
 
 	class Primitives final {
-		using object_ptr = std::shared_ptr<DisplayObject>;
+		using object_ptr = ptr<DisplayObject>;
 
 	public:
 		static object_ptr createCube();

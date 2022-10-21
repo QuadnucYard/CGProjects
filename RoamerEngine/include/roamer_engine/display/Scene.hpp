@@ -6,19 +6,19 @@ namespace qy::cg {
 
 	class Scene : public Object {
 	private:
-		inline static std::shared_ptr<Scene> _currentScene;
+		inline static ptr<Scene> _currentScene;
 
 	public:
 		Scene() {}
 
-		static std::shared_ptr<Scene> create() { 
+		static ptr<Scene> create() { 
 			auto scene = instantiate<Scene>(); 
 			scene->m_root = instantiate<Transform>();
 			_currentScene = scene;
 			return scene;
 		}
 
-		static std::shared_ptr<Scene> current() {
+		static ptr<Scene> current() {
 			return _currentScene;
 		}
 

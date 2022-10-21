@@ -14,6 +14,8 @@ namespace qy::cg {
 		static int VERSION_MINOR;
 
 	private:
+		inline static Application* s_main;
+
 		GLFWwindow* window;
 
 	public:
@@ -26,6 +28,7 @@ namespace qy::cg {
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR); //主版本号
 			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VERSION_MINOR); //次版本号
 			window = nullptr;
+			s_main = this;
 		}
 
 		~Application() {
@@ -60,8 +63,12 @@ namespace qy::cg {
 			return this;
 		}
 
+		static Application* main() {
+			return s_main;
+		}
+
 		static GLFWwindow* mainWindow() {
-			return window;
+			return s_main->window;
 		}
 
 	private:

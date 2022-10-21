@@ -4,18 +4,22 @@
 namespace qy::cg {
 
 	struct Component::Impl {
-		std::shared_ptr<DisplayObject> obj;
+		ptr<DisplayObject> obj;
 		bool enabled {true};
 	};
 
 	DEFINE_OBJECT(Component);
 
-	std::shared_ptr<DisplayObject> Component::obj() { return pImpl->obj; }
+	ptr<DisplayObject> Component::obj() { return pImpl->obj; }
 
 	bool Component::enabled() const { return pImpl->enabled; }
 	void Component::enabled(bool value) { pImpl->enabled = value; }
 
-	void Component::_setObj(std::shared_ptr<DisplayObject> _obj) {
+	ptr<Transform> Component::transform() { return pImpl->obj->transform(); }
+
+	std::vector<ptr<Component>> Component::getComponents() { return pImpl->obj->getComponents(); }
+
+	void Component::_setObj(ptr<DisplayObject> _obj) {
 		pImpl->obj = _obj;
 	}
 }

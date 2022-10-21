@@ -6,6 +6,7 @@ namespace qy::cg {
 
 	class DisplayObject;
 	class Component;
+	class Transform;
 
 	template< typename T>
 	concept ComponentType = std::is_base_of_v<Component, T>;
@@ -17,22 +18,26 @@ namespace qy::cg {
 		virtual void start() {}
 		virtual void update() {}
 
-		std::shared_ptr<DisplayObject> obj();
+		ptr<DisplayObject> obj();
 
 		bool enabled() const;
 		void enabled(bool value);
 
-		template <ComponentType T>
-		std::shared_ptr<T> addComponent();
+		ptr<Transform> transform();
 
 		template <ComponentType T>
-		std::shared_ptr<T> getComponent();
+		ptr<T> addComponent();
 
 		template <ComponentType T>
-		std::vector<std::shared_ptr<T>> getComponents();
+		ptr<T> getComponent();
+
+		template <ComponentType T>
+		std::vector<ptr<T>> getComponents();
+
+		std::vector<ptr<Component>> getComponents();
 
 	private:
-		void _setObj(std::shared_ptr<DisplayObject> _obj);
+		void _setObj(ptr<DisplayObject> _obj);
 
 	private:
 		DECL_PIMPL;
@@ -41,12 +46,12 @@ namespace qy::cg {
 	};
 
 	template <ComponentType T>
-	std::shared_ptr<T> Component::addComponent() { return obj()->template addComponent<T>(); }
+	ptr<T> Component::addComponent() { return obj()->template addComponent<T>(); }
 
 	template <ComponentType T>
-	std::shared_ptr<T> Component::getComponent() { return obj()->template getComponent<T>(); }
+	ptr<T> Component::getComponent() { return obj()->template getComponent<T>(); }
 
 	template <ComponentType T>
-	std::vector<std::shared_ptr<T>> Component::getComponents() { return obj()->template getComponents<T>(); }
+	std::vector<ptr<T>> Component::getComponents() { return obj()->template getComponents<T>(); }
 
 }

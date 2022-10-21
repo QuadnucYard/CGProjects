@@ -6,11 +6,11 @@ namespace qy::cg {
 	class Camera: public Component {
 
 	public:
-		inline static std::shared_ptr<Camera> s_main;
+		inline static ptr<Camera> s_main;
 
 		DECL_OBJECT(Camera);
 
-		static std::shared_ptr<Camera> main() {
+		static ptr<Camera> main() {
 			return s_main;
 		}
 

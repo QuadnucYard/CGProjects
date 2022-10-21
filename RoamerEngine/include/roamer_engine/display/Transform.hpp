@@ -9,7 +9,7 @@ namespace qy::cg {
 
 	class Transform : public Component {
 	public:
-		using pointer = std::shared_ptr<Transform>;
+		using pointer = ptr<Transform>;
 		using const_iterator = std::vector<pointer>::const_iterator;
 
 		DECL_OBJECT(Transform);
