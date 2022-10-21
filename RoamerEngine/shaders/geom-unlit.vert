@@ -1,14 +1,16 @@
-#version 430
+#version 460
 
 layout (location = 0) in vec3 vPosition;
 layout (location = 1) in vec4 vColor;
 
 out vec4 outColor;
 
-uniform mat4 transform;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 proj;
 
 void main()
 {
-    gl_Position = transform * vec4(vPosition, 1.0);
+    gl_Position = proj * view * model * vec4(vPosition, 1.0);
     outColor = vColor;
 }

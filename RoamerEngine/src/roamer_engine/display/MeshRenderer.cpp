@@ -23,9 +23,11 @@ namespace qy::cg {
 		return pImpl->mesh;
 	}
 
-	void MeshRenderer::render(const glm::mat4& mat) {
+	void MeshRenderer::render(const glm::mat4& model, const glm::mat4& view, const glm::mat4& proj) {
 		pImpl->shader.use();
-		pImpl->shader.setMat4("transform", mat);
+		pImpl->shader.setMat4("model", model);
+		pImpl->shader.setMat4("view", view);
+		pImpl->shader.setMat4("proj", proj);
 		pImpl->mesh.draw();
 	}
 }

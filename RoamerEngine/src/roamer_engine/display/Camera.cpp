@@ -10,7 +10,6 @@ namespace qy::cg {
 	DEFINE_OBJECT(Camera);
 
 	void Camera::render() {
-		// 一个struct存：do指针，model矩阵，order。swap太麻烦，还是搞 argsort吧
 
 		struct RenderItem {
 			int renderOrder;
@@ -41,9 +40,11 @@ namespace qy::cg {
 			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
 		});
 
+		auto view = glm::lookAt(obj()->transform()->position(), {0, 0, 0}, {0,1,0});
+		auto proj = glm::perspective(1.0f, 1.0f, 0.1f, 10.0f);
+		
 		for (auto&& r : renderList) {
-			r.renderer->render(r.model);
-			// 建议要一个获取shader的接口，设置mvp
+			r.renderer->render(r.model, view, proj);
 		}
 	}
 
