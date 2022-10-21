@@ -27,6 +27,8 @@ namespace qy::cg {
 
 		glm::mat4x4 localToWorldMatrix() const;
 
+		void lookAt(const glm::vec3& target);
+
 		pointer parent() const;
 
 		void addChild(pointer child);

@@ -27,9 +27,9 @@ namespace qy::cg {
 		}
 
 		auto createCamera() {
-			auto cam = DisplayObject::create();
-			cam->addComponent<Camera>();
-			root()->addChild(cam->transform());
+			auto obj = DisplayObject::create();
+			auto cam = obj->addComponent<Camera>();
+			root()->addChild(obj->transform());
 			return cam;
 		}
 

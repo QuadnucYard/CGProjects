@@ -18,6 +18,21 @@ namespace qy::cg {
 			s_main = std::dynamic_pointer_cast<Camera>(shared_from_this());
 		}
 
+		float getAspect() const;
+		void setAspect(float value);
+		float getDepth() const;
+		void setDepth(float value);
+		float getFieldOfView() const;
+		void setFieldOfView(float value);
+		float getNearClipPlane() const;
+		void setNearClipPlane(float value);
+		float getFarClipPlane() const;
+		void setFarClipPlane(float value);
+		bool isOrthographic() const;
+		void setOrthographic(bool value);
+		float getOrthographicSize() const;
+		void setOrthographicSize(float value);
+
 		void render();
 
 	private:

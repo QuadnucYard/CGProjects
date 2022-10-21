@@ -37,6 +37,10 @@ namespace qy::cg {
 		return modelMatrix();
 	}
 
+	void Transform::lookAt(const glm::vec3& target) {
+		// TODO
+	}
+
 	TransformPtr Transform::parent() const { return pImpl->parent; }
 
 	Transform::const_iterator Transform::begin() const { return pImpl->children.begin(); }
