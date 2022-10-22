@@ -32,8 +32,8 @@ public:
 		if (dead) getComponent<MeshRenderer>()->enabled(true);
 		dead = false;
 		float s = std::sin(dt * speed);
-		obj()-> transform()->rotation() = glm::vec3 {0.0f, 0.0f, dt * rotSpeed};
-		obj()->transform()->scale() = {s, s, s};
+		obj()->transform()->rotation(glm::vec3 {0.0f, 0.0f, dt * rotSpeed});
+		obj()->transform()->scale({s, s, s});
 		//if (s < 0) dead = true;
 	}
 
@@ -73,24 +73,24 @@ protected:
 		using namespace qy::cg;
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		glClearColor(0.4f, 0.4f, 0.2f, 1.0f);
 		scene = Scene::create();
+		auto cam = scene->createCamera();
+		cam->setBackgroundColor({0.4f, 0.3f, 0.1f, 1.0f});
+		cam->transform()->position({0, 0, 1.0f});
 		for (int i = 0; i < 256; i++) {
 			auto obj = DisplayObject::create();
 			obj->addComponent<SimpleParticle>()->init();
-			obj->transform()->position() = {Random::range(-0.9f, 0.9f), Random::range(-0.9f, 0.9f), 0};
+			obj->transform()->position({Random::range(-0.9f, 0.9f), Random::range(-0.9f, 0.9f), 0});
 			objs.push_back(obj);
-			scene->root()->add_child(obj->transform());
+			scene->root()->addChild(obj->transform());
 		}
 	}
 
 	void update() override {
-		using namespace qy::cg;
 		scene->dispatch_update();
 	}
 
 	void display() override {
-		glClear(GL_COLOR_BUFFER_BIT);
 		scene->dispatch_render();
 	}
 };
