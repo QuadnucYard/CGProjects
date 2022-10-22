@@ -12,6 +12,10 @@ namespace qy::cg {
 
 		bool orthographic {false}; // Is the camera orthographic (true) or perspective (false)?
 		float orthographicSize {10.0f}; // Camera's half-size when in orthographic mode.
+
+		CameraClearFlags clearFlags {CameraClearFlags::SolidColor};
+		glm::vec4 backgroundColor {};
+
 	};
 
 	DEFINE_OBJECT(Camera);
@@ -30,6 +34,10 @@ namespace qy::cg {
 	void Camera::setOrthographic(bool value) { pImpl->orthographic = value; }
 	float Camera::getOrthographicSize() const { return pImpl->orthographicSize; }
 	void Camera::setOrthographicSize(float value) { pImpl->orthographicSize = value; }
+	CameraClearFlags Camera::getClearFlags() const { return pImpl->clearFlags; }
+	void Camera::setClearFlags(CameraClearFlags value) { pImpl->clearFlags = value; }
+	glm::vec4 Camera::getBackgroundColor() const { return pImpl->backgroundColor; }
+	void Camera::setBackgroundColor(glm::vec4 value) { pImpl->backgroundColor = value; }
 
 	void Camera::render() {
 
@@ -61,6 +69,16 @@ namespace qy::cg {
 		std::ranges::sort(renderList, [](const RenderItem& o1, const RenderItem& o2) {
 			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
 		});
+
+		if (pImpl->clearFlags == CameraClearFlags::SolidColor) {
+			auto&& c = pImpl->backgroundColor;
+			glClearColor(c.r, c.g, c.b, c.a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		} else if (pImpl->clearFlags ==  CameraClearFlags::Depth) {
+			auto&& c = pImpl->backgroundColor;
+			glClearColor(c.r, c.g, c.b, c.a);
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
 
 		auto view = glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});
 		glm::mat4 proj;

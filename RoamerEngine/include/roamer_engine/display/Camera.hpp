@@ -3,6 +3,14 @@
 
 namespace qy::cg {
 
+	enum class CameraClearFlags {
+		Skybox,
+		SolidColor,
+		Depth,
+		Nothing,
+	};
+
+
 	class Camera: public Component {
 
 	public:
@@ -32,6 +40,10 @@ namespace qy::cg {
 		void setOrthographic(bool value);
 		float getOrthographicSize() const;
 		void setOrthographicSize(float value);
+		CameraClearFlags getClearFlags() const;
+		void setClearFlags(CameraClearFlags value);
+		glm::vec4 getBackgroundColor() const;
+		void setBackgroundColor(glm::vec4 value);
 
 		void render();
 
