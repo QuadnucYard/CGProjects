@@ -1,69 +1,60 @@
-#include <roamer_engine.h>
+#include <roamer_engine.hpp>
 #include <cmath>
 #include <numbers>
 #include <random>
 
 class MyApplication: public qy::cg::Application {
 
+	
 private:
-	static constexpr int numDiv = 36;
-	static constexpr float r1 = 0.4f, r2 = 0.7f;
-
-	qy::cg::DisplayObject* obj;
+	std::shared_ptr<qy::cg::Scene> scene;
+	std::shared_ptr<qy::cg::Camera> cam;
+	glm::vec3 camFront {0, 0, -1};
+	glm::vec3 camUp {0, 1, 0};
 
 protected:
 	void init() override {
 		using namespace qy::cg;
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LEQUAL);
 
-		obj = new DisplayObject();
-
-		auto meshRenderer = obj->addComponent<MeshRenderer>();
-		auto meshRenderer2 = obj->addComponent<MeshRenderer>();
-
-		auto&& mesh = meshRenderer->getMesh();
-		mesh.setVertices({{0.0f, 0.5f, 0.0f}, {-0.5f, -0.5f, 0.0f}, {0.5f, -0.5f, 0.0f}});
-		mesh.setColors({{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}});
-		mesh.setTriangles({0, 1, 2});
-		auto&& mesh2 = meshRenderer2->getMesh();
-		mesh2.setVertices({{0.5f, 0.5f, 0.0f}, {0.0f, -0.5f, 0.0f}, {1.0f, -0.5f, 0.0f}});
-		mesh2.setColors({{1.0f, 1.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 1.0f, 0.5f}});
-		mesh2.setTriangles({0, 1, 2});
-
-		obj->addComponent<LineRenderer>()
-			->setPositions({{-0.8f, -0.8f, 0.0f}, {0.8f, 0.7f, 0.0f}, {-0.6f, 0.3f, 0.0f}})
-			->setColors({{1.0f, 0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f, 0.0f, 0.5f}})
-			->setWidth(10)
-			->setLoop(true);
-
-		std::cout << obj->getComponent<Component>() << std::endl;
-		std::cout << obj->getComponent<MeshRenderer>() << std::endl;
-		std::cout << obj->getComponent<LineRenderer>() << std::endl;
-		std::cout << isinstance<Renderer>(meshRenderer) << std::endl;
-		std::cout << isinstance<Renderer>(meshRenderer2) << std::endl;
-		std::cout << obj->getComponents<MeshRenderer>().size() << std::endl;
+		scene = Scene::create();
+		cam = scene->createCamera();
+		cam->obj()->transform()->position({1, 1, 1});
+		auto obj = Primitives::createCube();
+		obj->transform()->position({0.5f, 0, 0});
+		obj->transform()->scale({0.3f, 0.3f, 0.3f});
+		obj->transform()->rotation(glm::vec3(0.3f, 0.2f, 0.6f));
+		obj->getComponent<MeshRenderer>()->getMesh().setColors(
+			{{0, 0, 0, 0}, {.5f, 0, 0, 1}, {0, .5f, 0, 1}, {0, 0, .5f, 1}, {.5f, .5f, 0, 1}, {.5f, 0, .5f, 1}, {0, .5f, .5f, 1}, {.5f, .5f, .5f, 1}});
+		scene->root()->addChild(obj->transform());
+		obj = Primitives::createCube();
+		obj->transform()->position({0.1f, 0.3f, -0.2f});
+		obj->transform()->scale({0.3f, 0.1f, 0.4f});
+		obj->transform()->rotation(glm::vec3(0.7f, -0.3f, 0.1f));
+		scene->root()->addChild(obj->transform());
 	}
 
 	void update() override {
 		using namespace qy::cg;
-		printf("%u: %lf %lf\n", Time::frameCount(), Time::deltaTime(), Time::time());
-		auto lr = obj->getComponent<LineRenderer>();
-		lr->setWidth(sin(Time::time() * 5) * 2 + 5);
-		auto mr = obj->getComponent<MeshRenderer>();
-		auto f = Time::frameCount();
-		if (f % 2 == 0) {
-			f /= 2;
-			auto&& mesh = mr->getMesh();
-			auto colors = mesh.getColors();
-			std::ranges::rotate(colors, colors.begin() + 1);
-			mesh.setColors(colors);
-		}
+		scene->dispatch_update();
+		
+		float cameraSpeed = Time::deltaTime() * 5;
+		auto camPos = cam->obj()->transform()->position();
+		if (Input::getKeyDown(KeyCode::W)) camPos += cameraSpeed * camFront;
+		if (Input::getKeyDown(KeyCode::S)) camPos -= cameraSpeed * camFront;
+		if (Input::getKeyDown(KeyCode::A)) camPos -= glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
+		if (Input::getKeyDown(KeyCode::D)) camPos += glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
+		if (Input::getKeyDown(KeyCode::SPACE)) camPos += camUp * cameraSpeed;
+		if (Input::getKeyDown(KeyCode::LEFT_SHIFT)) camPos -= camUp * cameraSpeed;
+		cam->transform()->position(camPos);
+		cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 80.0f));
 	}
 
 	void display() override {
-		glClearColor(0.5f, 0.8f, 0.6f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		obj->render();
+		scene->dispatch_render();
 	}
 };
 
