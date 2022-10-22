@@ -1,13 +1,14 @@
 #pragma once
-
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 #include <string_view>
 #include "display/Shaders.hpp"
 #include "Time.hpp"
+#include "input/Input.hpp"
 
 namespace qy::cg {
+
 	class Application {
 	public:
 		static int VERSION_MAJOR;
@@ -58,7 +59,9 @@ namespace qy::cg {
 				update();
 				display(); //绘制函数，主体
 				glfwSwapBuffers(window); //交换颜色缓存
+				internalLateUpdate();
 				glfwPollEvents(); // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）
+				lateUpdate();
 			}
 			return this;
 		}
@@ -73,17 +76,24 @@ namespace qy::cg {
 
 	private:
 		void internalInit() {
+			Input::__init__(window);
 			Shaders::__INIT__();
+			glEnable(GL_DEPTH_TEST);
 		}
 
 		void internalUpdate() {
 			Time::__update(glfwGetTime());
 		}
 
+		void internalLateUpdate() {
+			Input::__update__(); // Input状态重置
+		}
+
 	protected:
 
 		virtual void init() {}
 		virtual void update() {}
+		virtual void lateUpdate() {}
 		virtual void display() {}
 	};
 }
