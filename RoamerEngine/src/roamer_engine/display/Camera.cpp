@@ -99,6 +99,7 @@ namespace qy::cg {
 			shader.setMat4("model", r.model);
 			shader.setMat4("view", view);
 			shader.setMat4("proj", proj);
+			mat->__applyProperties();
 			mf->mesh()->__render();
 		}
 	}

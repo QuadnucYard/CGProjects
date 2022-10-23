@@ -56,9 +56,6 @@
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
-    <ClCompile Include="src\roamer_engine\display\LineRenderer.cpp">
-      <Filter>src\roamer_engine\display</Filter>
-    </ClCompile>
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
@@ -67,6 +64,12 @@
     </ClCompile>
     <ClCompile Include="src\roamer_engine\display\Camera.cpp">
       <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Material.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Shader.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,9 +100,6 @@
     <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\LineRenderer.hpp">
-      <Filter>include\roamer_engine\display</Filter>
-    </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Mesh.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
@@ -110,9 +110,6 @@
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Scene.hpp">
-      <Filter>include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\ShaderProgram.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Shaders.hpp">
@@ -143,6 +140,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Materials.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Shader.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -180,7 +180,7 @@ namespace qy::cg {
 
 		auto&& v = pImpl->data.__vertices;
 		auto&& vd = reinterpret_cast<const char*>(v.data());
-		auto stride = sizeof(MeshData::Vertex);
+		GLsizei stride = sizeof(MeshData::Vertex);
 		glBindBuffer(GL_ARRAY_BUFFER, pImpl->vbo);
 		glBufferData(GL_ARRAY_BUFFER, v.size() * sizeof(MeshData::Vertex), v.data(), GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(MeshData::Vertex, position));
@@ -193,7 +193,7 @@ namespace qy::cg {
 		glEnableVertexAttribArray(3);
 		glVertexAttribPointer(4, 2, GL_FLOAT, GL_FALSE, stride, (void*)offsetof(MeshData::Vertex, uv));
 		glEnableVertexAttribArray(4);
-		
+
 		auto&& e = pImpl->data.__indices;
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pImpl->ebo);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, e.size() * sizeof(GLuint), e.data(), GL_STATIC_DRAW);

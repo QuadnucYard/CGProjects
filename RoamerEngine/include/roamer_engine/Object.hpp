@@ -6,6 +6,7 @@
 #include <numeric>
 #include <ranges>
 #include <type_traits>
+#include <vector>
 
 namespace qy::cg {
 	class Object {
@@ -19,6 +20,11 @@ namespace qy::cg {
 
 	template <class T>
 	using impl_ptr = std::unique_ptr<T>;
+
+	template <class T>
+	using ptr_vector = std::vector<ptr<T>>;
+
+	using color_t = glm::vec4;
 
 	template <class T, class U>
 	inline constexpr bool isinstance(const ptr<U>& x) {
