@@ -1,5 +1,6 @@
 #include "roamer_engine/display/Camera.hpp"
 #include "roamer_engine/display/Scene.hpp"
+#include "roamer_engine/display/MeshFilter.hpp"
 
 namespace qy::cg {
 
@@ -89,8 +90,16 @@ namespace qy::cg {
 			proj = glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
 		}
 
+		// Now only support MeshRenderer
 		for (auto&& r : renderList) {
-			r.renderer->render(r.model, view, proj);
+			auto mat = r.renderer->getMaterial();
+			auto mf = r.renderer->getComponent<MeshFilter>();
+			auto&& shader = mat->getShader();
+			shader.use();
+			shader.setMat4("model", r.model);
+			shader.setMat4("view", view);
+			shader.setMat4("proj", proj);
+			mf->mesh()->__render();
 		}
 	}
 

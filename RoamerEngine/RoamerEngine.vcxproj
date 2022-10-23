@@ -42,7 +42,10 @@
     <ClInclude Include="include\roamer_engine\display\Component.hpp" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp" />
     <ClInclude Include="include\roamer_engine\display\LineRenderer.hpp" />
+    <ClInclude Include="include\roamer_engine\display\Material.hpp" />
+    <ClInclude Include="include\roamer_engine\display\Materials.hpp" />
     <ClInclude Include="include\roamer_engine\display\Mesh.hpp" />
+    <ClInclude Include="include\roamer_engine\display\MeshFilter.hpp" />
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.hpp" />
     <ClInclude Include="include\roamer_engine\display\Primitives.hpp" />
     <ClInclude Include="include\roamer_engine\display\Renderer.hpp" />

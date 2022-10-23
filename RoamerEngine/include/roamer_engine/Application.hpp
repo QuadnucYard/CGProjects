@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <string_view>
 #include "display/Shaders.hpp"
+#include "display/Materials.hpp"
 #include "Time.hpp"
 #include "input/Input.hpp"
 
@@ -39,7 +40,7 @@ namespace qy::cg {
 		}
 
 		Application* createWindow(int width, int height, std::string_view title) {
-			window = glfwCreateWindow(800, 800, title.data(), nullptr, nullptr);
+			window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 			glfwMakeContextCurrent(window);
 			//设置缓存刷新时间
 			glfwSwapInterval(1);
@@ -76,9 +77,12 @@ namespace qy::cg {
 
 	private:
 		void internalInit() {
+			glEnable(GL_DEPTH_TEST);
+			glEnable(GL_CULL_FACE);
+			glFrontFace(GL_CCW);
 			Input::__init__(window);
 			Shaders::__INIT__();
-			glEnable(GL_DEPTH_TEST);
+			Materials::__init__();
 		}
 
 		void internalUpdate() {

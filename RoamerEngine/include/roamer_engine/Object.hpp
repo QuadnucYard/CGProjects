@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <memory>
 #include <algorithm>
+#include <numeric>
 #include <ranges>
 #include <type_traits>
 
