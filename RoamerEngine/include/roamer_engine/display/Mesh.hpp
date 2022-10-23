@@ -34,6 +34,18 @@ namespace qy::cg {
 
 		void setColors(const std::vector<glm::vec4>& colors);
 
+		std::vector<glm::vec3> getNormals() const;
+
+		void setNormals(const std::vector<glm::vec3>& normals);
+
+		std::vector<glm::vec4> getTangents() const;
+
+		void setTangents(const std::vector<glm::vec4>& tangents);
+
+		std::vector<glm::vec2> getUVs() const;
+
+		void setUVs(const std::vector<glm::vec2>& uvs);
+
 		size_t getSubMeshCount() const;
 
 		void setSubMeshCount(size_t count);

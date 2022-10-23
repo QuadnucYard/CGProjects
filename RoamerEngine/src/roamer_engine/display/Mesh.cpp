@@ -130,6 +130,45 @@ namespace qy::cg {
 		pImpl->dirty = true;
 	}
 
+	std::vector<glm::vec3> Mesh::getNormals() const
+	{
+		std::vector<glm::vec3> outNormals(pImpl->data.verticeCount());
+		pImpl->data.getNormals(outNormals);
+		return outNormals;
+	}
+
+	void Mesh::setNormals(const std::vector<glm::vec3>& normals)
+	{
+		pImpl->data.setNormals(normals);
+		pImpl->dirty = true;
+	}
+
+	std::vector<glm::vec4> Mesh::getTangents() const
+	{
+		std::vector<glm::vec4> outTangents(pImpl->data.verticeCount());
+		pImpl->data.getTangents(outTangents);
+		return outTangents;
+	}
+
+	void Mesh::setTangents(const std::vector<glm::vec4>& tangents)
+	{
+		pImpl->data.setTangents(tangents);
+		pImpl->dirty = true;
+	}
+
+	std::vector<glm::vec2> Mesh::getUVs() const
+	{
+		std::vector<glm::vec2> outUVs(pImpl->data.verticeCount());
+		pImpl->data.getUVs(outUVs);
+		return outUVs;
+	}
+
+	void Mesh::setUVs(const std::vector<glm::vec2>& uvs)
+	{
+		pImpl->data.setUVs(uvs);
+		pImpl->dirty = true;
+	}
+
 	size_t Mesh::getSubMeshCount() const {
 		return pImpl->data.submeshCount();
 	}
