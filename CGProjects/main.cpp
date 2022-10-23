@@ -23,6 +23,7 @@ protected:
 		scene = Scene::create();
 		cam = scene->createCamera();
 		cam->obj()->transform()->position({1, 1, 1});
+		
 		auto obj = Primitives::createCube();
 		obj->transform()->position({0.5f, 0, 0});
 		obj->transform()->scale({0.3f, 0.3f, 0.3f});
