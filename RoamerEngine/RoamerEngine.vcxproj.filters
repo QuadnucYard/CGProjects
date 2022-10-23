@@ -136,5 +136,14 @@
     <ClInclude Include="include\roamer_engine\input.hpp">
       <Filter>include\roamer_engine</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\MeshFilter.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Material.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Materials.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
