@@ -71,6 +71,12 @@
     <ClCompile Include="src\roamer_engine\display\Shader.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="include\roamer_engine\display\Texture2D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
@@ -143,6 +149,18 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Shader.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Texture2D.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Sprite.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\SpriteRenderer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Texture.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

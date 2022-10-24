@@ -5,3 +5,4 @@
 #include "display/Shaders.hpp"
 #include "display/Scene.hpp"
 #include "display/Primitives.hpp"
+#include "display/Texture2D.hpp"
