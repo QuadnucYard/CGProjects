@@ -32,9 +32,12 @@ protected:
 		scene->root()->addChild(obj->transform());
 		obj = Primitives::createSphere();
 		obj->transform()->position({0.1f, 0.3f, -0.2f});
-		obj->transform()->scale({0.3f, 0.1f, 0.4f});
+		//obj->transform()->scale({0.3f, 0.1f, 0.4f});
 		obj->transform()->rotation(glm::vec3(0.7f, -0.3f, 0.1f));
-		obj->getComponent<MeshRenderer>()->getMaterial()->setColor("_Color", Color::rgba(222, 143, 228, 127));
+		auto&& mat = obj->getComponent<MeshRenderer>()->getMaterial();
+		//mat->setColor("_Color", Color::rgba(222, 143, 228, 127));
+		auto tex = Texture::loadFromFile("assets/earth.jpg");
+		mat->setTexture("_MainTex", tex);
 		scene->root()->addChild(obj->transform());
 	}
 
