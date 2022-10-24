@@ -11,15 +11,19 @@ namespace qy::cg {
 
 		ptr<Material> getMaterial() { 
 			if (m_materials.at(0) == m_sharedMaterials.at(0))
-				m_materials[0] = m_materials[0]->clone();
-			return  m_materials[0]; 
+				m_materials[0] = m_sharedMaterials[0]->clone();
+			return m_materials[0]; 
 		}
 
 		ptr_vector<Material> getMaterials() {
 			for (size_t i = 0; i < m_materials.size(); i++) {
 				if (m_materials[i] == m_sharedMaterials[i]) 
-					m_materials[i] = m_materials[i]->clone();
+					m_materials[i] = m_sharedMaterials[i]->clone();
 			}
+			return m_materials;
+		}
+
+		const ptr_vector<Material>& __getMaterials() const {
 			return m_materials;
 		}
 

@@ -12,8 +12,10 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 
+uniform vec4 _Color;
+
 void main()
 {
     gl_Position = proj * view * model * vec4(vPosition, 1.0);
-    outColor = vColor;
+    outColor = vColor * _Color;
 }

@@ -93,14 +93,15 @@ namespace qy::cg {
 
 		// Now only support MeshRenderer
 		for (auto&& r : renderList) {
-			auto mat = r.renderer->getMaterial();
+			for (auto&& mat : r.renderer->__getMaterials()) {
+				auto&& shader = mat->getShader();
+				shader.use();
+				shader.setMat4("model", r.model);
+				shader.setMat4("view", view);
+				shader.setMat4("proj", proj);
+				mat->__applyProperties();
+			}
 			auto mf = r.renderer->getComponent<MeshFilter>();
-			auto&& shader = mat->getShader();
-			shader.use();
-			shader.setMat4("model", r.model);
-			shader.setMat4("view", view);
-			shader.setMat4("proj", proj);
-			mat->__applyProperties();
 			mf->mesh()->__render();
 		}
 	}

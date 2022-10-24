@@ -14,6 +14,8 @@ namespace qy::cg {
 		prop_dict<float> floatProps;
 		prop_dict<color_t> colorProps;
 
+		Impl() { colorProps["_Color"] = {1.0f, 1.0f, 1.0f, 1.0f}; }
+
 		void applyProperties() const {
 			shader.use();
 			for (auto&& [k, v] : intProps) shader.setInt(k, v);
@@ -38,19 +40,19 @@ namespace qy::cg {
 
 	int Material::getInt(const std::string& name) const { return pImpl->intProps.at(name); }
 
-	void Material::setInt(const std::string& name, int value) { pImpl->intProps.insert({name, value}); }
+	void Material::setInt(const std::string& name, int value) { pImpl->intProps.insert_or_assign(name, value); }
 
 	bool Material::hasFloat(const std::string& name) const { return pImpl->floatProps.contains(name); }
 
 	float Material::getFloat(const std::string& name) const { return pImpl->floatProps.at(name); }
 
-	void Material::setFloat(const std::string& name, int value) { pImpl->floatProps.insert({name, value}); }
+	void Material::setFloat(const std::string& name, int value) { pImpl->floatProps.insert_or_assign(name, value); }
 
 	bool Material::hasColor(const std::string& name) const { return pImpl->colorProps.contains(name); }
 
 	color_t Material::getColor(const std::string& name) const { return pImpl->colorProps.at(name); }
 
-	void Material::setColor(const std::string& name, const color_t& value) { pImpl->colorProps.insert({name, value}); }
+	void Material::setColor(const std::string& name, const color_t& value) { pImpl->colorProps.insert_or_assign(name, value); }
 
 	void Material::__applyProperties() const {
 		pImpl->applyProperties();
