@@ -1,6 +1,7 @@
 #include "roamer_engine/display/Camera.hpp"
 #include "roamer_engine/display/Scene.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
+#include "roamer_engine/display/Shader.hpp"
 
 namespace qy::cg {
 

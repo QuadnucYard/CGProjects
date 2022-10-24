@@ -1,4 +1,5 @@
 #include "roamer_engine/display/Material.hpp"
+#include "roamer_engine/display/Shader.hpp"
 #include <unordered_map>
 
 namespace qy::cg {

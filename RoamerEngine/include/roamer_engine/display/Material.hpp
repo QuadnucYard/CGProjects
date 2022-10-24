@@ -1,8 +1,9 @@
 #pragma once
 #include "../Object.hpp"
-#include "Shader.hpp"
 
 namespace qy::cg {
+
+	class Shader;
 
 	class Material: public Object {
 
@@ -30,3 +31,4 @@ namespace qy::cg {
 		DECL_PIMPL;
 	};
 }
+

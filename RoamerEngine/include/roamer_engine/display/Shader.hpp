@@ -3,15 +3,12 @@
 #include <gl/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include <filesystem>
-#include <string_view>
+#include <unordered_map>
 
 namespace qy::cg {
+
+	namespace fs = std::filesystem;
 
 	/*
 	Shader program adapted form https://learnopengl.com/code_viewer_gh.php?code=includes/learnopengl/shader_s.h
@@ -22,64 +19,80 @@ namespace qy::cg {
 
 	private:
 		GLuint ID;
+		inline static std::unordered_map<GLuint, unsigned> refCount;
 
 	public:
 
-		Shader() { ID = 0; }
-
-		// constructor generates the shader on the fly
-		Shader(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath);
+		Shader(): ID(0) {}
+		Shader(const Shader& o): ID(o.ID) { ++refCount[o.ID]; }
 
 		~Shader() {
-			//glDeleteProgram(ID);
+			if (ID != 0 && --refCount[ID] == 0) glDeleteProgram(ID);
 		}
 
-		static Shader create(std::string_view vert, std::string_view frag);
+		Shader& operator= (const Shader& o) {
+			--refCount[ID];
+			ID = o.ID;
+			++refCount[ID];
+			return *this;
+		}
+
+		/// @brief Create shader from source file.
+		/// @param vertexPath Path of vertex shader.
+		/// @param fragmentPath Path of fragment shader.
+		/// @return Created shader.
+		static Shader fromSourceFile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath);
+
+		/// @brief Create shader from string.
+		/// @param vertexPath String of vertex shader.
+		/// @param fragmentPath String of fragment shader.
+		/// @return Created shader.
+		static Shader fromSourceString(std::string_view vert, std::string_view frag);
 
 		// activate the shader
-		void use() const {
+		inline void use() const {
 			glUseProgram(ID);
 		}
 
 		// utility uniform functions
-		void setBool(std::string_view name, bool value) const {
+		inline void setBool(std::string_view name, bool value) const {
 			glUniform1i(locAttrib(name), static_cast<int>(value));
 		}
 
-		void setInt(std::string_view name, int value) const {
+		inline void setInt(std::string_view name, int value) const {
 			glUniform1i(locAttrib(name), value);
 		}
-	
-		void setFloat(std::string_view name, float value) const {
+
+		inline void setFloat(std::string_view name, float value) const {
 			glUniform1f(locAttrib(name), value);
 		}
 
-		void setVec2(std::string_view name, const glm::vec2& value) const {
+		inline void setVec2(std::string_view name, const glm::vec2& value) const {
 			glUniform2fv(locAttrib(name), 1, glm::value_ptr(value));
 		}
 
-		void setVec3(std::string_view name, const glm::vec3& value) const {
+		inline void setVec3(std::string_view name, const glm::vec3& value) const {
 			glUniform3fv(locAttrib(name), 1, glm::value_ptr(value));
 		}
 
-		void setVec4(std::string_view name, const glm::vec4& value) const {
+		inline void setVec4(std::string_view name, const glm::vec4& value) const {
 			glUniform4fv(locAttrib(name), 1, glm::value_ptr(value));
 		}
 
-		void setMat2(std::string_view name, const glm::mat2& value) const {
+		inline void setMat2(std::string_view name, const glm::mat2& value) const {
 			glUniformMatrix2fv(locAttrib(name), 1, GL_FALSE, glm::value_ptr(value));
 		}
 
-		void setMat3(std::string_view name, const glm::mat3& value) const {
+		inline void setMat3(std::string_view name, const glm::mat3& value) const {
 			glUniformMatrix3fv(locAttrib(name), 1, GL_FALSE, glm::value_ptr(value));
 		}
 
-		void setMat4(std::string_view name, const glm::mat4& value) const {
+		inline void setMat4(std::string_view name, const glm::mat4& value) const {
 			glUniformMatrix4fv(locAttrib(name), 1, GL_FALSE, glm::value_ptr(value));
 		}
 
-		GLint locAttrib(std::string_view name) const {
-			return glGetAttribLocation(ID, name.data());
+		inline GLint locAttrib(std::string_view name) const {
+			return glGetUniformLocation(ID, name.data());
 		}
 
 	private:
