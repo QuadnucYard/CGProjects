@@ -23,6 +23,15 @@ protected:
 		cam = scene->createCamera();
 		cam->setBackgroundColor({0.4f, 0.3f, 0.1f, 1.0f});
 		cam->obj()->transform()->position({0, 0, 5});
+		cam->addComponent(SkyBox::loadFromFile(
+			"assets/skybox/left.jpg", 
+			"assets/skybox/right.jpg",
+			"assets/skybox/top.jpg",
+			"assets/skybox/bottom.jpg",
+			"assets/skybox/front.jpg",
+			"assets/skybox/back.jpg"
+		));
+		cam->setClearFlags(CameraClearFlags::Skybox);
 		auto obj = Primitives::createCube();
 		obj->transform()->position({1.0f, 0, 0});
 		obj->transform()->scale({0.3f, 0.3f, 0.3f});
