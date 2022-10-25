@@ -39,6 +39,8 @@
     <None Include="shaders\geom-unlit.vert">
       <Filter>资源文件\shaders</Filter>
     </None>
+    <None Include="shaders\skybox.vert" />
+    <None Include="shaders\skybox.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -75,6 +77,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="include\roamer_engine\display\Texture2D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\SkyBox.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -161,6 +166,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Texture.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\SkyBox.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,6 +26,9 @@ namespace qy::cg {
 		ptr<Transform> transform();
 
 		template <ComponentType T>
+		ptr<T> addComponent(const ptr<T>& component);
+
+		template <ComponentType T>
 		ptr<T> addComponent();
 
 		template <ComponentType T>
@@ -47,6 +50,9 @@ namespace qy::cg {
 
 	template <ComponentType T>
 	ptr<T> Component::addComponent() { return obj()->template addComponent<T>(); }
+
+	template <ComponentType T>
+	ptr<T> Component::addComponent(const ptr<T>& component) { return obj()->template addComponent<T>(component); }
 
 	template <ComponentType T>
 	ptr<T> Component::getComponent() { return obj()->template getComponent<T>(); }

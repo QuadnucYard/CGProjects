@@ -21,6 +21,8 @@
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag" />
     <None Include="shaders\geom-unlit.vert" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="include\roamer_engine\display\Texture2D.cpp" />
@@ -33,6 +35,7 @@
     <ClCompile Include="src\roamer_engine\display\Primitives.cpp" />
     <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Shader.cpp" />
+    <ClCompile Include="src\roamer_engine\display\SkyBox.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
   </ItemGroup>
@@ -54,6 +57,7 @@
     <ClInclude Include="include\roamer_engine\display\Scene.hpp" />
     <ClInclude Include="include\roamer_engine\display\Shader.hpp" />
     <ClInclude Include="include\roamer_engine\display\Shaders.hpp" />
+    <ClInclude Include="include\roamer_engine\display\SkyBox.hpp" />
     <ClInclude Include="include\roamer_engine\display\Sprite.hpp" />
     <ClInclude Include="include\roamer_engine\display\SpriteRenderer.hpp" />
     <ClInclude Include="include\roamer_engine\display\Texture.hpp" />

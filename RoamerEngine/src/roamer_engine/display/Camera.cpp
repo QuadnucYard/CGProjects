@@ -2,6 +2,7 @@
 #include "roamer_engine/display/Scene.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/Shader.hpp"
+#include "roamer_engine/display/SkyBox.hpp"
 
 namespace qy::cg {
 
@@ -72,7 +73,7 @@ namespace qy::cg {
 			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
 		});
 
-		if (pImpl->clearFlags == CameraClearFlags::SolidColor) {
+		if (pImpl->clearFlags == CameraClearFlags::SolidColor || pImpl->clearFlags == CameraClearFlags::Skybox) {
 			auto&& c = pImpl->backgroundColor;
 			glClearColor(c.r, c.g, c.b, c.a);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -103,6 +104,11 @@ namespace qy::cg {
 			}
 			auto mf = r.renderer->getComponent<MeshFilter>();
 			mf->mesh()->__render();
+		}
+
+		// Render SkyBox
+		if (pImpl->clearFlags == CameraClearFlags::Skybox) {
+			getComponent<SkyBox>()->__render(view, proj);
 		}
 	}
 

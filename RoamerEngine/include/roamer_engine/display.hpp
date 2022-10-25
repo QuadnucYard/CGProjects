@@ -6,3 +6,4 @@
 #include "display/Scene.hpp"
 #include "display/Primitives.hpp"
 #include "display/Texture2D.hpp"
+#include "display/SkyBox.hpp"
