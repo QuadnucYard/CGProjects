@@ -74,9 +74,9 @@ namespace qy::cg {
 
 	DEFINE_OBJECT(SkyBox);
 
-	ptr<SkyBox> SkyBox::loadFromFile(const fs::path& left, const fs::path& right, const fs::path& up, const fs::path& down, const fs::path& front, const fs::path& back) {
+	ptr<SkyBox> SkyBox::loadFromFile(const fs::path& right, const fs::path& left, const fs::path& up, const fs::path& down, const fs::path& front, const fs::path& back) {
 		auto sb = instantiate<SkyBox>();
-		std::array<fs::path, 6>faces {left, right, up, down, front, back};
+		std::array<fs::path, 6>faces {right, left, up, down, front, back};
 
 		GLuint textureID;
 		glGenTextures(1, &textureID);
@@ -108,7 +108,7 @@ namespace qy::cg {
 
 	void SkyBox::__render(const glm::mat4& view, const glm::mat4& proj) {
 		// draw skybox as last
-		auto skyboxShader = pImpl->material->getShader();
+		auto&& skyboxShader = pImpl->material->getShader();
 		glDepthFunc(GL_LEQUAL);  // change depth function so depth test passes when values are equal to depth buffer's content
 		skyboxShader.use();
 		skyboxShader.setInt("skybox", 0);
