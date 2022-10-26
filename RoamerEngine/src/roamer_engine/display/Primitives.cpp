@@ -50,7 +50,7 @@ namespace qy::cg {
 				float phi = pi * i / numDiv;
 				float theta = pi * 2 * j / numDiv;
 				float yPos = cos(phi);
-				float xPos = sin(phi) * cos(theta);
+				float xPos = - sin(phi) * cos(theta);
 				float zPos = sin(phi) * sin(theta);
 				vertices[i * (numDiv + 1) + j] = {xPos, yPos, zPos};
 				normals[i * (numDiv + 1) + j] = {xPos, yPos, zPos};
