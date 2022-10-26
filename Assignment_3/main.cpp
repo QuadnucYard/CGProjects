@@ -99,13 +99,13 @@ public:
 
 		auto obj = Primitives::createCube();
 		obj->transform()->scale({ 0.2f, 0.05f, 0.3f });
-		obj->getComponent<MeshFilter>()->mesh()->setColors({ 8,color1 });
+		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color1);
 		carObj->transform()->addChild(obj->transform());
 
 		obj = Primitives::createCube();
 		obj->transform()->scale({ 0.2f, 0.05f, 0.2f });
 		obj->transform()->position({ 0.0f, 0.1f, 0.0f });
-		obj->getComponent<MeshFilter>()->mesh()->setColors({ 8,color2 });
+		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color2);
 		carObj->transform()->addChild(obj->transform());
 
 		for (int i = -1; i <= 1; i+=2) {
@@ -123,12 +123,12 @@ public:
 		obj = Primitives::createSphere();
 		obj->transform()->scale({ 0.02, 0.02, 0.02 });
 		obj->transform()->position({ 0.1, 0.0, 0.3 });
-		obj->getComponent<MeshFilter>()->mesh()->setColors({ 51 * 51, color5 });
+		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color5);
 		carObj->transform()->addChild({ obj->transform() });
 		obj = Primitives::createSphere();
 		obj->transform()->scale({ 0.02, 0.02, 0.02 });
 		obj->transform()->position({ -0.1, 0.0, 0.3 });
-		obj->getComponent<MeshFilter>()->mesh()->setColors({ 51 * 51, color5 });
+		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color5);
 		carObj->transform()->addChild({ obj->transform() });
 	}
 
@@ -142,7 +142,7 @@ public:
 		pos = carSpeed * dt * carFront + pos;
 		carObj->transform()->position(pos);
 
-		for (auto obj : wheelObj) {
+		for (auto&& obj : wheelObj) {
 			auto rot = obj->transform()->rotation();
 			float beta = carSpeed / (rWheel * carScale);
 			rot = glm::qua(glm::vec3({ beta * dt, 0.0 , 0.0 }))*rot;
@@ -185,8 +185,8 @@ protected:
 		//cam->setBackgroundColor({ 0.4f, 0.3f, 0.1f, 1.0f });
 		cam->obj()->transform()->position({ 0, 0, 2 });
 		cam->addComponent(SkyBox::loadFromFile(
-			"assets/skybox/left.jpg",
 			"assets/skybox/right.jpg",
+			"assets/skybox/left.jpg",
 			"assets/skybox/top.jpg",
 			"assets/skybox/bottom.jpg",
 			"assets/skybox/front.jpg",
@@ -217,7 +217,7 @@ protected:
 
 	void update() override {
 		using namespace qy::cg;
-		for (auto c : myCars) {
+		for (auto&& c : myCars) {
 			c->runAround();
 		}
 		auto rot = glm::qua(glm::vec3({ 0.0, Time::time() , 0.0 }));
