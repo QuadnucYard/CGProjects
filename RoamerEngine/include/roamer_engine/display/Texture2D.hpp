@@ -8,8 +8,11 @@ namespace qy::cg {
 		DECL_OBJECT(Texture2D);
 
 		//static ptr<Texture2D> createExternalTexture();
+		static ptr<Texture2D> whiteTexture();
 
 	private:
+		static ptr<Texture2D> createOnePixelTexture(const color_t& color);
+
 		DECL_PIMPL;
 	};
 

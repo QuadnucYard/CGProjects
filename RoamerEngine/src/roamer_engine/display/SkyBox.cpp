@@ -1,5 +1,6 @@
 #include "roamer_engine/display/SkyBox.hpp"
 #include "roamer_engine/display/Materials.hpp"
+#include "roamer_engine/display/Shader.hpp"
 #include <SOIL2/SOIL2.h>
 #include <array>
 
