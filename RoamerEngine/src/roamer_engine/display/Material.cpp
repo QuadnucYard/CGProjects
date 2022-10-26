@@ -68,6 +68,14 @@ namespace qy::cg {
 
 	void Material::setTexture(const std::string& name, const ptr<Texture>& value) { pImpl->textureProps.insert_or_assign(name, value); }
 
+	color_t Material::getColor() const { return getColor("_Color"); }
+
+	void Material::setColor(const color_t& value) { setColor("_Color", value); }
+
+	const ptr<Texture>& Material::getMainTexture() { return getTexture("_MainTex"); }
+
+	void Material::setMainTexture(const ptr<Texture>& value) { setTexture("_MainTex", value); }
+
 	void Material::__applyProperties() const {
 		pImpl->applyProperties();
 	}

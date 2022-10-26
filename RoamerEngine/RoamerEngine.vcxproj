@@ -25,11 +25,11 @@
     <None Include="shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\roamer_engine\display\Texture2D.cpp" />
     <ClCompile Include="src\roamer_engine\display\Camera.cpp" />
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp" />
     <ClCompile Include="src\roamer_engine\display\Material.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Materials.cpp" />
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp" />
     <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Primitives.cpp" />
@@ -37,6 +37,7 @@
     <ClCompile Include="src\roamer_engine\display\Shader.cpp" />
     <ClCompile Include="src\roamer_engine\display\SkyBox.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Texture2D.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>

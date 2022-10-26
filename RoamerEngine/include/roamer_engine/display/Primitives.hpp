@@ -10,7 +10,6 @@ namespace qy::cg {
 	public:
 		static object_ptr createCube();
 		static object_ptr createSphere();
-
 	};
 
 }

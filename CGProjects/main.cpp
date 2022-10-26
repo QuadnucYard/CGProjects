@@ -43,10 +43,12 @@ protected:
 		obj->transform()->position({0.1f, 0.3f, -0.2f});
 		//obj->transform()->scale({0.3f, 0.1f, 0.4f});
 		obj->transform()->rotation(glm::vec3(0.7f, -0.3f, 0.1f));
-		auto&& mat = obj->getComponent<MeshRenderer>()->getMaterial();
-		//mat->setColor("_Color", Color::rgba(222, 143, 228, 127));
+		auto&& mat = instantiate<Material>();
+		mat->setShader(Shader::fromSourceFile("assets/shaders/ball.vert", "assets/shaders/ball.frag"));
+		mat->setColor(Color::rgba(222, 143, 228, 127));
 		auto tex = Texture::loadFromFile("assets/earth.jpg");
-		mat->setTexture("_MainTex", tex);
+		mat->setMainTexture(tex);
+		obj->getComponent<MeshRenderer>()->setMaterial(mat);
 		scene->root()->addChild(obj->transform());
 	}
 
@@ -64,6 +66,13 @@ protected:
 		if (Input::getKey(KeyCode::LEFT_SHIFT)) camPos -= camUp * cameraSpeed;
 		cam->transform()->position(camPos);
 		cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 80.0f));
+	
+		for (auto&& child : scene->root()) {
+			auto&& mr = child->getComponent<MeshRenderer>();
+			if (mr) {
+				mr->getMaterial()->setFloat("_Time", Time::time());
+			}	
+		}
 	}
 
 	void display() override {
