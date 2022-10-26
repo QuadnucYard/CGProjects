@@ -47,10 +47,10 @@ namespace qy::cg {
 		const float pi = std::numbers::pi_v<float>;
 		for (size_t i = 0; i <= numDiv; i++) {
 			for (size_t j = 0; j <= numDiv; j++) {
-				float phi = pi - pi * i / numDiv;
+				float phi = pi * i / numDiv;
 				float theta = pi * 2 * j / numDiv;
 				float yPos = cos(phi);
-				float xPos = -sin(phi) * cos(theta);
+				float xPos = - sin(phi) * cos(theta);
 				float zPos = sin(phi) * sin(theta);
 				vertices[i * (numDiv + 1) + j] = {xPos, yPos, zPos};
 				normals[i * (numDiv + 1) + j] = {xPos, yPos, zPos};
@@ -66,11 +66,11 @@ namespace qy::cg {
 		for (size_t i = 0; i < numDiv; i++) {
 			for (size_t j = 0; j < numDiv; j++) {
 				triangles[(i * numDiv + j) * 6 + 0] = i * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 1] = i * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 2] = (i + 1) * (numDiv + 1) + j;
+				triangles[(i * numDiv + j) * 6 + 1] = (i + 1) * (numDiv + 1) + j;
+				triangles[(i * numDiv + j) * 6 + 2] = i * (numDiv + 1) + j + 1;
 				triangles[(i * numDiv + j) * 6 + 3] = i * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 4] = (i + 1) * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 5] = (i + 1) * (numDiv + 1) + j;
+				triangles[(i * numDiv + j) * 6 + 4] = (i + 1) * (numDiv + 1) + j;
+				triangles[(i * numDiv + j) * 6 + 5] = (i + 1) * (numDiv + 1) + j + 1;
 			}
 		}
 
