@@ -82,6 +82,12 @@
     <ClCompile Include="src\roamer_engine\display\SkyBox.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Texture2D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Materials.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">

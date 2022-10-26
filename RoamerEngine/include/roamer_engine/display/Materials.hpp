@@ -1,6 +1,5 @@
 #pragma once
 #include "Material.hpp"
-#include "Shaders.hpp"
 
 namespace qy::cg {
 
@@ -11,11 +10,6 @@ namespace qy::cg {
 		inline static ptr<Material> geom_unlit;
 		inline static ptr<Material> skybox;
 
-		static void __init__() {
-			geom_unlit = instantiate<Material>();
-			geom_unlit->setShader(Shaders::geom_unlit);
-			skybox = instantiate<Material>();
-			skybox->setShader(Shaders::skybox);
-		}
+		static void __init__();
 	};
 }

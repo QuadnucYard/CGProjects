@@ -28,6 +28,11 @@ namespace qy::cg {
 		const ptr<Texture>& getTexture(const std::string& name);
 		void setTexture(const std::string& name, const ptr<Texture>& value);
 
+		color_t getColor() const;
+		void setColor(const color_t& value);
+		const ptr<Texture>& getMainTexture();
+		void setMainTexture(const ptr<Texture>& value);
+
 		void __applyProperties() const;
 
 	private:
