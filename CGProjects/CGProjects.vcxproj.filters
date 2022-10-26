@@ -19,4 +19,8 @@
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="assets\shaders\ball.vert" />
+    <None Include="assets\shaders\ball.frag" />
+  </ItemGroup>
 </Project>
