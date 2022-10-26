@@ -62,8 +62,6 @@ namespace qy::cg {
 	void Texture::setWrapModeV(TextureWrapMode value) { pImpl->rebind()->setWrapModeV(value); }
 
 	ptr<Texture> qy::cg::Texture::loadFromFile(const fs::path& path) {
-		// TODO: Í¼Æ¬ÊÇµ¹ÖÃµÄ
-		
 		auto tex = instantiate<Texture>();
 
 		int width, height, nrChannels;
