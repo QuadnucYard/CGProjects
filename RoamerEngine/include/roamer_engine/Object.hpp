@@ -6,8 +6,13 @@
 #include <numeric>
 #include <ranges>
 #include <type_traits>
+#include <vector>
+#include <filesystem>
 
 namespace qy::cg {
+
+	namespace fs = std::filesystem;
+
 	class Object {
 	public:
 		Object() = default;
@@ -19,6 +24,11 @@ namespace qy::cg {
 
 	template <class T>
 	using impl_ptr = std::unique_ptr<T>;
+
+	template <class T>
+	using ptr_vector = std::vector<ptr<T>>;
+
+	using color_t = glm::vec4;
 
 	template <class T, class U>
 	inline constexpr bool isinstance(const ptr<U>& x) {
@@ -34,6 +44,11 @@ namespace qy::cg {
 	template <class T>
 	inline auto instantiate() {
 		return std::make_shared<T>();
+	}
+
+	template <class T>
+	inline auto enum_cast(T value) {
+		return static_cast<std::underlying_type_t<T>>(value);
 	}
 
 #define DECL_OBJECT(class_) \

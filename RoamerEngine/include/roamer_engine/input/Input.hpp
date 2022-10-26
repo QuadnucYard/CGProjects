@@ -17,11 +17,11 @@ namespace qy::cg {
 		}
 
 		static bool getKeyDown(KeyCode key) {
-			return glfwGetKey(__window, static_cast<int>(key)) == GLFW_PRESS;
+			return __keyStateNow[static_cast<int>(key)] == GLFW_PRESS;
 		}
 
 		static bool getKeyUp(KeyCode key) {
-			return glfwGetKey(__window, static_cast<int>(key)) == GLFW_RELEASE;
+			return __keyStateNow[static_cast<int>(key)] == GLFW_RELEASE;
 		}
 
 		static bool getKey(KeyCode key) {
@@ -62,6 +62,7 @@ namespace qy::cg {
 		static void __update__() {
 			__scroll = {};
 			__keyDown = false;
+			std::ranges::fill(__keyStateNow, -1);
 		}
 
 		static void __cbKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -73,6 +74,7 @@ namespace qy::cg {
 			}
 			if (key >= 0 && key <= GLFW_KEY_LAST) {
 				__keyState[key] = action;
+				__keyStateNow[key] = action;
 			}
 		}
 		static void __cbCursorPos(GLFWwindow* window, double xpos, double ypos) {
@@ -91,6 +93,7 @@ namespace qy::cg {
 		inline static bool __keyDown;
 		inline static int __keyCount;
 		inline static std::array<bool, GLFW_KEY_LAST + 1> __keyState;
+		inline static std::array<short, GLFW_KEY_LAST + 1> __keyStateNow;
 		inline static std::array<bool, GLFW_MOUSE_BUTTON_LAST + 1> __mouseButtonState;
 
 		friend class Application;

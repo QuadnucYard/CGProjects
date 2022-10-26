@@ -39,6 +39,8 @@
     <None Include="shaders\geom-unlit.vert">
       <Filter>资源文件\shaders</Filter>
     </None>
+    <None Include="shaders\skybox.vert" />
+    <None Include="shaders\skybox.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -56,9 +58,6 @@
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
-    <ClCompile Include="src\roamer_engine\display\LineRenderer.cpp">
-      <Filter>src\roamer_engine\display</Filter>
-    </ClCompile>
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp">
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
@@ -67,6 +66,21 @@
     </ClCompile>
     <ClCompile Include="src\roamer_engine\display\Camera.cpp">
       <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Material.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Shader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Texture.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="include\roamer_engine\display\Texture2D.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\SkyBox.cpp">
+      <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -97,9 +111,6 @@
     <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\LineRenderer.hpp">
-      <Filter>include\roamer_engine\display</Filter>
-    </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Mesh.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
@@ -110,9 +121,6 @@
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Scene.hpp">
-      <Filter>include\roamer_engine\display</Filter>
-    </ClInclude>
-    <ClInclude Include="include\roamer_engine\display\ShaderProgram.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Shaders.hpp">
@@ -143,6 +151,24 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\Materials.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Shader.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Texture2D.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Sprite.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\SpriteRenderer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Texture.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\SkyBox.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

@@ -9,10 +9,13 @@ namespace qy::cg {
 	public:
 		
 		inline static ptr<Material> geom_unlit;
+		inline static ptr<Material> skybox;
 
 		static void __init__() {
 			geom_unlit = instantiate<Material>();
 			geom_unlit->setShader(Shaders::geom_unlit);
+			skybox = instantiate<Material>();
+			skybox->setShader(Shaders::skybox);
 		}
 	};
 }
