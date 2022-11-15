@@ -36,7 +36,7 @@ std::shared_ptr<Material> getMatByColor(color_t color, float shininess = 51.2f) 
 	mat->setColor("light.specular", { 1.0, 1.0, 1.0, 1.0 });
 	mat->getShader().setVec3("light.position", { 1.0, 0.0, 0.0 });
 
-	mat->setColor("globalAmbient", { 0.7, 0.7, 0.7, 1.0 });
+	mat->setColor("globalAmbient", { 0.7, 0.1, 0.7, 1.0 });
 
 	return mat;
 }
@@ -46,6 +46,8 @@ private:
 	std::shared_ptr<DisplayObject> wallObj;
 public:
 	Wall() {
+		static int instance_cnt = 0;
+
 		wallObj = DisplayObject::create();
 		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
 		auto mesh = wallObj->addComponent<MeshFilter>()->mesh();
@@ -84,9 +86,11 @@ public:
 			{0,0},{0,1},{1,1},{1,0}
 			});
 
-		auto&& mat = wallObj->getComponent<MeshRenderer>()->getMaterial();
-		auto tex = Texture::loadFromFile("assets/wall.jpg");
-		mat->setTexture("_MainTex", tex);
+		if (instance_cnt++ == 0) {
+			auto&& mat = wallObj->getComponent<MeshRenderer>()->getSharedMaterial();
+			auto tex = Texture::loadFromFile("assets/wall.jpg");
+			mat->setMainTexture(tex);
+		}
 	}
 	std::shared_ptr<DisplayObject> getObj() { return wallObj; }
 	void scale(const glm::vec3& value) {
