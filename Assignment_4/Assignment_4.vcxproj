@@ -132,10 +132,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Maze.cpp" />
+    <ClCompile Include="MoveControl.cpp" />
+    <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="light.frag" />
     <None Include="light.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Maze.hpp" />
+    <ClInclude Include="MoveControl.hpp" />
+    <ClInclude Include="Wall.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

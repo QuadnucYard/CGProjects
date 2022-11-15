@@ -1,5 +1,4 @@
 #pragma once
-#include "../Application.hpp"
 #include "KeyCode.hpp"
 #include <array>
 
