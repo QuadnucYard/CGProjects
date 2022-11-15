@@ -174,8 +174,7 @@ private:
 	int width, height;
 public:
 	Maze(int width, int height) :maze( width + 2, std::vector<int>(height + 2, 1)), width(width), height(height) {
-		std::default_random_engine e;
-
+		srand((unsigned int)time(NULL));
 		// used to search for neighbor nodes
 		static const vec2 UP2{ 0, -2 };
 		static const vec2 RIGHT2{ 2, 0 };
@@ -295,6 +294,7 @@ protected:
 		glDepthFunc(GL_LEQUAL);*/
 		scene = Scene::create();
 		cam = scene->createCamera();
+		cam->setFarClipPlane(50.0);
 		//cam->setBackgroundColor({ 0.4f, 0.3f, 0.1f, 1.0f });
 		cam->obj()->transform()->position({ 0, 0, 0 });
 		cam->addComponent(SkyBox::loadFromFile(
@@ -307,27 +307,33 @@ protected:
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
 
-		int width = 21;
-		int height = 21;
+		int width = 7;
+		int height = 7;
 		Maze m(width, height);
 		auto maze = m.getMaze();
-		for (int i = 0; auto line : maze) {
-			for (int j = 0; auto item : line) {
-				if (item == -1) {
+		for (int i = 1; i <= width;i++) {
+			for (int j = 1; j <= height;j++) {
+				if ((i == 1 && j == height - 1) || (i == width - 1 && j == 1)) {
+					Wall w1, w2;
+					w1.position({ i * 2.0, 2.0, (j - height + 1) * 2.0 });
+					scene->root()->addChild(w1.getObj()->transform());
+					w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
+					scene->root()->addChild(w2.getObj()->transform());
+					continue;
+				}
+				if (maze[i][j] == -1) {
 					Wall w;
-					w.position({ (i-2) * 2.0, 0.0, (j-height) * 2.0 });
+					w.position({ i * 2.0, 0.0, (j-height + 1) * 2.0 });
 					scene->root()->addChild(w.getObj()->transform());
 				}
 				else {
 					Wall w1, w2;
-					w1.position({ (i - 2) * 2.0, 2.0, (j - height) * 2.0 });
+					w1.position({ i * 2.0, 2.0, (j - height + 1) * 2.0 });
 					scene->root()->addChild(w1.getObj()->transform());
-					w2.position({ (i - 2) * 2.0, -2.0, (j - height) * 2.0 });
+					w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
 					scene->root()->addChild(w2.getObj()->transform());
 				}
-				j++;
 			}
-			i++;
 		}
 	}
 
