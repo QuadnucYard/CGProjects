@@ -41,7 +41,7 @@ namespace qy::cg {
 	private:
 		std::shared_ptr<qy::cg::Scene> scene;
 		std::shared_ptr<qy::cg::Camera> cam;
-		ptr<DisplayObject> obj;
+		ptr<DisplayObject> obj, monkey;
 	protected:
 		void init() override {
 			using namespace qy::cg;
@@ -76,8 +76,8 @@ namespace qy::cg {
 			light->setSpecular(Color::rgba(250, 250, 236));
 			light->setIntensity(1.0f);
 			light->setRange(20);
-			light->setInnerSpotAngle(5);
-			light->setSpotAngle(5);
+			light->setInnerSpotAngle(20);
+			light->setSpotAngle(40);
 
 			int width = 11;
 			int height = 11;
@@ -100,11 +100,11 @@ namespace qy::cg {
 					}
 
 					if (i == width - 1 && j == 2) {
-						auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-						obj2->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
-						obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-						obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
-						scene->root()->addChild(obj2->transform());
+						monkey = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+						monkey->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
+						monkey->transform()->scale({0.05f, 0.05f, 0.05f});
+						monkey->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
+						scene->root()->addChild(monkey->transform());
 					}
 
 					if (maze[i][j] == -1) {
@@ -132,6 +132,7 @@ namespace qy::cg {
 			using namespace qy::cg;
 			scene->dispatch_update();
 			cam->getComponent<MoveControl>()->update();
+			//monkey->transform()->rotation(glm::rotate(monkey->transform()->rotation(), 1.0f, {0, 1, 0}));
 			if (Input::getKey(KeyCode::ESCAPE)) {
 				if (mainWindow()) glfwDestroyWindow(mainWindow());
 				glfwTerminate();
