@@ -20,7 +20,7 @@ namespace qy::cg {
 			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 			
 			auto&& light = obj->addComponent<Light>();
-			light->setType(LightType::Spot);
+			light->setType(LightType::Point);
 			light->setAmbient({ 0.0f, 0.0f, 0.0f, 1.0f });
 			light->setDiffuse({ 0.9f, 0.4f, 0.8f, 1.0f });
 			light->setSpecular({ 0.2f, 0.3f, 0.5f, 1.0f });
@@ -43,6 +43,7 @@ namespace qy::cg {
 	private:
 		std::shared_ptr<qy::cg::Scene> scene;
 		std::shared_ptr<qy::cg::Camera> cam;
+		ptr<DisplayObject> obj, monkey;
 	protected:
 		void init() override {
 			using namespace qy::cg;
@@ -101,16 +102,11 @@ namespace qy::cg {
 					}
 
 					if (i == width - 1 && j == 2) {
-						auto&& obj = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-						obj->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
-						obj->transform()->scale({0.03f, 0.03f, 0.03f});
-						auto mat = instantiate<Material>();
-						mat->setShader(Shaders::Lit);
-						auto tex = Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png");
-						mat->setMainTexture(tex);
-						obj->getComponent<MeshRenderer>()->setMaterial(mat);
-						scene->root()->addChild(obj->transform());
-
+						monkey = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+						monkey->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
+						monkey->transform()->scale({0.05f, 0.05f, 0.05f});
+						monkey->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
+						scene->root()->addChild(monkey->transform());
 					}
 
 					if (maze[i][j] == -1) {
@@ -138,6 +134,7 @@ namespace qy::cg {
 			using namespace qy::cg;
 			scene->dispatch_update();
 			cam->getComponent<MoveControl>()->update();
+			//monkey->transform()->rotation(glm::rotate(monkey->transform()->rotation(), 1.0f, {0, 1, 0}));
 			if (Input::getKey(KeyCode::ESCAPE)) {
 				if (mainWindow()) glfwDestroyWindow(mainWindow());
 				glfwTerminate();

@@ -3,7 +3,8 @@
 
 namespace qy::cg {
 	Wall::Wall() {
-		ptr<Material> wallMaterial;
+		static ptr<Material> wallMaterial;
+
 		wallObj = DisplayObject::create();
 		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
 		auto mesh = wallObj->addComponent<MeshFilter>()->mesh();
@@ -47,13 +48,12 @@ namespace qy::cg {
 			wallMaterial->setShader(Shaders::Lit);
 			auto tex = Texture::loadFromFile("assets/wall.jpg");
 			wallMaterial->setMainTexture(tex);
-			wallMaterial->setColor("material.ambient", {1.0f, 1.0f, 1.0f, 1.0f});
-			wallMaterial->setColor("material.diffuse", {1.0f, 1.0f, 1.0f, 1.0f});
-			wallMaterial->setColor("material.specular", {0.00f, 0.0f, 0.0f, 1.0f});
+			wallMaterial->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
+			wallMaterial->setColor("material.diffuse", { 1.0f, 1.0f, 1.0f, 1.0f });
+			wallMaterial->setColor("material.specular", { 0.00f, 0.0f, 0.0f, 1.0f });
 			wallMaterial->setFloat("material.shininess", 1);
 		}
 		wallObj->getComponent<MeshRenderer>()->setSharedMaterials({wallMaterial});
-
 	}
 
 	void Wall::scale(const glm::vec3& value) {
