@@ -1,4 +1,4 @@
-#include<roamer_engine.hpp>
+ï»¿#include<roamer_engine.hpp>
 #include <cmath>
 #include <numbers>
 #include <random>
@@ -17,11 +17,11 @@ namespace qy::cg {
 			obj = Primitives::createSphere();
 			obj->transform()->scale({ 0.1,0.1,0.05 });
 			obj->transform()->rotation(glm::vec3({ glm::radians(-90.0), 0.0, 0.0 }));
-			obj->addComponent<MeshRenderer>()->setMaterial(Materials::GeomUnlit);
+			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 			
 			auto&& light = obj->addComponent<Light>();
 			light->setType(LightType::Spot);
-			light->setAmbient({ 0.05f, 0.05f, 0.05f, 1.0f });
+			light->setAmbient({ 0.0f, 0.0f, 0.0f, 1.0f });
 			light->setDiffuse({ 0.9f, 0.4f, 0.8f, 1.0f });
 			light->setSpecular({ 0.2f, 0.3f, 0.5f, 1.0f });
 			light->setIntensity(1.0f);
@@ -29,8 +29,8 @@ namespace qy::cg {
 			light->setSpotAngle(15);
 
 			if (instance_cnt++ == 0) {
-				auto&& mat = obj->getComponent<MeshRenderer>()->getSharedMaterial();
-				mat->setShader(Shaders::GeomUnlit);
+				auto&& mat = obj->getComponent<MeshRenderer>()->getMaterial();
+				mat->setShader(Shaders::Unlit);
 				mat->setColor({ 0.9f, 0.4f, 0.8f, 1.0f });
 			}
 		}
@@ -66,17 +66,17 @@ namespace qy::cg {
 			cam->setClearFlags(CameraClearFlags::Skybox);
 			cam->addComponent<MoveControl>()->init({ 1.0, 0.0, 0.0 });
 
-			//ÉèÖÃ¹â±ê²»¿É¼û
+			//è®¾ç½®å…‰æ ‡ä¸å¯è§
 			glfwSetInputMode(mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 			auto&& light = cam->addComponent<Light>();
 			light->setType(LightType::Spot);
-			light->setAmbient({ 0.05f, 0.05f, 0.05f, 1.0f });
+			light->setAmbient({ 0.00f, 0.00f, 0.00f, 1.0f });
 			light->setDiffuse(Color::rgba(250, 250, 236));
 			light->setSpecular(Color::rgba(250, 250, 236));
-			light->setIntensity(0.2f);
+			light->setIntensity(0.7f);
 			light->setRange(100);
-			light->setSpotAngle(15);
+			light->setSpotAngle(2);
 
 			int width = 11;
 			int height = 11;
@@ -84,17 +84,28 @@ namespace qy::cg {
 			auto maze = m.getMaze();
 			for (int i = 1; i <= width; i++) {
 				for (int j = 1; j <= height; j++) {
-					if ((i == 1 && j == height - 1) || (i == width - 1 && j == 1)) {
+					if ((i == 1 && j == height - 1)) {
 						Wall w1, w2;
 						w1.position({ i * 2.0, 2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w1.getObj()->transform());
 						w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w2.getObj()->transform());
-						TopLight light;
-						light.getObj()->transform()->position({ i * 2.0, 1.0, (j - height + 1) * 2.0 });
-						scene->root()->addChild(light.getObj()->transform());
+						if (i % 2 == 0 && j % 4 == 0) {
+							TopLight light;
+							light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
+							scene->root()->addChild(light.getObj()->transform());
+						}
 						continue;
 					}
+
+					if (i == width - 1 && j == 2) {
+						auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+						obj2->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
+						obj2->transform()->scale({0.05f, 0.05f, 0.05f});
+						obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
+						scene->root()->addChild(obj2->transform());
+					}
+
 					if (maze[i][j] == -1) {
 						Wall w;
 						w.position({ i * 2.0, 0.0, (j - height + 1) * 2.0 });
@@ -106,9 +117,11 @@ namespace qy::cg {
 						scene->root()->addChild(w1.getObj()->transform());
 						w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w2.getObj()->transform()); 
-						TopLight light;
-						light.getObj()->transform()->position({ i * 2.0, 1.0, (j - height + 1) * 2.0 });
-						scene->root()->addChild(light.getObj()->transform());
+						if (i % 2 == 0 && j % 4 == 0) {
+							TopLight light;
+							light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
+							scene->root()->addChild(light.getObj()->transform());
+						}
 					}
 				}
 			}
