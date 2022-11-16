@@ -16,7 +16,6 @@ namespace qy::cg {
 			obj = Primitives::createSphere();
 			obj->transform()->scale({ 0.1,0.1,0.05 });
 			obj->transform()->rotation(glm::vec3({ glm::radians(-90.0), 0.0, 0.0 }));
-			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 			
 			auto color = Color::hsv2rgb(Random::range(0.0f, 1.0f), 1.0f, 0.5f, 1.0);
 			auto&& light = obj->addComponent<Light>();
