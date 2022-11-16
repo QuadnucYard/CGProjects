@@ -7,3 +7,5 @@
 #include "display/Primitives.hpp"
 #include "display/Texture2D.hpp"
 #include "display/SkyBox.hpp"
+#include "display/Light.hpp"
+#include "display/ModelLoader.hpp"

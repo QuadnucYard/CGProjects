@@ -21,6 +21,8 @@
   <ItemGroup>
     <None Include="shaders\geom-unlit.frag" />
     <None Include="shaders\geom-unlit.vert" />
+    <None Include="shaders\lit.frag" />
+    <None Include="shaders\lit.vert" />
     <None Include="shaders\skybox.frag" />
     <None Include="shaders\skybox.vert" />
   </ItemGroup>
@@ -28,10 +30,12 @@
     <ClCompile Include="src\roamer_engine\display\Camera.cpp" />
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Light.cpp" />
     <ClCompile Include="src\roamer_engine\display\Material.cpp" />
     <ClCompile Include="src\roamer_engine\display\Materials.cpp" />
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp" />
     <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp" />
+    <ClCompile Include="src\roamer_engine\display\ModelLoader.cpp" />
     <ClCompile Include="src\roamer_engine\display\Primitives.cpp" />
     <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Shader.cpp" />
@@ -39,6 +43,7 @@
     <ClCompile Include="src\roamer_engine\display\Texture.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture2D.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
+    <ClCompile Include="src\roamer_engine\rendering\RenderMaster.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine.hpp" />
@@ -48,11 +53,13 @@
     <ClInclude Include="include\roamer_engine\display\Camera.hpp" />
     <ClInclude Include="include\roamer_engine\display\Component.hpp" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp" />
+    <ClInclude Include="include\roamer_engine\display\Light.hpp" />
     <ClInclude Include="include\roamer_engine\display\Material.hpp" />
     <ClInclude Include="include\roamer_engine\display\Materials.hpp" />
     <ClInclude Include="include\roamer_engine\display\Mesh.hpp" />
     <ClInclude Include="include\roamer_engine\display\MeshFilter.hpp" />
     <ClInclude Include="include\roamer_engine\display\MeshRenderer.hpp" />
+    <ClInclude Include="include\roamer_engine\display\ModelLoader.hpp" />
     <ClInclude Include="include\roamer_engine\display\Primitives.hpp" />
     <ClInclude Include="include\roamer_engine\display\Renderer.hpp" />
     <ClInclude Include="include\roamer_engine\display\Scene.hpp" />
@@ -69,6 +76,8 @@
     <ClInclude Include="include\roamer_engine\input\KeyCode.hpp" />
     <ClInclude Include="include\roamer_engine\Object.hpp" />
     <ClInclude Include="include\roamer_engine\Random.hpp" />
+    <ClInclude Include="include\roamer_engine\rendering\Buffers.hpp" />
+    <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp" />
     <ClInclude Include="include\roamer_engine\Time.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

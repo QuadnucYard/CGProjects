@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Mesh.hpp"
+﻿#include "roamer_engine/display/Mesh.hpp"
 #include <cassert>
 
 namespace qy::cg {
@@ -212,6 +212,14 @@ namespace qy::cg {
 		pImpl->data.__indexSizes = {triangles.size()};
 		pImpl->data.__topologies = {MeshTopology::Triangles};
 		pImpl->dirty = true;
+	}
+
+	std::vector<GLuint> Mesh::getTriangles( size_t submesh) const {
+		return getIndices(submesh);
+	}
+
+	void Mesh::setTriangles(const std::vector<GLuint>& triangles, size_t submesh) {
+		setIndices(triangles, MeshTopology::Triangles, submesh);
 	}
 
 	void Mesh::uploadMeshData() {

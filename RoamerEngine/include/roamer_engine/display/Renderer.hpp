@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.hpp"
 #include "Material.hpp"
 
@@ -9,13 +9,13 @@ namespace qy::cg {
 	public:
 		DECL_OBJECT(Renderer);
 
-		ptr<Material> getMaterial() { 
+		const ptr<Material>& getMaterial() { 
 			if (m_materials.at(0) == m_sharedMaterials.at(0))
 				m_materials[0] = m_sharedMaterials[0]->clone();
 			return m_materials[0]; 
 		}
 
-		ptr_vector<Material> getMaterials() {
+		const ptr_vector<Material>& getMaterials() {
 			for (size_t i = 0; i < m_materials.size(); i++) {
 				if (m_materials[i] == m_sharedMaterials[i]) 
 					m_materials[i] = m_sharedMaterials[i]->clone();
@@ -34,15 +34,19 @@ namespace qy::cg {
 		}
 
 		void setMaterials(const ptr_vector<Material>& materials) {
-			m_materials = m_sharedMaterials = materials;
+			m_materials = materials;
 		}
 
-		ptr<Material> getSharedMaterial() { 
+		const ptr<Material>& getSharedMaterial() { 
 			return m_sharedMaterials.at(0); 
 		}
 
-		ptr_vector<Material> getSharedMaterials() { 
+		const ptr_vector<Material>& getSharedMaterials() {
 			return m_sharedMaterials; 
+		}
+
+		void setSharedMaterials(const ptr_vector<Material>& materials) {
+			m_materials = m_sharedMaterials = materials;
 		}
 	};
 }
