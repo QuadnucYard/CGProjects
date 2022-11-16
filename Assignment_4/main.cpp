@@ -27,16 +27,16 @@ std::shared_ptr<Material> getMatByColor(color_t color, float shininess = 51.2f) 
 	auto mat = instantiate<Material>();
 	mat->setShader(Shader::fromSourceFile("light.vert", "light.frag"));
 	mat->setColor("material.ambient", color);
-	mat->setColor("material.diffuse", color);
-	mat->setColor("material.specular", color);
+	//mat->setColor("material.diffuse", color);
+	//mat->setColor("material.specular", color);
 	mat->setFloat("material.shininess", shininess);
 
-	mat->setColor("light.ambient", { 0.0, 0.0, 0.0, 1.0 });
-	mat->setColor("light.diffuse", { 1.0, 1.0, 1.0, 1.0 });
-	mat->setColor("light.specular", { 1.0, 1.0, 1.0, 1.0 });
-	mat->getShader().setVec3("light.position", { 1.0, 0.0, 0.0 });
+	mat->setColor("light.ambient", {0.0, 0.0, 0.0, 1.0});
+	mat->setColor("light.diffuse", {1.0, 1.0, 1.0, 1.0});
+	mat->setColor("light.specular", {1.0, 1.0, 1.0, 1.0});
+	mat->getShader().setVec3("light.position", {1.0, 0.0, 0.0});
 
-	mat->setColor("globalAmbient", { 0.7, 0.1, 0.7, 1.0 });
+	mat->setColor("globalAmbient", {0.7, 0.1, 0.7, 1.0});
 
 	return mat;
 }
@@ -49,18 +49,18 @@ public:
 		static int instance_cnt = 0;
 
 		wallObj = DisplayObject::create();
-		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
+		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
 		auto mesh = wallObj->addComponent<MeshFilter>()->mesh();
 		static size_t vertNum = 24;
 		mesh->setVertices({
 			{-1, -1, 1}, {-1, 1, 1}, {1, 1, 1}, {1, -1, 1},
-			{1, -1, 1}, {1, 1, 1}, {1, 1, -1},{1, -1, -1},
+			{1, -1, 1}, {1, 1, 1}, {1, 1, -1}, {1, -1, -1},
 			{1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1},
-			{-1,-1,-1}, {-1, 1, -1}, {-1, 1, 1}, {-1,-1,1},
-			{-1,1,1}, {-1,1,-1}, {1, 1,-1}, {1, 1, 1},
-			{-1,-1,-1}, {-1, -1, 1}, {1,-1,1}, {1,-1,-1},
+			{-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1},
+			{-1, 1, 1}, {-1, 1, -1}, {1, 1, -1}, {1, 1, 1},
+			{-1, -1, -1}, {-1, -1, 1}, {1, -1, 1}, {1, -1, -1},
 			});
-		mesh->setColors({ vertNum, {1.0f, 1.0f, 1.0f, 1.0f} });
+		mesh->setColors({vertNum, {1.0f, 1.0f, 1.0f, 1.0f}});
 		mesh->setIndices({
 			1, 0, 3, 3, 2, 1,
 			5, 4, 7, 7, 6, 5,
@@ -71,25 +71,30 @@ public:
 			}, MeshTopology::Triangles, 0);
 		mesh->setNormals({
 			{0, 0, 1}, {0, 0, 1}, {0, 0, 1}, {0, 0, 1},
-			{1, 0, 0}, {1, 0, 0}, {1, 0, 0},{1, 0, 0},
+			{1, 0, 0}, {1, 0, 0}, {1, 0, 0}, {1, 0, 0},
 			{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
 			{-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0},
 			{0, 1, 0}, {0, 1, 0}, {0, 1, 0}, {0, 1, 0},
-			{0,-1, 0}, {0, -1, 0}, {0,-1,0}, {0,-1, 0},
+			{0, -1, 0}, {0, -1, 0}, {0, -1, 0}, {0, -1, 0},
 			});
 		mesh->setUVs({
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0}
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0}
 			});
 
 		if (instance_cnt++ == 0) {
 			auto&& mat = wallObj->getComponent<MeshRenderer>()->getSharedMaterial();
+			mat->setShader(Shaders::Lit);
 			auto tex = Texture::loadFromFile("assets/wall.jpg");
 			mat->setMainTexture(tex);
+			mat->setColor("material.ambient", {1.0f, 1.0f, 1.0f, 1.0f});
+			mat->setColor("material.diffuse", {1.0f, 1.0f, 1.0f, 1.0f});
+			mat->setColor("material.specular", {0.00f, 0.0f, 0.0f, 1.0f});
+			mat->setFloat("material.shininess", 1);
 		}
 	}
 	std::shared_ptr<DisplayObject> getObj() { return wallObj; }
@@ -99,12 +104,12 @@ public:
 		float ky = value.y;
 		float kz = value.z;
 		mesh->setUVs({
-			{0,0},{0,ky},{kx,ky},{kx,0},
-			{0,0},{0,ky},{kz,ky},{kz,0},
-			{0,0},{0,ky},{kx,ky},{kx,0},
-			{0,0},{0,ky},{kz,ky},{kz,0},
-			{0,0},{0,kz},{kx,kz},{kx,0},
-			{0,0},{0,kz},{kx,kz},{kx,0}
+			{0, 0}, {0, ky}, {kx, ky}, {kx, 0},
+			{0, 0}, {0, ky}, {kz, ky}, {kz, 0},
+			{0, 0}, {0, ky}, {kx, ky}, {kx, 0},
+			{0, 0}, {0, ky}, {kz, ky}, {kz, 0},
+			{0, 0}, {0, kz}, {kx, kz}, {kx, 0},
+			{0, 0}, {0, kz}, {kx, kz}, {kx, 0}
 			});
 		wallObj->transform()->scale(value);
 	}
@@ -119,18 +124,18 @@ private:
 	float longth, width, height, thickness;
 	std::shared_ptr<DisplayObject> tunnalObj;
 public:
-	Tunnal(float longth, float width, float height,float thickness = 0.2):
-		wUp(),wDown(),wLeft(), wRight(),longth(longth),width(width),height(height),thickness(thickness)
+	Tunnal(float longth, float width, float height, float thickness = 0.2):
+		wUp(), wDown(), wLeft(), wRight(), longth(longth), width(width), height(height), thickness(thickness)
 	{
 		tunnalObj = DisplayObject::create();
-		wUp.scale({ width/2, thickness/2, longth/2 });
-		wUp.position({ 0.0, height / 2 - thickness / 2, 0.0 });
-		wDown.scale({ width / 2, thickness / 2, longth / 2 });
-		wDown.position({ 0.0, -(height / 2 - thickness / 2), 0.0 });
-		wLeft.scale({ thickness / 2, height / 2 - thickness, longth / 2 });
-		wLeft.position({ -(width / 2 - thickness / 2), 0.0, 0.0 });
-		wRight.scale({ thickness / 2, height / 2 - thickness, longth / 2 });
-		wRight.position({ width / 2 - thickness / 2, 0.0, 0.0 });
+		wUp.scale({width / 2, thickness / 2, longth / 2});
+		wUp.position({0.0, height / 2 - thickness / 2, 0.0});
+		wDown.scale({width / 2, thickness / 2, longth / 2});
+		wDown.position({0.0, -(height / 2 - thickness / 2), 0.0});
+		wLeft.scale({thickness / 2, height / 2 - thickness, longth / 2});
+		wLeft.position({-(width / 2 - thickness / 2), 0.0, 0.0});
+		wRight.scale({thickness / 2, height / 2 - thickness, longth / 2});
+		wRight.position({width / 2 - thickness / 2, 0.0, 0.0});
 
 		tunnalObj->transform()->addChild(wUp.getObj()->transform());
 		tunnalObj->transform()->addChild(wDown.getObj()->transform());
@@ -138,7 +143,7 @@ public:
 		tunnalObj->transform()->addChild(wRight.getObj()->transform());
 	}
 	std::shared_ptr<DisplayObject> getObj() { return tunnalObj; }
-	void scale(const glm::vec3& value) {tunnalObj->transform()->scale(value);	}
+	void scale(const glm::vec3& value) { tunnalObj->transform()->scale(value); }
 	void position(const glm::vec3& value) { tunnalObj->transform()->position(value); }
 	void rotation(const glm::vec3& value) { tunnalObj->transform()->rotation(value); }
 };
@@ -152,7 +157,7 @@ private:
 	{
 		int x, y;
 		vec2() {}
-		vec2(int x, int y) : x(x), y(y) {}
+		vec2(int x, int y): x(x), y(y) {}
 		// distance^2
 		int distance2(const vec2& other) const
 		{
@@ -170,23 +175,23 @@ private:
 
 			return *this;
 		}
-		const vec2 operator+ (const vec2& other) const { return vec2{ x + other.x, y + other.y }; }
-		vec2 operator/ (int devider) const { return vec2{ x / devider, y / devider }; }
-		bool operator== (const vec2& other) const {	return (x == other.x) && (y == other.y);}
-		bool operator!= (const vec2& other) const{return !(*this == other);}
+		const vec2 operator+ (const vec2& other) const { return vec2 {x + other.x, y + other.y}; }
+		vec2 operator/ (int devider) const { return vec2 {x / devider, y / devider}; }
+		bool operator== (const vec2& other) const { return (x == other.x) && (y == other.y); }
+		bool operator!= (const vec2& other) const { return !(*this == other); }
 	};
 	int width, height;
 public:
-	Maze(int width, int height) :maze( width + 2, std::vector<int>(height + 2, 1)), width(width), height(height) {
+	Maze(int width, int height):maze(width + 2, std::vector<int>(height + 2, 1)), width(width), height(height) {
 		std::default_random_engine e;
 
 		// used to search for neighbor nodes
-		static const vec2 UP2{ 0, -2 };
-		static const vec2 RIGHT2{ 2, 0 };
-		static const vec2 DOWN2{ 0, 2 };
-		static const vec2 LEFT2{ -2, 0 };
+		static const vec2 UP2 {0, -2};
+		static const vec2 RIGHT2 {2, 0};
+		static const vec2 DOWN2 {0, 2};
+		static const vec2 LEFT2 {-2, 0};
 
-		vec2 dirs[] = { UP2, RIGHT2, DOWN2, LEFT2 };	// directions
+		vec2 dirs[] = {UP2, RIGHT2, DOWN2, LEFT2};	// directions
 
 		// add a Block/Wall on every even position
 		for (int i = 0; i < width + 2; i++)
@@ -273,18 +278,18 @@ public:
 			nrOfGraphs--;
 		}
 	}
-	bool rand_true(int nr){return ((float)rand() / RAND_MAX < (float)1 / nr);}
+	bool rand_true(int nr) { return ((float)rand() / RAND_MAX < (float)1 / nr); }
 	std::vector<std::vector<int>> getMaze() { return maze; }
 };
 
-class MyApplication : public qy::cg::Application {
+class MyApplication: public qy::cg::Application {
 private:
 	std::shared_ptr<qy::cg::Scene> scene;
 	std::shared_ptr<qy::cg::Camera> cam;
-	glm::vec3 camFront{ 0, 0, -1 };
-	glm::vec3 camUp{ 0, 1, 0 };
+	glm::vec3 camFront {0, 0, -1};
+	glm::vec3 camUp {0, 1, 0};
 
-	glm::vec3 posLast = { 0.0f, 0.0f, 0.0f };
+	glm::vec3 posLast = {0.0f, 0.0f, 0.0f};
 	bool mouseLeftPressed = false;
 	float sensitivity = 0.1f;
 	float yaw = -90.0f;
@@ -300,7 +305,8 @@ protected:
 		scene = Scene::create();
 		cam = scene->createCamera();
 		//cam->setBackgroundColor({ 0.4f, 0.3f, 0.1f, 1.0f });
-		cam->obj()->transform()->position({ 0, 0, 0 });
+		cam->setFarClipPlane(100);
+		cam->obj()->transform()->position({0, 0, 0});
 		cam->addComponent(SkyBox::loadFromFile(
 			"assets/skybox/right.jpg",
 			"assets/skybox/left.jpg",
@@ -310,23 +316,30 @@ protected:
 			"assets/skybox/back.jpg"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
+		auto&& light = cam->addComponent<Light>();
+		light->setType(LightType::Spot);
+		light->setAmbient({0.05f, 0.05f, 0.05f, 1.0f});
+		light->setDiffuse({0.9f, 0.4f, 0.8f, 1.0f});
+		light->setSpecular({0.2f, 0.3f, 0.5f, 1.0f});
+		light->setIntensity(1.0f);
+		light->setRange(100);
+		light->setSpotAngle(15);
 
 		int width = 21;
 		int height = 21;
 		Maze m(width, height);
 		auto maze = m.getMaze();
-		for (int i = 0; auto line : maze) {
-			for (int j = 0; auto item : line) {
+		for (int i = 0; auto && line : maze) {
+			for (int j = 0; auto && item : line) {
 				if (item == -1) {
 					Wall w;
-					w.position({ (i-2) * 2.0, 0.0, (j-height) * 2.0 });
+					w.position({(i - 2) * 2.0, 0.0, (j - height) * 2.0});
 					scene->root()->addChild(w.getObj()->transform());
-				}
-				else {
+				} else {
 					Wall w1, w2;
-					w1.position({ (i - 2) * 2.0, 2.0, (j - height) * 2.0 });
+					w1.position({(i - 2) * 2.0, 2.0, (j - height) * 2.0});
 					scene->root()->addChild(w1.getObj()->transform());
-					w2.position({ (i - 2) * 2.0, -2.0, (j - height) * 2.0 });
+					w2.position({(i - 2) * 2.0, -2.0, (j - height) * 2.0});
 					scene->root()->addChild(w2.getObj()->transform());
 				}
 				j++;
@@ -337,14 +350,14 @@ protected:
 
 	void update() override {
 		using namespace qy::cg;
-		auto rot = glm::qua(glm::vec3({ 0.0, Time::time() , 0.0 }));
+		auto rot = glm::qua(glm::vec3({0.0, Time::time(), 0.0}));
 		//earth->transform()->rotation(rot);
 
 		scene->dispatch_update();
 
 		float cameraSpeed = (float)Time::deltaTime() * 5;
 		auto camPos = cam->obj()->transform()->position();
-		auto goFront = glm::vec3({ camFront.x, 0.0, camFront.z });
+		auto goFront = glm::vec3({camFront.x, 0.0, camFront.z});
 		if (Input::getKey(KeyCode::W)) camPos += cameraSpeed * goFront;
 		if (Input::getKey(KeyCode::S)) camPos -= cameraSpeed * goFront;
 		if (Input::getKey(KeyCode::A)) camPos -= glm::normalize(glm::cross(goFront, camUp)) * cameraSpeed;
@@ -380,7 +393,7 @@ protected:
 			camFront = glm::normalize(front);
 		}
 		cam->transform()->position(camPos);
-		cam->transform()->rotation(RotU2V({ 0.0, 0.0, -1.0 }, camFront));
+		cam->transform()->rotation(RotU2V({0.0, 0.0, -1.0}, camFront));
 		cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 80.0f));
 	}
 
