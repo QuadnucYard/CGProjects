@@ -4,9 +4,9 @@
 
 namespace qy::cg {
 	void Materials::__init__()  {
-		GeomUnlit = instantiate<Material>();
-		GeomUnlit->setMainTexture(Texture2D::whiteTexture());
-		GeomUnlit->setShader(Shaders::GeomUnlit);
+		Unlit = instantiate<Material>();
+		Unlit->setMainTexture(Texture2D::whiteTexture());
+		Unlit->setShader(Shaders::Unlit);
 		Skybox = instantiate<Material>();
 		Skybox->setMainTexture(Texture2D::whiteTexture());
 		Skybox->setShader(Shaders::Skybox);

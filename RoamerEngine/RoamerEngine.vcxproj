@@ -19,8 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\geom-unlit.frag" />
-    <None Include="shaders\geom-unlit.vert" />
+    <None Include="shaders\unlit.frag" />
+    <None Include="shaders\unlit.vert" />
     <None Include="shaders\lit.frag" />
     <None Include="shaders\lit.vert" />
     <None Include="shaders\skybox.frag" />
@@ -39,6 +39,7 @@
     <ClCompile Include="src\roamer_engine\display\Primitives.cpp" />
     <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Shader.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Shaders.cpp" />
     <ClCompile Include="src\roamer_engine\display\SkyBox.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture2D.cpp" />

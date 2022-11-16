@@ -7,7 +7,7 @@ namespace qy::cg {
 
 	public:
 		
-		inline static ptr<Material> GeomUnlit;
+		inline static ptr<Material> Unlit;
 		inline static ptr<Material> Skybox;
 		inline static ptr<Material> Lit;
 

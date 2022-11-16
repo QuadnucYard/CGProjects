@@ -8,11 +8,7 @@
 
 namespace qy::cg {
 
-	struct ModelLoader::Impl {
-
-	};
-
-	ptr<DisplayObject> ModelLoader::loadModel(const fs::path& path) {
+	ptr<DisplayObject> ModelLoader::loadObj(const fs::path& path) {
 		tinyobj::ObjReader reader;
 
 		if (!reader.ParseFromFile(path.string())) {
@@ -32,7 +28,7 @@ namespace qy::cg {
 
 		auto obj = DisplayObject::create();
 		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
-		auto&& mesh = obj->addComponent<MeshFilter>()->mesh();
+		auto&& mesh = obj->addComponent<MeshFilter>()->sharedMesh();
 		// 默认各属性的索引是一样的
 		mesh->setVertices({
 			reinterpret_cast<const glm::vec3*>(attrib.vertices.data()), 
