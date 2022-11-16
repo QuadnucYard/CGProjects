@@ -3,7 +3,7 @@
 
 namespace qy::cg {
 	Wall::Wall() {
-		static int instance_cnt = 0;
+		static ptr<Material> wallMaterial;
 
 		wallObj = DisplayObject::create();
 		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
@@ -43,16 +43,17 @@ namespace qy::cg {
 			{0,0},{0,1},{1,1},{1,0}
 			});
 
-		if (instance_cnt++ == 0) {
-			auto&& mat = wallObj->getComponent<MeshRenderer>()->getMaterial();
-			mat->setShader(Shaders::Lit);
+		if (!wallMaterial) {
+			wallMaterial = instantiate<Material>();
+			wallMaterial->setShader(Shaders::Lit);
 			auto tex = Texture::loadFromFile("assets/wall.jpg");
-			mat->setMainTexture(tex);
-			mat->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
-			mat->setColor("material.diffuse", { 1.0f, 1.0f, 1.0f, 1.0f });
-			mat->setColor("material.specular", { 0.00f, 0.0f, 0.0f, 1.0f });
-			mat->setFloat("material.shininess", 1);
+			wallMaterial->setMainTexture(tex);
+			wallMaterial->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
+			wallMaterial->setColor("material.diffuse", { 1.0f, 1.0f, 1.0f, 1.0f });
+			wallMaterial->setColor("material.specular", { 0.00f, 0.0f, 0.0f, 1.0f });
+			wallMaterial->setFloat("material.shininess", 1);
 		}
+		wallObj->getComponent<MeshRenderer>()->setSharedMaterials({wallMaterial});
 	}
 
 	void Wall::scale(const glm::vec3& value) {
