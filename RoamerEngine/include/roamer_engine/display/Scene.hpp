@@ -44,7 +44,12 @@ namespace qy::cg {
 				Camera::main()->render();
 		}
 
+		color_t getAmbientColor() const { return m_ambientColor; }
+		void setAmbientColor(color_t value) { m_ambientColor = value; }
+
+
 	private:
 		TransformPtr m_root;
+		color_t m_ambientColor {0.0f, 0.0f, 0.0f, 0.0f};
 	};
 }
