@@ -1,4 +1,4 @@
-ï»¿#include<roamer_engine.hpp>
+#include<roamer_engine.hpp>
 #include <cmath>
 #include <numbers>
 #include <random>
@@ -17,18 +17,22 @@ namespace qy::cg {
 			obj = Primitives::createSphere();
 			obj->transform()->scale({ 0.1,0.1,0.05 });
 			obj->transform()->rotation(glm::vec3({ glm::radians(-90.0), 0.0, 0.0 }));
+			obj->addComponent<MeshRenderer>()->setMaterial(Materials::GeomUnlit);
 			
 			auto&& light = obj->addComponent<Light>();
 			light->setType(LightType::Spot);
-			light->setAmbient({ 0.00f, 0.00f, 0.00f, 1.0f });
+			light->setAmbient({ 0.05f, 0.05f, 0.05f, 1.0f });
 			light->setDiffuse({ 0.9f, 0.4f, 0.8f, 1.0f });
 			light->setSpecular({ 0.2f, 0.3f, 0.5f, 1.0f });
-			light->setIntensity(0.3f);
+			light->setIntensity(1.0f);
 			light->setRange(100);
 			light->setSpotAngle(15);
 
-			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
-			obj->getComponent<MeshRenderer>()->getMaterial()->setColor({0.6f, 0.25f, 0.5f, 1.0f});
+			if (instance_cnt++ == 0) {
+				auto&& mat = obj->getComponent<MeshRenderer>()->getSharedMaterial();
+				mat->setShader(Shaders::GeomUnlit);
+				mat->setColor({ 0.9f, 0.4f, 0.8f, 1.0f });
+			}
 		}
 		ptr<DisplayObject> getObj() { return obj; }
 	};
@@ -62,71 +66,48 @@ namespace qy::cg {
 			cam->setClearFlags(CameraClearFlags::Skybox);
 			cam->addComponent<MoveControl>()->init({ 1.0, 0.0, 0.0 });
 
-			//è®¾ç½®å…‰æ ‡ä¸å¯è§
+			//ÉèÖÃ¹â±ê²»¿É¼û
 			glfwSetInputMode(mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-			auto obj = Primitives::createSphere();
-			obj->transform()->scale({0.1, 0.1, 0.1});
-			obj->transform()->position({0.2, 0.2, -0.2});
-			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
-			auto&& mat = obj->getComponent<MeshRenderer>()->getSharedMaterial();
-			mat->setColor(Color::rgba(250, 250, 236));
-			mat->setShader(Shaders::Unlit);
-
-			auto&& light = obj->addComponent<Light>();
-			light->setType(LightType::Point);
-			light->setAmbient({ 0.00f, 0.00f, 0.00f, 1.0f });
+			auto&& light = cam->addComponent<Light>();
+			light->setType(LightType::Spot);
+			light->setAmbient({ 0.05f, 0.05f, 0.05f, 1.0f });
 			light->setDiffuse(Color::rgba(250, 250, 236));
 			light->setSpecular(Color::rgba(250, 250, 236));
-			light->setIntensity(1.0f);
+			light->setIntensity(0.2f);
 			light->setRange(100);
-			//light->setSpotAngle(5);
+			light->setSpotAngle(15);
 
-			cam->transform()->addChild(obj->transform());
-
-			int width = 7;
-			int height = 7;
+			int width = 11;
+			int height = 11;
 			Maze m(width, height);
 			auto maze = m.getMaze();
 			for (int i = 1; i <= width; i++) {
 				for (int j = 1; j <= height; j++) {
-					if ((i == 1 && j == height - 1)) {//begin
+					if ((i == 1 && j == height - 1) || (i == width - 1 && j == 1)) {
 						Wall w1, w2;
-						w1.position({i * 2.0, 2.0, (j - height + 1) * 2.0});
+						w1.position({ i * 2.0, 2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w1.getObj()->transform());
-						w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
+						w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w2.getObj()->transform());
 						TopLight light;
-						light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
+						light.getObj()->transform()->position({ i * 2.0, 1.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(light.getObj()->transform());
-						continue;
-					}
-					if (i == width - 1 && j == 2) {//destination
-						Wall w1, w2;
-						w1.position({i * 2.0, 2.0, (j - height + 1) * 2.0});
-						scene->root()->addChild(w1.getObj()->transform());
-						w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
-						scene->root()->addChild(w2.getObj()->transform());
-
-						/*auto&& obj = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-						obj->transform()->scale({0.05f, 0.05f, 0.05f});
-						obj->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
-						obj->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
-						scene->root()->addChild(obj->transform());*/
 						continue;
 					}
 					if (maze[i][j] == -1) {
 						Wall w;
-						w.position({i * 2.0, 0.0, (j - height + 1) * 2.0});
+						w.position({ i * 2.0, 0.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w.getObj()->transform());
-					} else {
+					}
+					else {
 						Wall w1, w2;
-						w1.position({i * 2.0, 2.0, (j - height + 1) * 2.0});
+						w1.position({ i * 2.0, 2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w1.getObj()->transform());
-						w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
-						scene->root()->addChild(w2.getObj()->transform());
+						w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
+						scene->root()->addChild(w2.getObj()->transform()); 
 						TopLight light;
-						light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
+						light.getObj()->transform()->position({ i * 2.0, 1.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(light.getObj()->transform());
 					}
 				}

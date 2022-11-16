@@ -102,7 +102,7 @@ namespace qy::cg {
 	{
 		const size_t numDiv = 50, vertNum = numDiv * 4 + 2;
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
+		obj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 
 		std::vector<glm::vec3> vertices(vertNum);
