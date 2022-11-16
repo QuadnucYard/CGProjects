@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include "../Object.hpp"
 
@@ -61,6 +61,10 @@ namespace qy::cg {
 		std::vector<GLuint> getTriangles() const;
 
 		void setTriangles(const std::vector<GLuint>& triangles);
+
+		std::vector<GLuint> getTriangles(size_t submesh) const;
+
+		void setTriangles(const std::vector<GLuint>& triangles, size_t submesh);
 
 		void uploadMeshData();
 

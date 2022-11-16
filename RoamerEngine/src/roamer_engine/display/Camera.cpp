@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Camera.hpp"
+﻿#include "roamer_engine/display/Camera.hpp"
 #include "roamer_engine/display/Scene.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/Shader.hpp"
@@ -13,7 +13,7 @@ namespace qy::cg {
 		float depth {0}; // Camera's depth in the camera rendering order.
 		float fieldOfView {90.0f}; // The vertical field of view of the Camera, in degrees.
 		float nearClipPlane {0.1f}; // The distance of the near clipping plane from the the Camera, in world units.
-		float farClipPlane {10.0f}; // The distance of the far clipping plane from the Camera, in world units.
+		float farClipPlane {1000.0f}; // The distance of the far clipping plane from the Camera, in world units.
 
 		bool orthographic {false}; // Is the camera orthographic (true) or perspective (false)?
 		float orthographicSize {10.0f}; // Camera's half-size when in orthographic mode.
@@ -63,7 +63,7 @@ namespace qy::cg {
 					for (auto&& r : child->getComponents<Renderer>()) {
 						renderList.emplace_back(0, i, r.get(), model2);
 					}
-					if (auto light = child->getComponent<Light>(); light) {
+					for (auto&& light : child->getComponents<Light>()) {
 						lights.push_back(light.get());
 					}
 					self(self, child, model2);

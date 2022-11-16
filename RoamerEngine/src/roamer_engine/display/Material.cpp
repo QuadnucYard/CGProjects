@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Material.hpp"
+ï»¿#include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/display/Shader.hpp"
 #include "roamer_engine/display/Texture.hpp"
 #include <unordered_map>
@@ -16,7 +16,13 @@ namespace qy::cg {
 		prop_dict<color_t> colorProps;
 		prop_dict<ptr<Texture>> textureProps;
 
-		Impl() { colorProps["_Color"] = {1.0f, 1.0f, 1.0f, 1.0f}; }
+		Impl() { 
+			colorProps["_Color"] = {1.0f, 1.0f, 1.0f, 1.0f}; 
+			colorProps["material.ambient"] = {1.0f, 1.0f, 1.0f, 1.0f};
+			colorProps["material.diffuse"] = {1.0f, 1.0f, 1.0f, 1.0f};
+			colorProps["material.specular"] = {0.0f, 0.0f, 0.0f, 0.0f};
+			floatProps["material.shininess"] = 1;
+		}
 
 		void applyProperties() const {
 			for (auto&& [k, v] : intProps) shader.setInt(k, v);
@@ -43,7 +49,7 @@ namespace qy::cg {
 	const Shader& Material::getShader() { return pImpl->shader; }
 
 	void Material::setShader(const Shader& shader) { pImpl->shader = shader; }
-	// ÏÂÃæÓ¦¸ÃÎÊshader
+	// ä¸‹é¢åº”è¯¥é—®shader
 	bool Material::hasInt(const std::string& name) const { return pImpl->intProps.contains(name); }
 
 	int Material::getInt(const std::string& name) const { return pImpl->intProps.at(name); }

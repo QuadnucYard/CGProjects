@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Primitives.hpp"
+﻿#include "roamer_engine/display/Primitives.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/Mesh.hpp"
 #include "roamer_engine/display/Materials.hpp"
@@ -8,7 +8,7 @@ namespace qy::cg {
 
 	Primitives::object_ptr Primitives::createCube() {
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
+		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 		static size_t vertNum = 24;
 		mesh->setVertices({
@@ -49,7 +49,7 @@ namespace qy::cg {
 
 	Primitives::object_ptr Primitives::createSphere() {
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
+		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 
 		const size_t numDiv = 50, vertNum = (numDiv + 1) * (numDiv + 1);
@@ -81,12 +81,12 @@ namespace qy::cg {
 		}
 		for (size_t i = 0; i < numDiv; i++) {
 			for (size_t j = 0; j < numDiv; j++) {
-				triangles[(i * numDiv + j) * 6 + 0] = i * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 1] = (i + 1) * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 2] = i * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 3] = i * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 4] = (i + 1) * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 5] = (i + 1) * (numDiv + 1) + j + 1;
+				triangles[(i * numDiv + j) * 6 + 0] = GLuint(i * (numDiv + 1) + j);
+				triangles[(i * numDiv + j) * 6 + 1] = GLuint((i + 1) * (numDiv + 1) + j);
+				triangles[(i * numDiv + j) * 6 + 2] = GLuint(i * (numDiv + 1) + j + 1);
+				triangles[(i * numDiv + j) * 6 + 3] = GLuint(i * (numDiv + 1) + j + 1);
+				triangles[(i * numDiv + j) * 6 + 4] = GLuint((i + 1) * (numDiv + 1) + j);
+				triangles[(i * numDiv + j) * 6 + 5] = GLuint((i + 1) * (numDiv + 1) + j + 1);
 			}
 		}
 

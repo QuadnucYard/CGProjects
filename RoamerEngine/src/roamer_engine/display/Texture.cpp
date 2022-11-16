@@ -1,5 +1,6 @@
-#include "roamer_engine/display/Texture.hpp"
+﻿#include "roamer_engine/display/Texture.hpp"
 #include <SOIL2/SOIL2.h>
+#include <stb_image.h>
 
 namespace qy::cg {
 
@@ -62,12 +63,20 @@ namespace qy::cg {
 	void Texture::setWrapModeV(TextureWrapMode value) { pImpl->rebind()->setWrapModeV(value); }
 
 	ptr<Texture> qy::cg::Texture::loadFromFile(const fs::path& path) {
+		stbi_set_flip_vertically_on_load(true);
+
 		auto tex = instantiate<Texture>();
 
 		int width, height, nrChannels;
 		unsigned char* data = SOIL_load_image(path.string().data(), &width, &height, &nrChannels, 0);
 		if (!data) throw std::runtime_error("Failed to load texture.");
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		if (nrChannels == 3) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		} else if (nrChannels == 4) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		} else {
+			throw std::runtime_error("Not supported image format!");
+		}
 		glGenerateMipmap(GL_TEXTURE_2D);
 		SOIL_free_image_data(data);
 
