@@ -25,8 +25,10 @@ namespace qy::cg {
 			light->setDiffuse({ 0.9f, 0.4f, 0.8f, 1.0f });
 			light->setSpecular({ 0.2f, 0.3f, 0.5f, 1.0f });
 			light->setIntensity(1.0f);
-			light->setRange(100);
-			light->setSpotAngle(15);
+			light->setRange(20);
+			light->setInnerSpotAngle(20);
+			light->setSpotAngle(40);
+
 
 			if (instance_cnt++ == 0) {
 				auto&& mat = obj->getComponent<MeshRenderer>()->getMaterial();
@@ -41,7 +43,6 @@ namespace qy::cg {
 	private:
 		std::shared_ptr<qy::cg::Scene> scene;
 		std::shared_ptr<qy::cg::Camera> cam;
-		ptr<DisplayObject> obj;
 	protected:
 		void init() override {
 			using namespace qy::cg;
@@ -71,15 +72,16 @@ namespace qy::cg {
 
 			auto&& light = cam->addComponent<Light>();
 			light->setType(LightType::Spot);
-			light->setAmbient({ 0.00f, 0.00f, 0.00f, 1.0f });
+			light->setAmbient({ 0.1f, 0.1f, 0.1f, 1.0f });
 			light->setDiffuse(Color::rgba(250, 250, 236));
 			light->setSpecular(Color::rgba(250, 250, 236));
-			light->setIntensity(0.7f);
-			light->setRange(100);
-			light->setSpotAngle(2);
+			light->setIntensity(1.0f);
+			light->setRange(20);
+			light->setInnerSpotAngle(20);
+			light->setSpotAngle(60);
 
-			int width = 11;
-			int height = 11;
+			int width = 7;
+			int height = 7;
 			Maze m(width, height);
 			auto maze = m.getMaze();
 			for (int i = 1; i <= width; i++) {
@@ -99,11 +101,16 @@ namespace qy::cg {
 					}
 
 					if (i == width - 1 && j == 2) {
-						/*auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-						obj2->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
-						obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-						obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
-						scene->root()->addChild(obj2->transform());*/
+						auto&& obj = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+						obj->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
+						obj->transform()->scale({0.03f, 0.03f, 0.03f});
+						auto mat = instantiate<Material>();
+						mat->setShader(Shaders::Lit);
+						auto tex = Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png");
+						mat->setMainTexture(tex);
+						obj->getComponent<MeshRenderer>()->setMaterial(mat);
+						scene->root()->addChild(obj->transform());
+
 					}
 
 					if (maze[i][j] == -1) {

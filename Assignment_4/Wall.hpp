@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 #include<roamer_engine/display.hpp>
 
 namespace qy::cg {
 	class Wall {
 	private:
-		std::shared_ptr<DisplayObject> wallObj;
+		ptr<DisplayObject> wallObj;
 	public:
 		Wall();
 		std::shared_ptr<DisplayObject> getObj() { return wallObj; }
