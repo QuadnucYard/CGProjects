@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Primitives.hpp"
+﻿#include "roamer_engine/display/Primitives.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/Mesh.hpp"
 #include "roamer_engine/display/Materials.hpp"
@@ -8,7 +8,7 @@ namespace qy::cg {
 
 	Primitives::object_ptr Primitives::createCube() {
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
+		obj->addComponent<MeshRenderer>()->setMaterial(Materials::GeomUnlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 		mesh->setVertices({
 			{-1, -1, 1},
@@ -33,7 +33,7 @@ namespace qy::cg {
 
 	Primitives::object_ptr Primitives::createSphere() {
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
+		obj->addComponent<MeshRenderer>()->setMaterial(Materials::GeomUnlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 
 		const size_t numDiv = 50, vertNum = (numDiv + 1) * (numDiv + 1);

@@ -1,4 +1,4 @@
-#include "roamer_engine/display/SkyBox.hpp"
+﻿#include "roamer_engine/display/SkyBox.hpp"
 #include "roamer_engine/display/Materials.hpp"
 #include "roamer_engine/display/Shader.hpp"
 #include <SOIL2/SOIL2.h>
@@ -100,7 +100,7 @@ namespace qy::cg {
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-		sb->pImpl->material = Materials::skybox;
+		sb->pImpl->material = Materials::Skybox;
 		sb->pImpl->cubemapTexture = textureID;
 
 		return sb;

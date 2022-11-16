@@ -87,6 +87,15 @@
     <ClCompile Include="src\roamer_engine\display\Materials.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Light.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\rendering\RenderMaster.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\ModelLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
@@ -183,6 +192,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\ModelLoader.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
