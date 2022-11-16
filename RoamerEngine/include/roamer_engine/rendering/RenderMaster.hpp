@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../Object.hpp"
 #include "../display/Light.hpp"
 
@@ -9,8 +9,8 @@ namespace qy::cg::rendering {
 		struct Light {
 			int type;				// 0
 			float range;			// 4
-			float spotAngle;		// 8
-			float innerSpotAngle;	// 12
+			float cutOff;			// 8
+			float outerCutOff;		// 12
 			glm::vec4 ambient;		// 16
 			glm::vec4 diffuse;		// 32
 			glm::vec4 specular;		// 48
