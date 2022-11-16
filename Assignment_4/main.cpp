@@ -7,6 +7,7 @@
 #include"MoveControl.hpp"
 
 namespace qy::cg {
+
 	class MyApplication : public qy::cg::Application {
 	private:
 		std::shared_ptr<qy::cg::Scene> scene;
@@ -70,7 +71,6 @@ namespace qy::cg {
 		void update() override {
 			using namespace qy::cg;
 			auto rot = glm::qua(glm::vec3({ 0.0, Time::time() , 0.0 }));
-			//earth->transform()->rotation(rot);
 			scene->dispatch_update();
 			cam->getComponent<MoveControl>()->update();
 			if (Input::getKey(KeyCode::ESCAPE)) {
