@@ -99,11 +99,11 @@ namespace qy::cg {
 					}
 
 					if (i == width - 1 && j == 2) {
-						auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+						/*auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
 						obj2->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
 						obj2->transform()->scale({0.05f, 0.05f, 0.05f});
 						obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
-						scene->root()->addChild(obj2->transform());
+						scene->root()->addChild(obj2->transform());*/
 					}
 
 					if (maze[i][j] == -1) {
