@@ -41,6 +41,8 @@
     </None>
     <None Include="shaders\skybox.vert" />
     <None Include="shaders\skybox.frag" />
+    <None Include="shaders\lit.frag" />
+    <None Include="shaders\lit.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -178,6 +180,15 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\SkyBox.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\Light.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\Buffers.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
