@@ -65,12 +65,12 @@ namespace qy::cg {
 		}
 		for (size_t i = 0; i < numDiv; i++) {
 			for (size_t j = 0; j < numDiv; j++) {
-				triangles[(i * numDiv + j) * 6 + 0] = i * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 1] = (i + 1) * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 2] = i * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 3] = i * (numDiv + 1) + j + 1;
-				triangles[(i * numDiv + j) * 6 + 4] = (i + 1) * (numDiv + 1) + j;
-				triangles[(i * numDiv + j) * 6 + 5] = (i + 1) * (numDiv + 1) + j + 1;
+				triangles[(i * numDiv + j) * 6 + 0] = GLuint(i * (numDiv + 1) + j);
+				triangles[(i * numDiv + j) * 6 + 1] = GLuint((i + 1) * (numDiv + 1) + j);
+				triangles[(i * numDiv + j) * 6 + 2] = GLuint(i * (numDiv + 1) + j + 1);
+				triangles[(i * numDiv + j) * 6 + 3] = GLuint(i * (numDiv + 1) + j + 1);
+				triangles[(i * numDiv + j) * 6 + 4] = GLuint((i + 1) * (numDiv + 1) + j);
+				triangles[(i * numDiv + j) * 6 + 5] = GLuint((i + 1) * (numDiv + 1) + j + 1);
 			}
 		}
 
