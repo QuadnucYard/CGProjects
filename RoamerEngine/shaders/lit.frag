@@ -11,8 +11,8 @@ out vec4 FragColor;
 struct Light {
 	int type;
 	float range;
-	float spotAngle;
-	float innerSpotAngle;
+	float cutOff;
+	float outerCutOff;
 	vec4 ambient;
 	vec4 diffuse;
 	vec4 specular;
@@ -121,8 +121,8 @@ vec3 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 	float attenuation = 1.0 / (1 + 4.6 * dist + 80.0 * dist * dist);
 	// spotlight intensity
 	float theta = dot(lightDir, normalize(-light.direction)); 
-	float epsilon = light.innerSpotAngle - light.spotAngle;
-	float intensity = clamp((theta - light.spotAngle) / epsilon, 0.0, 1.0);
+	float epsilon = light.cutOff - light.outerCutOff;
+	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 	// combine results
 	vec3 ambient = ((globalAmbient + light.ambient) * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
 	vec3 diffuse = (light.diffuse * diff * texture(_MainTex, v2f.TexCoords) * material.diffuse).rgb;
