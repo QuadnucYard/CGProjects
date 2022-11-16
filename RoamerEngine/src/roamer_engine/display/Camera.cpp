@@ -3,6 +3,8 @@
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/Shader.hpp"
 #include "roamer_engine/display/SkyBox.hpp"
+#include "roamer_engine/display/Light.hpp"
+#include "roamer_engine/rendering/RenderMaster.hpp"
 
 namespace qy::cg {
 
@@ -51,6 +53,7 @@ namespace qy::cg {
 			glm::mat4 model;
 		};
 		std::vector<RenderItem> renderList;
+		std::vector<Light*> lights;
 
 		const auto& dfs = [&](const TransformPtr& parent, const glm::mat4& model) {
 			const auto& s = [&](auto&& self, const TransformPtr& parent, const glm::mat4& model) -> void {
@@ -59,6 +62,9 @@ namespace qy::cg {
 					auto model2 = model * child->modelMatrix();
 					for (auto&& r : child->getComponents<Renderer>()) {
 						renderList.emplace_back(0, i, r.get(), model2);
+					}
+					if (auto light = child->getComponent<Light>(); light) {
+						lights.push_back(light.get());
 					}
 					self(self, child, model2);
 					i++;
@@ -91,6 +97,9 @@ namespace qy::cg {
 		} else {
 			proj = glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
 		}
+
+		// Lighting
+		rendering::RenderMaster::instance()->lighting(lights, transform()->position(), Scene::current()->getAmbientColor());
 
 		// Now only support MeshRenderer
 		for (auto&& r : renderList) {
