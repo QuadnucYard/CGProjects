@@ -1,4 +1,4 @@
-#include"Wall.hpp" 
+﻿#include"Wall.hpp" 
 #include<roamer_engine/display/Materials.hpp>
 
 namespace qy::cg {
@@ -44,8 +44,7 @@ namespace qy::cg {
 			});
 
 		if (instance_cnt++ == 0) {
-			auto&& mat = wallObj->getComponent<MeshRenderer>()->getSharedMaterial();
-			mat->setShader(Shaders::Lit);
+			auto&& mat = wallObj->getComponent<MeshRenderer>()->getMaterial();
 			auto tex = Texture::loadFromFile("assets/wall.jpg");
 			mat->setMainTexture(tex);
 			mat->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
