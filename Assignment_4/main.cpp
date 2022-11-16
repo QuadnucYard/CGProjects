@@ -20,12 +20,12 @@ namespace qy::cg {
 			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 			
 			auto&& light = obj->addComponent<Light>();
-			light->setType(LightType::Spot);
+			light->setType(LightType::Point);
 			light->setAmbient({ 0.0f, 0.0f, 0.0f, 1.0f });
 			light->setDiffuse({ 0.9f, 0.4f, 0.8f, 1.0f });
 			light->setSpecular({ 0.2f, 0.3f, 0.5f, 1.0f });
 			light->setIntensity(1.0f);
-			light->setRange(100);
+			light->setRange(10);
 			light->setSpotAngle(15);
 
 			if (instance_cnt++ == 0) {
@@ -74,9 +74,10 @@ namespace qy::cg {
 			light->setAmbient({ 0.00f, 0.00f, 0.00f, 1.0f });
 			light->setDiffuse(Color::rgba(250, 250, 236));
 			light->setSpecular(Color::rgba(250, 250, 236));
-			light->setIntensity(0.7f);
-			light->setRange(100);
-			light->setSpotAngle(2);
+			light->setIntensity(1.0f);
+			light->setRange(20);
+			light->setInnerSpotAngle(5);
+			light->setSpotAngle(5);
 
 			int width = 11;
 			int height = 11;
@@ -99,11 +100,11 @@ namespace qy::cg {
 					}
 
 					if (i == width - 1 && j == 2) {
-						/*auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+						auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
 						obj2->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
 						obj2->transform()->scale({0.05f, 0.05f, 0.05f});
 						obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
-						scene->root()->addChild(obj2->transform());*/
+						scene->root()->addChild(obj2->transform());
 					}
 
 					if (maze[i][j] == -1) {
