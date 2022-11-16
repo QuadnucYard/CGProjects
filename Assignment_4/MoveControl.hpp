@@ -26,8 +26,9 @@ namespace qy::cg {
 	public:
 		DECL_OBJECT(MoveControl)
 		void update();
-		void setFrontInit(glm::vec3 value);
-		glm::vec3 getFrontInit();
+		void init(glm::vec3 front_init);
+		glm::vec3 getFront();
+		void setFront(glm::vec3 value);
 		void setUp(glm::vec3 value);
 		glm::vec3 getUp();
 		void setSensitivity(float value);

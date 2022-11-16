@@ -11,6 +11,7 @@
 namespace qy::cg {
 	struct MoveControl::Impl {
 		glm::vec3 front_init{ 0.0, 0.0, -1.0 };
+		glm::quat rot_init{};
 		glm::vec3 front;
 		glm::vec3 up{ 0, 1, 0 };
 		glm::vec3 mousePosLast = { 0.0f, 0.0f, 0.0f };
@@ -38,14 +39,24 @@ namespace qy::cg {
 			move2keyMap.insert_or_assign(MoveDirection::TurnLeft, KeyCode::A);
 			move2keyMap.insert_or_assign(MoveDirection::TurnRight, KeyCode::D);
 		}
+		void update() {
+			front = front_init;
+			pitch = glm::degrees(asin(glm::normalize(front_init).y));
+			yaw = glm::degrees(asin(glm::normalize(front_init).z / cos(pitch)));
+		}
 	};
 
-	DEFINE_OBJECT(MoveControl);
+	DEFINE_OBJECT(MoveControl)
 
-	void MoveControl::setFrontInit(glm::vec3 value) { pImpl->front_init = value; }
-	glm::vec3 MoveControl::getFrontInit() { return pImpl->front_init; }
+	void MoveControl::init(glm::vec3 front_init) { 
+		pImpl->front_init = front_init;
+		pImpl->rot_init = transform()->rotation();
+		pImpl->update(); 
+	}
 	void  MoveControl::setUp(glm::vec3 value) { pImpl->up = value; }
 	glm::vec3  MoveControl::getUp() { return pImpl->up; }
+	glm::vec3 MoveControl::getFront() { return pImpl->front; }
+	void MoveControl::setFront(glm::vec3 value) { pImpl->front = value; }
 	void  MoveControl::setSensitivity(float value) { pImpl->sensitivity = value; }
 	float  MoveControl::getSensitivity() { return pImpl->sensitivity; }
 	void  MoveControl::setMoveType(MoveType value) { pImpl->moveType = value; }
@@ -126,7 +137,7 @@ namespace qy::cg {
 		
 		pImpl->front = glm::normalize(frontNew);
 		transform()->position(objPos);
-		transform()->rotation(RotU2V(pImpl->front_init, pImpl->front));
+		transform()->rotation(RotU2V(pImpl->front_init, pImpl->front)*pImpl->rot_init);
 		auto cam = getComponent<Camera>();
 		if (cam) {
 			cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 80.0f));

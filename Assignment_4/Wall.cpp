@@ -6,7 +6,7 @@ namespace qy::cg {
 		static int instance_cnt = 0;
 
 		wallObj = DisplayObject::create();
-		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::geom_unlit);
+		wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
 		auto mesh = wallObj->addComponent<MeshFilter>()->mesh();
 		static size_t vertNum = 24;
 		mesh->setVertices({
@@ -45,8 +45,13 @@ namespace qy::cg {
 
 		if (instance_cnt++ == 0) {
 			auto&& mat = wallObj->getComponent<MeshRenderer>()->getSharedMaterial();
+			mat->setShader(Shaders::Lit);
 			auto tex = Texture::loadFromFile("assets/wall.jpg");
 			mat->setMainTexture(tex);
+			mat->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
+			mat->setColor("material.diffuse", { 1.0f, 1.0f, 1.0f, 1.0f });
+			mat->setColor("material.specular", { 0.00f, 0.0f, 0.0f, 1.0f });
+			mat->setFloat("material.shininess", 1);
 		}
 	}
 
