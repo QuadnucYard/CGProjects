@@ -10,21 +10,16 @@ namespace qy::cg {
 		Jump,
 	};
 
-	enum class DirectController {
-		Mouse,
-		KeyBoard
-	};
-
 	enum class MoveDirection {
-		Front, Left, Right, Back, Up, Down, Jump,TurnLeft, TurnRight
+		Front, Left, Right, Back, Up, Down, Jump
 	};
-	glm::quat RotU2V(glm::vec3 start, glm::vec3 dest);
 
 	class MoveControl:public Component {
 	private:
 		DECL_PIMPL;
 	public:
 		DECL_OBJECT(MoveControl)
+		glm::quat RotU2V(glm::vec3 start, glm::vec3 dest);
 		void update();
 		void setFrontInit(glm::vec3 value);
 		glm::vec3 getFrontInit();

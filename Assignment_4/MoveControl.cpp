@@ -19,7 +19,6 @@ namespace qy::cg {
 		float yaw;
 		bool firstMouse = true;
 		MoveType moveType = MoveType::Flat;
-		DirectController directController = DirectController::Mouse;
 		float speed = 3;
 		float jumpHeight = 0.5;
 		std::map<MoveDirection, KeyCode> move2keyMap;
@@ -35,8 +34,8 @@ namespace qy::cg {
 			move2keyMap.insert_or_assign(MoveDirection::Up, KeyCode::LEFT_SHIFT);
 			move2keyMap.insert_or_assign(MoveDirection::Down, KeyCode::SPACE);
 			move2keyMap.insert_or_assign(MoveDirection::Jump, KeyCode::SPACE);
-			move2keyMap.insert_or_assign(MoveDirection::TurnLeft, KeyCode::A);
-			move2keyMap.insert_or_assign(MoveDirection::TurnRight, KeyCode::D);
+			//pitch = 0.0f;
+			//yaw = -90.0f;
 		}
 	};
 
@@ -57,7 +56,24 @@ namespace qy::cg {
 	std::map<MoveDirection, KeyCode>  MoveControl::getMove2CodeMap() { return pImpl->move2keyMap; }
 	void  MoveControl::setMove2CodeMap(std::map<MoveDirection, KeyCode> value) { pImpl->move2keyMap = value; }
 	void  MoveControl::updateKeyMap(MoveDirection md, KeyCode code) { pImpl->move2keyMap.insert_or_assign(md, code); }
-	
+
+	glm::quat MoveControl::RotU2V(glm::vec3 start, glm::vec3 dest) {
+		start = normalize(start);
+		dest = normalize(dest);
+		float cosTheta = dot(start, dest);
+		glm::vec3 rotationAxis;
+
+		rotationAxis = cross(start, dest);
+		float s = sqrt((1 + cosTheta) * 2);
+		float invs = 1 / s;
+		glm::quat res(
+			s * 0.5f,
+			rotationAxis.x * invs,
+			rotationAxis.y * invs,
+			rotationAxis.z * invs
+		);
+		return res;
+	}
 	void MoveControl::update() {
 		float moveSpeed = (float)Time::deltaTime() * pImpl->speed;
 		auto objPos = transform()->position();
@@ -93,24 +109,16 @@ namespace qy::cg {
 		default:
 			break;
 		}
-
-		float xOffset, yOffset;
-		if (pImpl->directController == DirectController::Mouse) {
-			if (pImpl->firstMouse) {
-				pImpl->mousePosLast = Input::mousePosition();
-				pImpl->firstMouse = false;
-			}
-			glm::vec3 mousePosNow = Input::mousePosition();
-			glm::vec3 posDelta = mousePosNow - pImpl->mousePosLast;
-			pImpl->mousePosLast = mousePosNow;
-			xOffset = posDelta.x * pImpl->sensitivity;
-			yOffset = -posDelta.y * pImpl->sensitivity;
+		
+		if (pImpl->firstMouse) {
+			pImpl->mousePosLast = Input::mousePosition();
+			pImpl->firstMouse = false;
 		}
-		else if (pImpl->directController == DirectController::KeyBoard) {
-			if (Input::getKey(pImpl->move2keyMap[MoveDirection::TurnRight])) xOffset = 3;
-			if (Input::getKey(pImpl->move2keyMap[MoveDirection::TurnLeft])) xOffset = -3;
-		}
-
+		glm::vec3 mousePosNow = Input::mousePosition();
+		glm::vec3 posDelta = mousePosNow - pImpl->mousePosLast;
+		pImpl->mousePosLast = mousePosNow;
+		float xOffset = posDelta.x * pImpl->sensitivity;
+		float yOffset = -posDelta.y * pImpl->sensitivity;
 		pImpl->yaw += xOffset;
 		pImpl->pitch += yOffset;
 
@@ -131,23 +139,5 @@ namespace qy::cg {
 		if (cam) {
 			cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 80.0f));
 		}
-	}
-
-	glm::quat RotU2V(glm::vec3 start, glm::vec3 dest) {
-		start = normalize(start);
-		dest = normalize(dest);
-		float cosTheta = dot(start, dest);
-		glm::vec3 rotationAxis;
-
-		rotationAxis = cross(start, dest);
-		float s = sqrt((1 + cosTheta) * 2);
-		float invs = 1 / s;
-		glm::quat res(
-			s * 0.5f,
-			rotationAxis.x * invs,
-			rotationAxis.y * invs,
-			rotationAxis.z * invs
-		);
-		return res;
 	}
 }
