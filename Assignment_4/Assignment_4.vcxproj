@@ -137,10 +137,6 @@
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="light.frag" />
-    <None Include="light.vert" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Maze.hpp" />
     <ClInclude Include="MoveControl.hpp" />
     <ClInclude Include="Wall.hpp" />

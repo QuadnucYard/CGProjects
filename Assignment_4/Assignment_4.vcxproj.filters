@@ -29,14 +29,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="light.frag">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="light.vert">
-      <Filter>资源文件</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Maze.hpp">
       <Filter>头文件</Filter>
     </ClInclude>

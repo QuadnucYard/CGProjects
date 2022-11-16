@@ -13,28 +13,23 @@ namespace qy::cg {
 		ptr<DisplayObject> obj;
 	public:
 		TopLight() {
-			static int instance_cnt = 0;
 			obj = Primitives::createSphere();
 			obj->transform()->scale({ 0.1,0.1,0.05 });
 			obj->transform()->rotation(glm::vec3({ glm::radians(-90.0), 0.0, 0.0 }));
 			obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
 			
+			auto color = Color::hsv2rgb(Random::range(0.0f, 1.0f), 1.0f, 0.5f, 1.0);
 			auto&& light = obj->addComponent<Light>();
-			light->setType(LightType::Point);
+			light->setType(LightType::Spot);
 			light->setAmbient({ 0.0f, 0.0f, 0.0f, 1.0f });
-			light->setDiffuse({ 0.9f, 0.4f, 0.8f, 1.0f });
-			light->setSpecular({ 0.2f, 0.3f, 0.5f, 1.0f });
+			light->setDiffuse(color);
+			light->setSpecular(color);
 			light->setIntensity(1.0f);
-			light->setRange(20);
+			light->setRange(30);
 			light->setInnerSpotAngle(20);
-			light->setSpotAngle(40);
+			light->setSpotAngle(60);
 
-
-			if (instance_cnt++ == 0) {
-				auto&& mat = obj->getComponent<MeshRenderer>()->getMaterial();
-				mat->setShader(Shaders::Unlit);
-				mat->setColor({ 0.9f, 0.4f, 0.8f, 1.0f });
-			}
+			obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
 		}
 		ptr<DisplayObject> getObj() { return obj; }
 	};
@@ -93,7 +88,7 @@ namespace qy::cg {
 						scene->root()->addChild(w1.getObj()->transform());
 						w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w2.getObj()->transform());
-						if (i % 2 == 0 && j % 4 == 0) {
+						if (i % 2 == 0 && j % 2 == 0) {
 							TopLight light;
 							light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
 							scene->root()->addChild(light.getObj()->transform());
@@ -104,7 +99,7 @@ namespace qy::cg {
 					if (i == width - 1 && j == 2) {
 						monkey = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
 						monkey->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
-						monkey->transform()->scale({0.05f, 0.05f, 0.05f});
+						monkey->transform()->scale({0.03f, 0.03f, 0.03f});
 						monkey->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
 						scene->root()->addChild(monkey->transform());
 					}
@@ -120,7 +115,7 @@ namespace qy::cg {
 						scene->root()->addChild(w1.getObj()->transform());
 						w2.position({ i * 2.0, -2.0, (j - height + 1) * 2.0 });
 						scene->root()->addChild(w2.getObj()->transform()); 
-						if (i % 2 == 0 && j % 4 == 0) {
+						if (i % 2 == 0 && j % 2 == 0) {
 							TopLight light;
 							light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
 							scene->root()->addChild(light.getObj()->transform());
@@ -132,9 +127,40 @@ namespace qy::cg {
 
 		void update() override {
 			using namespace qy::cg;
-			scene->dispatch_update();
 			cam->getComponent<MoveControl>()->update();
-			//monkey->transform()->rotation(glm::rotate(monkey->transform()->rotation(), 1.0f, {0, 1, 0}));
+			
+			auto range = cam->getComponent<Light>()->getRange();
+			auto innerAngle = cam->getComponent<Light>()->getInnerSpotAngle();
+			if (Input::getKey(KeyCode::EQUAL)) {
+				if (range < 100) {
+					range++;
+					cam->getComponent<Light>()->setRange(range);
+				}
+			}
+			if (Input::getKey(KeyCode::MINUS)) {
+				if (range > 1) {
+					range--;
+					cam->getComponent<Light>()->setRange(range);
+				}
+			}
+
+			auto angle = cam->getComponent<Light>()->getSpotAngle();
+			if (Input::getKey(KeyCode::RIGHT_BRACKET)) {
+				if (angle < 90) {
+					angle++;
+					cam->getComponent<Light>()->setSpotAngle(angle);
+				}
+			}
+			if (Input::getKey(KeyCode::LEFT_BRACKET)) {
+				if (angle > innerAngle) {
+					angle--;
+					cam->getComponent<Light>()->setSpotAngle(angle);
+				}
+			}
+
+			monkey->transform()->rotation(glm::vec3(0.0, glm::radians(Time::deltaTime()), 0.0));
+			
+			scene->dispatch_update();
 			if (Input::getKey(KeyCode::ESCAPE)) {
 				if (mainWindow()) glfwDestroyWindow(mainWindow());
 				glfwTerminate();
