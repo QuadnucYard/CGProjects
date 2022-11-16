@@ -1,4 +1,4 @@
-#include "roamer_engine/rendering/RenderMaster.hpp"
+ï»¿#include "roamer_engine/rendering/RenderMaster.hpp"
 #include "roamer_engine/display/Transform.hpp"
 
 namespace qy::cg::rendering {
@@ -8,7 +8,7 @@ namespace qy::cg::rendering {
 
 		glBindBuffer(GL_UNIFORM_BUFFER, uboLights);
 		glBufferData(GL_UNIFORM_BUFFER, sizeof(Lights), NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0); // ÕâÀï¿ÉÄÜÊÇ0£¿
+		glBindBuffer(GL_UNIFORM_BUFFER, 0); // è¿™é‡Œå¯èƒ½æ˜¯0ï¼Ÿ
 		glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboLights, 0, sizeof(Lights));
 	}
 
@@ -23,11 +23,10 @@ namespace qy::cg::rendering {
 			lights.lights[i].diffuse = light->getDiffuse() * light->getIntensity();
 			lights.lights[i].specular = light->getSpecular() * light->getIntensity();
 			lights.lights[i].position = light->transform()->position();
-			auto dir = light->transform()->rotation() * glm::vec3(0, 0, 1.0f);
 			lights.lights[i].direction = light->transform()->rotation() * glm::vec3(0, 0, -1.0f);
 			lights.lights[i].range = light->getRange();
-			lights.lights[i].spotAngle = glm::radians(light->getSpotAngle());
-			lights.lights[i].innerSpotAngle = glm::radians(light->getInnerSpotAngle());
+			lights.lights[i].outerCutOff = glm::cos(glm::radians(light->getSpotAngle()));
+			lights.lights[i].cutOff = glm::cos(glm::radians(light->getInnerSpotAngle()));
 		}
 		glBindBuffer(GL_UNIFORM_BUFFER, uboLights);
 		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Lights), &lights);
