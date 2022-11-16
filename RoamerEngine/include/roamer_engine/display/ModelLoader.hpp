@@ -8,9 +8,6 @@ namespace qy::cg {
 	class ModelLoader {
 
 	public:
-		static ptr<DisplayObject> loadModel(const fs::path& path);
-
-	private:
-		struct Impl;
+		static ptr<DisplayObject> loadObj(const fs::path& path);
 	};
 }

@@ -9,8 +9,8 @@ namespace qy::cg {
 	public:
 		DECL_OBJECT(Renderer);
 
-		const ptr<Material>& getMaterial() { 
-			if (m_materials.at(0) == m_sharedMaterials.at(0))
+		const ptr<Material>& getMaterial() {
+			if (!m_sharedMaterials.empty() && m_materials.at(0) == m_sharedMaterials.at(0))
 				m_materials[0] = m_sharedMaterials[0]->clone();
 			return m_materials[0]; 
 		}
@@ -29,8 +29,7 @@ namespace qy::cg {
 
 		void setMaterial(const ptr<Material>& material) {
 			if (m_materials.empty()) m_materials.resize(1);
-			if (m_sharedMaterials.empty()) m_sharedMaterials.resize(1);
-			m_materials.at(0) = m_sharedMaterials.at(0) = material; 
+			m_materials.at(0) =material; 
 		}
 
 		void setMaterials(const ptr_vector<Material>& materials) {

@@ -33,10 +33,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\geom-unlit.frag">
+    <None Include="shaders\unlit.frag">
       <Filter>资源文件\shaders</Filter>
     </None>
-    <None Include="shaders\geom-unlit.vert">
+    <None Include="shaders\unlit.vert">
       <Filter>资源文件\shaders</Filter>
     </None>
     <None Include="shaders\skybox.vert" />
@@ -94,6 +94,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\roamer_engine\display\ModelLoader.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Shaders.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>

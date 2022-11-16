@@ -63,7 +63,7 @@ namespace qy::cg {
 					for (auto&& r : child->getComponents<Renderer>()) {
 						renderList.emplace_back(0, i, r.get(), model2);
 					}
-					if (auto light = child->getComponent<Light>(); light) {
+					for (auto&& light : child->getComponents<Light>()) {
 						lights.push_back(light.get());
 					}
 					self(self, child, model2);
