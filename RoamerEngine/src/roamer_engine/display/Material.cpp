@@ -17,6 +17,7 @@ namespace qy::cg {
 		prop_dict<ptr<Texture>> textureProps;
 
 		Impl() { 
+			textureProps["_MainTex"] = nullptr;
 			colorProps["_Color"] = {1.0f, 1.0f, 1.0f, 1.0f}; 
 			colorProps["material.ambient"] = {1.0f, 1.0f, 1.0f, 1.0f};
 			colorProps["material.diffuse"] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -32,7 +33,7 @@ namespace qy::cg {
 			for (int i = 0; auto && [k, v] : textureProps) {
 				shader.setInt(k, i);
 				glActiveTexture(GL_TEXTURE0 + i);
-				glBindTexture(GL_TEXTURE_2D, v->id());
+				glBindTexture(GL_TEXTURE_2D, v ? v->id() : 0);
 				i++;
 			}
 		}
@@ -42,7 +43,7 @@ namespace qy::cg {
 
 	ptr<Material> Material::clone() const {
 		auto cloned = instantiate<Material>();
-		cloned->pImpl->shader = pImpl->shader;
+		*cloned->pImpl = *pImpl;
 		return cloned;
 	}
 

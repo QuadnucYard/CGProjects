@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "DisplayObject.hpp"
 #include "MeshRenderer.hpp"
 
@@ -10,6 +10,7 @@ namespace qy::cg {
 	public:
 		static object_ptr createCube();
 		static object_ptr createSphere();
+		static object_ptr createCylinder();
 
 	};
 
