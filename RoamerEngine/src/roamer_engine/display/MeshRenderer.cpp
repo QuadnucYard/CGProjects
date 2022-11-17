@@ -1,5 +1,4 @@
-#include "roamer_engine/display/MeshRenderer.hpp"
-#include "roamer_engine/display/MeshFilter.hpp"
+﻿#include "roamer_engine/display/MeshRenderer.hpp"
 
 namespace qy::cg {
 
@@ -7,8 +6,6 @@ namespace qy::cg {
 		
 	};
 
-	MeshRenderer::MeshRenderer() : MAKE_PIMPL(MeshRenderer) {}
-
-	MeshRenderer::~MeshRenderer() = default;
+	DEFINE_OBJECT(MeshRenderer);
 
 }

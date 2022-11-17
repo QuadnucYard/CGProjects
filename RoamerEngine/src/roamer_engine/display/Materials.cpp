@@ -1,4 +1,5 @@
 ﻿#include "roamer_engine/display/Materials.hpp"
+#include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/display/Shaders.hpp"
 #include "roamer_engine/display/Texture2D.hpp"
 

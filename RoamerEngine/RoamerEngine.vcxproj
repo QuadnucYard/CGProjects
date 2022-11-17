@@ -34,10 +34,12 @@
     <ClCompile Include="src\roamer_engine\display\Material.cpp" />
     <ClCompile Include="src\roamer_engine\display\Materials.cpp" />
     <ClCompile Include="src\roamer_engine\display\Mesh.cpp" />
+    <ClCompile Include="src\roamer_engine\display\MeshFilter.cpp" />
     <ClCompile Include="src\roamer_engine\display\MeshRenderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\ModelLoader.cpp" />
     <ClCompile Include="src\roamer_engine\display\Primitives.cpp" />
     <ClCompile Include="src\roamer_engine\display\Renderer.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Scene.cpp" />
     <ClCompile Include="src\roamer_engine\display\Shader.cpp" />
     <ClCompile Include="src\roamer_engine\display\Shaders.cpp" />
     <ClCompile Include="src\roamer_engine\display\SkyBox.cpp" />

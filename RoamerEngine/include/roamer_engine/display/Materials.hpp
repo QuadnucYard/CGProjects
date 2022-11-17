@@ -1,7 +1,9 @@
 ﻿#pragma once
-#include "Material.hpp"
+#include "../Object.hpp"
 
 namespace qy::cg {
+
+	class Material;
 
 	class Materials {
 

@@ -1,6 +1,5 @@
-#pragma once
+﻿#pragma once
 #include "Renderer.hpp"
-#include "Shaders.hpp"
 
 namespace qy::cg {
 	class MeshRenderer: public Renderer {

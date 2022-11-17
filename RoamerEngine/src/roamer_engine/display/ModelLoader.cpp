@@ -1,8 +1,10 @@
 ﻿#include "roamer_engine/display/ModelLoader.hpp"
+#include "roamer_engine/display/Mesh.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/MeshRenderer.hpp"
 #include "roamer_engine/display/DisplayObject.hpp"
 #include "roamer_engine/display/Materials.hpp"
+#include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/display/Texture.hpp"
 #include <tiny_obj_loader.h>
 #include <iostream>

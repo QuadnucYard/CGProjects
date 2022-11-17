@@ -99,6 +99,12 @@
     <ClCompile Include="src\roamer_engine\display\Shaders.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\MeshFilter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
