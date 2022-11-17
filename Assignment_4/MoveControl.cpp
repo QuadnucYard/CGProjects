@@ -46,11 +46,10 @@ struct MoveControl::Impl {
 };
 
 DEFINE_OBJECT(MoveControl)
-
-void MoveControl::init(glm::vec3 front_init) { 
-	pImpl->front_init = front_init;
+void MoveControl::start() {
+	pImpl->front_init = transform()->rotation() * glm::vec3(0.0, 0.0, -1.0);
 	pImpl->rot_init = transform()->rotation();
-	pImpl->update(); 
+	pImpl->update();
 }
 void  MoveControl::setUp(glm::vec3 value) { pImpl->up = value; }
 glm::vec3  MoveControl::getUp() { return pImpl->up; }
@@ -68,7 +67,7 @@ std::map<MoveDirection, KeyCode>  MoveControl::getMove2CodeMap() { return pImpl-
 void  MoveControl::setMove2CodeMap(std::map<MoveDirection, KeyCode> value) { pImpl->move2keyMap = value; }
 void  MoveControl::updateKeyMap(MoveDirection md, KeyCode code) { pImpl->move2keyMap.insert_or_assign(md, code); }
 	
-void MoveControl::update() {
+void MoveControl::update(){
 	float moveSpeed = (float)Time::deltaTime() * pImpl->speed;
 	auto objPos = transform()->position();
 	glm::vec3 goFront;

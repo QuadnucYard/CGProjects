@@ -81,7 +81,7 @@ protected:
 			"assets/skybox/back.jpg"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
-		cam->addComponent<MoveControl>()->init({1.0, 0.0, 0.0});
+		cam->addComponent<MoveControl>();
 
 		//设置光标不可见
 		glfwSetInputMode(mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -96,8 +96,8 @@ protected:
 		light->setInnerSpotAngle(20);
 		light->setSpotAngle(60);
 
-		int width = 21;
-		int height = 21;
+		int width = 7;
+		int height = 7;
 		Maze m(width, height);
 		auto maze = m.getMaze();
 		for (int i = 1; i <= width; i++) {
@@ -186,7 +186,6 @@ protected:
 
 	void update() override {
 		using namespace qy::cg;
-		cam->getComponent<MoveControl>()->update();
 
 		auto range = cam->getComponent<Light>()->getRange();
 		auto innerAngle = cam->getComponent<Light>()->getInnerSpotAngle();
