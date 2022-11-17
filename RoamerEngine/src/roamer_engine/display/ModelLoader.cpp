@@ -27,7 +27,7 @@ namespace qy::cg {
 		auto& materials = reader.GetMaterials();
 
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
+		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Lit);
 		auto&& mesh = obj->addComponent<MeshFilter>()->sharedMesh();
 		// 默认各属性的索引是一样的
 		mesh->setVertices({
