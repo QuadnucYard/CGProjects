@@ -98,7 +98,7 @@ namespace qy::cg {
 
 					if (i == width - 1 && j == 2) {
 						monkey = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-						monkey->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
+						monkey->transform()->position({i * 2.0, -0.6, (j - height + 1) * 2.0});
 						monkey->transform()->scale({0.03f, 0.03f, 0.03f});
 						monkey->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
 						scene->root()->addChild(monkey->transform());
@@ -158,7 +158,12 @@ namespace qy::cg {
 				}
 			}
 
-			monkey->transform()->rotation(glm::vec3(0.0, glm::radians(Time::deltaTime()), 0.0));
+			monkey->transform()->rotation(glm::vec3(0.0, Time::time(), 0.0));
+			static int init_cnt = 0;
+			static glm::vec3 pos;
+			if (init_cnt++ == 0)
+				pos = monkey->transform()->position();
+			monkey->transform()->position(glm::vec3{0.0, 0.3 * sin(Time::time()), 0.0}+pos);
 			
 			scene->dispatch_update();
 			if (Input::getKey(KeyCode::ESCAPE)) {
