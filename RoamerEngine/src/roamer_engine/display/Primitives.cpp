@@ -8,16 +8,16 @@ namespace qy::cg {
 
 	Primitives::object_ptr Primitives::createCube() {
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
+		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Unlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 		static size_t vertNum = 24;
 		mesh->setVertices({
 			{-1, -1, 1}, {-1, 1, 1}, {1, 1, 1}, {1, -1, 1},
-			{1, -1, 1}, {1, 1, 1}, {1, 1, -1},{1, -1, -1},
+			{1, -1, 1}, {1, 1, 1}, {1, 1, -1}, {1, -1, -1},
 			{1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1},
-			{-1,-1,-1}, {-1, 1, -1}, {-1, 1, 1}, {-1,-1,1},
-			{-1,1,1}, {-1,1,-1}, {1, 1,-1}, {1, 1, 1},
-			{-1,-1,-1}, {-1, -1, 1}, {1,-1,1}, {1,-1,-1},
+			{-1, -1, -1}, {-1, 1, -1}, {-1, 1, 1}, {-1, -1, 1},
+			{-1, 1, 1}, {-1, 1, -1}, {1, 1, -1}, {1, 1, 1},
+			{-1, -1, -1}, {-1, -1, 1}, {1, -1, 1}, {1, -1, -1},
 			});
 		mesh->setColors({vertNum, {1.0f, 1.0f, 1.0f, 1.0f}});
 		mesh->setIndices({
@@ -30,26 +30,26 @@ namespace qy::cg {
 			}, MeshTopology::Triangles, 0);
 		mesh->setNormals({
 			{0, 0, 1}, {0, 0, 1}, {0, 0, 1}, {0, 0, 1},
-			{1, 0, 0}, {1, 0, 0}, {1, 0, 0},{1, 0, 0},
+			{1, 0, 0}, {1, 0, 0}, {1, 0, 0}, {1, 0, 0},
 			{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
 			{-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0},
 			{0, 1, 0}, {0, 1, 0}, {0, 1, 0}, {0, 1, 0},
-			{0,-1, 0}, {0, -1, 0}, {0,-1,0}, {0,-1, 0},
+			{0, -1, 0}, {0, -1, 0}, {0, -1, 0}, {0, -1, 0},
 			});
 		mesh->setUVs({
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0},
-			{0,0},{0,1},{1,1},{1,0}
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0},
+			{0, 0}, {0, 1}, {1, 1}, {1, 0}
 			});
 		return obj;
 	}
 
 	Primitives::object_ptr Primitives::createSphere() {
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
+		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Unlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 
 		const size_t numDiv = 50, vertNum = (numDiv + 1) * (numDiv + 1);
@@ -66,7 +66,7 @@ namespace qy::cg {
 				float phi = pi * i / numDiv;
 				float theta = pi * 2 * j / numDiv;
 				float yPos = cos(phi);
-				float xPos = - sin(phi) * cos(theta);
+				float xPos = -sin(phi) * cos(theta);
 				float zPos = sin(phi) * sin(theta);
 				vertices[i * (numDiv + 1) + j] = {xPos, yPos, zPos};
 				normals[i * (numDiv + 1) + j] = {xPos, yPos, zPos};
@@ -98,23 +98,24 @@ namespace qy::cg {
 		mesh->setNormals(normals);
 		return obj;
 	}
+
 	Primitives::object_ptr Primitives::createCylinder()
 	{
 		const size_t numDiv = 50, vertNum = numDiv * 4 + 2;
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Unlit);
+		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Unlit);
 		auto mesh = obj->addComponent<MeshFilter>()->mesh();
 
 		std::vector<glm::vec3> vertices(vertNum);
 		std::vector<GLuint> triangles(numDiv * 4 * 3);
-		std::vector<glm::vec4> vcolors(vertNum, { 1.0f, 1.0f, 1.0f, 1.0f });
-		
+		std::vector<glm::vec4> vcolors(vertNum, {1.0f, 1.0f, 1.0f, 1.0f});
+
 		std::vector<glm::vec3> normals(vertNum);
 		//std::vector<glm::vec4> tangents(vertNum);
 		//std::vector<glm::vec2> uvs(vertNum);
-		
-		vertices[numDiv] = { 0, -1, 0 };
-		vertices[2 * numDiv + 1] = { 0, 1, 0 };
+
+		vertices[numDiv] = {0, -1, 0};
+		vertices[2 * numDiv + 1] = {0, 1, 0};
 
 		const float pi = std::numbers::pi_v<float>;
 		for (int i = 0; i < numDiv; i++) {
@@ -122,19 +123,19 @@ namespace qy::cg {
 			triangles[i * 12 + 0] = numDiv;
 			triangles[i * 12 + 1] = i % numDiv;
 			triangles[i * 12 + 2] = (i + 1) % numDiv;
-			normals[i] = { 0, -1, 0 };
+			normals[i] = {0, -1, 0};
 
 			vertices[numDiv + i + 1] = glm::vec3(cos(pi * 2 * i / numDiv), 1, sin(pi * 2 * i / numDiv));
 			triangles[i * 12 + 3] = numDiv * 2 + 1;
 			triangles[i * 12 + 4] = (i + 1) % numDiv + numDiv + 1;
 			triangles[i * 12 + 5] = i % numDiv + numDiv + 1;
-			normals[numDiv + i + 1] = { 0, 1, 0 };
+			normals[numDiv + i + 1] = {0, 1, 0};
 
 			vertices[2 * numDiv + 2 + i] = glm::vec3(cos(pi * 2 * i / numDiv), -1, sin(pi * 2 * i / numDiv));
 			normals[2 * numDiv + 2 + i] = glm::vec3(cos(pi * 2 * i / numDiv), 0, sin(pi * 2 * i / numDiv));
-			triangles[i * 12 + 6] = i % numDiv + 2*numDiv + 2;
-			triangles[i * 12 + 7] = i % numDiv + 3*numDiv + 2;
-			triangles[i * 12 + 8] = (i + 1) % numDiv + 3*numDiv + 2;
+			triangles[i * 12 + 6] = i % numDiv + 2 * numDiv + 2;
+			triangles[i * 12 + 7] = i % numDiv + 3 * numDiv + 2;
+			triangles[i * 12 + 8] = (i + 1) % numDiv + 3 * numDiv + 2;
 
 			vertices[3 * numDiv + 2 + i] = glm::vec3(cos(pi * 2 * i / numDiv), 1, sin(pi * 2 * i / numDiv));
 			normals[3 * numDiv + 2 + i] = glm::vec3(cos(pi * 2 * i / numDiv), 0, sin(pi * 2 * i / numDiv));
@@ -148,6 +149,6 @@ namespace qy::cg {
 		mesh->setColors(vcolors);
 		mesh->setNormals(normals);
 		return obj;
-		
+
 	}
 }
