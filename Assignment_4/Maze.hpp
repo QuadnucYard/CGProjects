@@ -1,14 +1,14 @@
-#pragma once
+Ôªø#pragma once
 #include <time.h>
 #include<vector>
 
-//∑Ω∑®¿¥◊‘https://github.com/victorlaurentiu/MazeGenerator_graphsUnioning
-namespace qy::cg {
-	class Maze
-	{
-	private:
-		std::vector<std::vector<int>> maze;
-		struct vec2
+//ÊñπÊ≥ïÊù•Ëá™https://github.com/victorlaurentiu/MazeGenerator_graphsUnioning
+
+class Maze
+{
+private:
+	std::vector<std::vector<int>> maze;
+	struct vec2
 		{
 			int x, y;
 			vec2() {}
@@ -35,10 +35,9 @@ namespace qy::cg {
 			bool operator== (const vec2& other) const { return (x == other.x) && (y == other.y); }
 			bool operator!= (const vec2& other) const { return !(*this == other); }
 		};
-		int width, height;
-	public:
-		Maze(int width, int height);
-		bool rand_true(int nr) { return ((float)rand() / RAND_MAX < (float)1 / nr); }
-		std::vector<std::vector<int>> getMaze() { return maze; }
-	};
-}
+	int width, height;
+public:
+	Maze(int width, int height);
+	bool rand_true(int nr) { return ((float)rand() / RAND_MAX < (float)1 / nr); }
+	std::vector<std::vector<int>> getMaze() { return maze; }
+};
