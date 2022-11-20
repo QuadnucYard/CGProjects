@@ -46,14 +46,14 @@ protected:
 		auto&& mat = instantiate<Material>();
 		mat->setShader(Shader::fromSourceFile("assets/shaders/ball.vert", "assets/shaders/ball.frag"));
 		//mat->setColor(Color::rgba(222, 143, 228, 127));
-		auto tex = Texture::loadFromFile("assets/earth.jpg");
+		auto tex = Assets::load<Texture2D>("assets/earth.jpg");
 		mat->setMainTexture(tex);
 		obj->getComponent<MeshRenderer>()->setMaterial(mat);
 		scene->root()->addChild(obj->transform());
 
 		auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
 		obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-		obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
+		obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
 		scene->root()->addChild(obj2->transform());
 
 		auto&& light = cam->addComponent<Light>();
@@ -64,6 +64,14 @@ protected:
 		light->setIntensity(1.0f);
 		light->setRange(100);
 		light->setSpotAngle(15);
+
+		{
+			auto obj = DisplayObject::create();
+			auto texture = Assets::load<Texture2D>("assets/earth.jpg");
+			obj->addComponent<SpriteRenderer>()->setSprite(Sprite::create(texture, {0.0f, 0.0f, (float)texture->width(), (float)texture->height()}, {0.5f, 0.5f}, 100));
+			obj->transform()->position({0, 0, -10});
+			scene->root()->addChild(obj->transform());
+		}
 	}
 
 	void update() override {
