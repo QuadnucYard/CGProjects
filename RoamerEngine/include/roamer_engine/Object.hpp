@@ -1,5 +1,5 @@
-#pragma once
-#include <GL/glew.h>
+﻿#pragma once
+#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <memory>
 #include <algorithm>
@@ -29,6 +29,7 @@ namespace qy::cg {
 	using ptr_vector = std::vector<ptr<T>>;
 
 	using color_t = glm::vec4;
+	using glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, glm::quat;
 
 	template <class T, class U>
 	inline constexpr bool isinstance(const ptr<U>& x) {
@@ -59,8 +60,8 @@ namespace qy::cg {
 	struct Impl; \
 	impl_ptr<Impl> pImpl;
 
-#define MAKE_PIMPL(class_) \
-	pImpl(std::make_unique<class_::Impl>())
+#define MAKE_PIMPL \
+	pImpl(std::make_unique<Impl>())
 
 #define DEFINE_OBJECT(class_) \
 	class_::class_() : pImpl(std::make_unique<class_::Impl>()) {} \

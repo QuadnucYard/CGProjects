@@ -113,8 +113,7 @@ namespace qy::cg {
 				shader.setMat4("proj", proj);
 				mat->__applyProperties();
 			}
-			auto mf = r.renderer->getComponent<MeshFilter>();
-			mf->mesh()->__render();
+			r.renderer->__render();
 		}
 
 		// Render SkyBox

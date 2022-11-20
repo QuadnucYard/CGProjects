@@ -7,6 +7,8 @@ namespace qy::cg {
 	public:
 		DECL_OBJECT(MeshRenderer);
 
+		void __render() override;
+
 	private:
 		DECL_PIMPL;
 	};

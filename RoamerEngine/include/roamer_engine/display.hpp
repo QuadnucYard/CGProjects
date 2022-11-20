@@ -12,5 +12,7 @@
 #include "display/Scene.hpp"
 #include "display/Shaders.hpp"
 #include "display/SkyBox.hpp"
+#include "display/Sprite.hpp"
+#include "display/SpriteRenderer.hpp"
 #include "display/Texture2D.hpp"
 #include "display/Transform.hpp"

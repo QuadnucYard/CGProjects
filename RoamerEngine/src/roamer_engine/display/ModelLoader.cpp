@@ -5,7 +5,7 @@
 #include "roamer_engine/display/DisplayObject.hpp"
 #include "roamer_engine/display/Materials.hpp"
 #include "roamer_engine/display/Material.hpp"
-#include "roamer_engine/display/Texture.hpp"
+#include "roamer_engine/display/Texture2D.hpp"
 #include <tiny_obj_loader.h>
 #include <iostream>
 
@@ -57,7 +57,7 @@ namespace qy::cg {
 	ptr<DisplayObject> ModelLoader::loadObjWithTexture(const fs::path& objPath, const fs::path& texturePath) {
 		auto obj = loadObj(objPath);
 		auto mat = obj->getComponent<MeshRenderer>()->getSharedMaterial()->clone();
-		mat->setMainTexture(Texture::loadFromFile(texturePath));
+		mat->setMainTexture(Texture2D::load(texturePath));
 		obj->getComponent<MeshRenderer>()->setSharedMaterial(mat);
 		return obj;
 	}

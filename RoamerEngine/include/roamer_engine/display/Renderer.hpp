@@ -28,6 +28,8 @@ namespace qy::cg {
 
 		void setSharedMaterials(const ptr_vector<Material>& materials);
 
+		virtual void __render() = 0;
+
 	private:
 		DECL_PIMPL;
 	};

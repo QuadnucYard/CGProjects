@@ -1,5 +1,5 @@
-#pragma once
-#include <GL/glew.h>
+ï»¿#pragma once
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 #include <string_view>
@@ -22,13 +22,13 @@ namespace qy::cg {
 
 	public:
 		Application() {
-			//glfw³õÊ¼»¯
+			//glfwåˆå§‹åŒ–
 			if (!glfwInit()) {
 				std::exit(EXIT_FAILURE);
 			}
-			//´°¿Ú°æ±¾
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR); //Ö÷°æ±¾ºÅ
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VERSION_MINOR); //´Î°æ±¾ºÅ
+			//çª—å£ç‰ˆæœ¬
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR); //ä¸»ç‰ˆæœ¬å·
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VERSION_MINOR); //æ¬¡ç‰ˆæœ¬å·
 			window = nullptr;
 			s_main = this;
 		}
@@ -42,10 +42,11 @@ namespace qy::cg {
 		Application* createWindow(int width, int height, std::string_view title) {
 			window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 			glfwMakeContextCurrent(window);
-			//ÉèÖÃ»º´æË¢ĞÂÊ±¼ä
+			//è®¾ç½®ç¼“å­˜åˆ·æ–°æ—¶é—´
 			glfwSwapInterval(1);
-			//glew³õÊ¼»¯
-			if (glewInit() != GLEW_OK) {
+			//gladåˆå§‹åŒ–
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+				throw std::runtime_error("Failed to initialize GLAD");
 				exit(EXIT_FAILURE);
 			}
 			return this;
@@ -54,14 +55,14 @@ namespace qy::cg {
 		Application* run() {
 			internalInit();
 			init();
-			//ÊÂ¼şÑ­»·£¬½ÓÊÕÊäÈëÊÂ¼ş
+			//äº‹ä»¶å¾ªç¯ï¼Œæ¥æ”¶è¾“å…¥äº‹ä»¶
 			while (!glfwWindowShouldClose(window)) {
 				internalUpdate();
 				update();
-				display(); //»æÖÆº¯Êı£¬Ö÷Ìå
-				glfwSwapBuffers(window); //½»»»ÑÕÉ«»º´æ
+				display(); //ç»˜åˆ¶å‡½æ•°ï¼Œä¸»ä½“
+				glfwSwapBuffers(window); //äº¤æ¢é¢œè‰²ç¼“å­˜
 				internalLateUpdate();
-				glfwPollEvents(); // ¼ì²éÓĞÃ»ÓĞ´¥·¢Ê²Ã´ÊÂ¼ş£¨±ÈÈç¼üÅÌÊäÈë¡¢Êó±êÒÆ¶¯µÈ£©
+				glfwPollEvents(); // æ£€æŸ¥æœ‰æ²¡æœ‰è§¦å‘ä»€ä¹ˆäº‹ä»¶ï¼ˆæ¯”å¦‚é”®ç›˜è¾“å…¥ã€é¼ æ ‡ç§»åŠ¨ç­‰ï¼‰
 				lateUpdate();
 			}
 			return this;
@@ -90,7 +91,7 @@ namespace qy::cg {
 		}
 
 		void internalLateUpdate() {
-			Input::__update__(); // Input×´Ì¬ÖØÖÃ
+			Input::__update__(); // InputçŠ¶æ€é‡ç½®
 		}
 
 	protected:

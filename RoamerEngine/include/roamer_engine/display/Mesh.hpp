@@ -73,7 +73,7 @@ namespace qy::cg {
 
 	private:
 		friend class MeshRenderer;
-		friend class Camera;
+		friend class Sprite;
 		DECL_PIMPL;
 	};
 

@@ -43,6 +43,8 @@
     <ClCompile Include="src\roamer_engine\display\Shader.cpp" />
     <ClCompile Include="src\roamer_engine\display\Shaders.cpp" />
     <ClCompile Include="src\roamer_engine\display\SkyBox.cpp" />
+    <ClCompile Include="src\roamer_engine\display\Sprite.cpp" />
+    <ClCompile Include="src\roamer_engine\display\SpriteRenderer.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture.cpp" />
     <ClCompile Include="src\roamer_engine\display\Texture2D.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
@@ -79,8 +81,10 @@
     <ClInclude Include="include\roamer_engine\input\KeyCode.hpp" />
     <ClInclude Include="include\roamer_engine\Object.hpp" />
     <ClInclude Include="include\roamer_engine\Random.hpp" />
+    <ClInclude Include="include\roamer_engine\Rect.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\Buffers.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp" />
+    <ClInclude Include="include\roamer_engine\Assets.hpp" />
     <ClInclude Include="include\roamer_engine\Time.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

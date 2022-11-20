@@ -10,8 +10,10 @@ namespace qy::cg {
 	public:
 		
 		inline static ptr<Material> Unlit;
-		inline static ptr<Material> Skybox;
 		inline static ptr<Material> Lit;
+		inline static ptr<Material> SpriteUnlit;
+		inline static ptr<Material> SpriteLit;
+		inline static ptr<Material> Skybox;
 
 		static void __init__();
 	};

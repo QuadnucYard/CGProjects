@@ -105,6 +105,12 @@
     <ClCompile Include="src\roamer_engine\display\Scene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Sprite.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\SpriteRenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
@@ -204,6 +210,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\ModelLoader.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Rect.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Assets.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>
