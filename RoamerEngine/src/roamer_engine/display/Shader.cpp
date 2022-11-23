@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Shader.hpp"
+﻿#include "roamer_engine/display/Shader.hpp"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -72,11 +72,27 @@ namespace qy::cg {
 		return fromSourceString(SubShader::readShaderFile(vertexPath), SubShader::readShaderFile(fragmentPath));
 	}
 
+	Shader Shader::fromSourceFile(const fs::path& vertPath, const fs::path& fragPath, const fs::path& geomPath) {
+		return fromSourceString(SubShader::readShaderFile(vertPath), SubShader::readShaderFile(fragPath), SubShader::readShaderFile(geomPath));
+	}
+
 	Shader Shader::fromSourceString(std::string_view vert, std::string_view frag) {
 		Shader prog;
 		prog.ID = glCreateProgram();
 		SubShader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(prog.ID);
 		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(prog.ID);
+		glLinkProgram(prog.ID);
+		prog.checkCompileErrors();
+		++refCount[prog.ID];
+		return prog;
+	}
+
+	Shader Shader::fromSourceString(std::string_view vert, std::string_view frag, std::string_view geom) {
+		Shader prog;
+		prog.ID = glCreateProgram();
+		SubShader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(prog.ID);
+		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(prog.ID);
+		SubShader(geom, GL_GEOMETRY_SHADER, "GEOMERTY").attachTo(prog.ID);
 		glLinkProgram(prog.ID);
 		prog.checkCompileErrors();
 		++refCount[prog.ID];

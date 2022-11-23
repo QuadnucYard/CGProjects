@@ -43,6 +43,9 @@
     <None Include="shaders\skybox.frag" />
     <None Include="shaders\lit.frag" />
     <None Include="shaders\lit.vert" />
+    <None Include="shaders\point-shadow-depth.vert" />
+    <None Include="shaders\point-shadow-depth.frag" />
+    <None Include="shaders\point-shadow-depth.geom" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -109,6 +112,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\roamer_engine\display\SpriteRenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\rendering\ShadowMapping.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -216,6 +222,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\Assets.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\ShadowMapping.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Screen.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

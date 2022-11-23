@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "../Object.hpp"
 #include "../display/Light.hpp"
+#include "ShadowMapping.hpp"
 
 namespace qy::cg::rendering {
 
@@ -24,6 +25,8 @@ namespace qy::cg::rendering {
 			glm::vec3 viewPos;
 			int numLights;
 			glm::vec4 globalAmbient;
+			float farPlane;
+			char __0[12];
 			Light lights[256];
 		};
 
@@ -38,11 +41,16 @@ namespace qy::cg::rendering {
 		RenderMaster();
 
 	public:
+		void prepareShadowing();
+		void shadowing(qy::cg::Light* light);
+
 		void lighting(const std::vector<qy::cg::Light*>& lightList, glm::vec3 viewPos, glm::vec4 globalAmbient);
 
 	private:
 		GLuint uboLights;
 		Lights lights;
+	public:
+		ShadowMapping shadowMap;
 	};
 
 }

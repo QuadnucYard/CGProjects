@@ -6,6 +6,7 @@
 #include "display/Shaders.hpp"
 #include "display/Materials.hpp"
 #include "Time.hpp"
+#include "Screen.hpp"
 #include "input/Input.hpp"
 
 namespace qy::cg {
@@ -42,6 +43,7 @@ namespace qy::cg {
 		Application* createWindow(int width, int height, std::string_view title) {
 			window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 			glfwMakeContextCurrent(window);
+			Screen::__update__(width, height);
 			//设置缓存刷新时间
 			glfwSwapInterval(1);
 			//glad初始化
@@ -81,6 +83,7 @@ namespace qy::cg {
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_CULL_FACE);
 			glFrontFace(GL_CCW);
+			Screen::__init__(window);
 			Input::__init__(window);
 			Shaders::__INIT__();
 			Materials::__init__();

@@ -7,6 +7,7 @@
 #include "roamer_engine/display/SkyBox.hpp"
 #include "roamer_engine/display/Light.hpp"
 #include "roamer_engine/rendering/RenderMaster.hpp"
+#include "roamer_engine/Screen.hpp"
 
 namespace qy::cg {
 
@@ -100,10 +101,31 @@ namespace qy::cg {
 			proj = glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
 		}
 
-		// Lighting
-		rendering::RenderMaster::instance()->lighting(lights, transform()->position(), Scene::current()->getAmbientColor());
+		glClear(GL_DEPTH_BUFFER_BIT);
 
-		// Now only support MeshRenderer
+		auto&& master = rendering::RenderMaster::instance();
+
+		// Shadow rendering
+		master->prepareShadowing();
+		for (auto&& light : lights) {
+			master->shadowing(light);
+			//master->shadowMap.simpleDepthShader.use();
+			for (auto&& r : renderList) {
+				master->shadowMap.simpleDepthShader.setMat4("model", r.model);
+				r.renderer->__render();
+			}
+		}
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// render scene as normal 
+
+		glViewport(0, 0, Screen::width(), Screen::height());
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		// Lighting
+		master->lighting(lights, transform()->position(), Scene::current()->getAmbientColor());
+
+		// Render
 		for (auto&& r : renderList) {
 			for (auto&& mat : r.renderer->__getMaterials()) {
 				auto&& shader = mat->getShader();
@@ -112,6 +134,7 @@ namespace qy::cg {
 				shader.setMat4("view", view);
 				shader.setMat4("proj", proj);
 				mat->__applyProperties();
+				shader.setInt("depthMap", 31);
 			}
 			r.renderer->__render();
 		}

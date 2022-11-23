@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\point-shadow-depth.frag" />
+    <None Include="shaders\point-shadow-depth.geom" />
+    <None Include="shaders\point-shadow-depth.vert" />
     <None Include="shaders\unlit.frag" />
     <None Include="shaders\unlit.vert" />
     <None Include="shaders\lit.frag" />
@@ -27,6 +30,7 @@
     <None Include="shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\roamer_engine\rendering\ShadowMapping.cpp" />
     <ClCompile Include="src\roamer_engine\display\Camera.cpp" />
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
     <ClCompile Include="src\roamer_engine\display\DisplayObject.cpp" />
@@ -84,6 +88,8 @@
     <ClInclude Include="include\roamer_engine\Rect.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\Buffers.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp" />
+    <ClInclude Include="include\roamer_engine\rendering\ShadowMapping.hpp" />
+    <ClInclude Include="include\roamer_engine\Screen.hpp" />
     <ClInclude Include="include\roamer_engine\Assets.hpp" />
     <ClInclude Include="include\roamer_engine\Time.hpp" />
   </ItemGroup>

@@ -40,13 +40,17 @@ namespace qy::cg {
 		/// @param vertexPath Path of vertex shader.
 		/// @param fragmentPath Path of fragment shader.
 		/// @return Created shader.
-		static Shader fromSourceFile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath);
+		static Shader fromSourceFile(const fs::path& vertPath, const fs::path& fragPath);
+
+		static Shader fromSourceFile(const fs::path& vertPath, const fs::path& fragPath, const fs::path& geomPath);
 
 		/// @brief Create shader from string.
 		/// @param vertexPath String of vertex shader.
 		/// @param fragmentPath String of fragment shader.
 		/// @return Created shader.
 		static Shader fromSourceString(std::string_view vert, std::string_view frag);
+
+		static Shader fromSourceString(std::string_view vert, std::string_view frag, std::string_view geom);
 
 		// activate the shader
 		inline void use() const {

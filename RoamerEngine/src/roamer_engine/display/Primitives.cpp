@@ -8,14 +8,14 @@
 
 namespace qy::cg {
 
-	Primitives::object_ptr Primitives::createUnlit(const ptr<Mesh>& mesh)	{
+	Primitives::object_ptr Primitives::createUnlit(const ptr<Mesh>& mesh) {
 		auto obj = DisplayObject::create();
 		obj->addComponent<MeshFilter>()->setSharedMesh(mesh);
 		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Unlit);
 		return obj;
 	}
 
-	Primitives::object_ptr Primitives::createLit(const ptr<Mesh>& mesh)	{
+	Primitives::object_ptr Primitives::createLit(const ptr<Mesh>& mesh) {
 		auto obj = DisplayObject::create();
 		obj->addComponent<MeshFilter>()->setSharedMesh(mesh);
 		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Lit);
@@ -27,24 +27,30 @@ namespace qy::cg {
 			auto mesh = instantiate<Mesh>();
 
 			mesh->setVertices({
-				{-1, -1, 1},
-				{-1, 1, 1},
-				{1, 1, 1},
-				{1, -1, 1},
-				{-1, -1, -1},
-				{-1, 1, -1},
-				{1, 1, -1},
-				{1, -1, -1}});
-			mesh->setColors({8, {1.0f, 1.0f, 1.0f, 1.0f}});
-			mesh->setIndices({
-				1, 0, 3, 3, 2, 1,
-				2, 3, 7, 7, 6, 2,
-				3, 0, 4, 4, 7, 3,
-				6, 5, 1, 1, 2, 6,
-				4, 5, 6, 6, 7, 4,
-				5, 4, 0, 0, 1, 5
-				}, MeshTopology::Triangles, 0);
-
+				{-1, -1, -1}, {-1, 1, -1}, {1, 1, -1}, {1, -1, -1}, //z=-1
+				{-1, -1, -1}, {1, -1, -1}, {1, -1, 1}, {-1, -1, 1}, //y=-1
+				{-1, -1, -1}, {-1, -1, 1}, {-1, 1, 1}, {-1, 1, -1}, //x=-1
+				{-1, -1, 1}, {1, -1, 1}, {1, 1, 1}, {-1, 1, 1}, //z=1
+				{-1, 1, -1}, {-1, 1, 1}, {1, 1, 1}, {1, 1, -1}, //y=1
+				{1, -1, -1}, {1, 1, -1}, {1, 1, 1}, {1, -1, 1}, //x=1
+				});
+			mesh->setColors({24, {1.0f, 1.0f, 1.0f, 1.0f}});
+			mesh->setNormals({
+				{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
+				{0, -1, 0}, {0, -1, 0}, {0, -1, 0}, {0, -1, 0},
+				{-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0},
+				{0, 0, 1}, {0, 0, 1}, {0, 0, 1}, {0, 0, 1},
+				{0, 1, 0}, {0, 1, 0}, {0, 1, 0}, {0, 1, 0},
+				{1, 0, 0}, {1, 0, 0}, {1, 0, 0}, {1, 0, 0},
+			});
+			mesh->setTriangles({
+				0, 1, 2, 0, 2, 3,
+				4, 5, 6, 4, 6, 7,
+				8, 9, 10, 8, 10, 11,
+				12, 13, 14, 12, 14, 15,
+				16, 17, 18, 16, 18, 19,
+				20, 21, 22, 20, 22, 23,
+				});
 			return mesh;
 		}();
 

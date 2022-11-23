@@ -29,20 +29,23 @@ struct Material {
 
 uniform sampler2D _MainTex;
 uniform sampler2D _SpecTex;
+uniform samplerCube depthMap;
 uniform vec4 _Color;
 uniform Material material;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
-uniform mat4 norm_matrix;
+
 
 layout(std140, binding = 0) uniform Lights {
 	vec3 viewPos;
 	int numLights;
 	vec4 globalAmbient;
+	float farPlane;
 	Light lights[256];
 };
 
+float ShadowCalculation(vec3 fragPos, vec3 lightPos);
 vec3 CalcDirLight(Light light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -50,13 +53,6 @@ vec3 CalcSpotLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir);
 void main() {
 	
 	vec3 viewDir = normalize(viewPos - v2f.FragPos);
-	
-	// == =====================================================
-	// Our lighting is set up in 3 phases: directional, point lights and an optional flashlight
-	// For each phase, a calculate function is defined that calculates the corresponding color
-	// per lamp. In the main() function we take all the calculated colors and sum them up for
-	// this fragment's final color.
-	// == =====================================================
 	vec3 result;
 	for (int i = 0; i < numLights; i++) {
 		if (lights[i].type == 0) result += CalcDirLight(lights[i], v2f.Normal, viewDir);
@@ -65,6 +61,37 @@ void main() {
 	}
 	
 	FragColor = vec4(result, 1.0f);
+}
+
+// array of offset direction for sampling
+const vec3 gridSamplingDisk[20] = vec3[]
+(
+   vec3(1, 1,  1), vec3( 1, -1,  1), vec3(-1, -1,  1), vec3(-1, 1,  1), 
+   vec3(1, 1, -1), vec3( 1, -1, -1), vec3(-1, -1, -1), vec3(-1, 1, -1),
+   vec3(1, 1,  0), vec3( 1, -1,  0), vec3(-1, -1,  0), vec3(-1, 1,  0),
+   vec3(1, 0,  1), vec3(-1,  0,  1), vec3( 1,  0, -1), vec3(-1, 0, -1),
+   vec3(0, 1,  1), vec3( 0, -1,  1), vec3( 0, -1, -1), vec3( 0, 1, -1)
+);
+
+float ShadowCalculation(vec3 fragPos, vec3 lightPos)
+{
+	// get vector between fragment position and light position
+	vec3 fragToLight = fragPos - lightPos;
+	float currentDepth = length(fragToLight);
+	float shadow = 0.0;
+	const float bias = 0.15;
+	const int samples = 20;
+	float viewDistance = length(viewPos - fragPos);
+	float diskRadius = (1.0 + (viewDistance / farPlane)) / farPlane;
+	for(int i = 0; i < samples; ++i)
+	{
+		float closestDepth = texture(depthMap, fragToLight + gridSamplingDisk[i] * diskRadius).r;
+		closestDepth *= farPlane;   // undo mapping [0;1]
+		if(currentDepth - bias > closestDepth)
+			shadow += 1.0;
+	}
+	shadow /= float(samples);
+	return shadow;
 }
 
 // calculates the color when using a directional light.
@@ -104,7 +131,8 @@ vec3 CalcPointLight(Light light, vec3 normal, vec3 fragPos, vec3 viewDir)
 	ambient *= attenuation;
 	diffuse *= attenuation;
 	specular *= attenuation;
-	return ambient + diffuse + specular;
+	float shadow = ShadowCalculation(v2f.FragPos, light.position);
+	return ambient + (1 - shadow) * (diffuse + specular);
 }
 
 // calculates the color when using a spot light.
