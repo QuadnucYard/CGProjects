@@ -13,9 +13,12 @@ out VS_OUT {
 } v2f;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
-uniform mat4 norm;
+
+layout(std140, binding = 0) uniform Camera {
+	vec3 viewPos;
+	mat4 view;
+	mat4 proj;
+};
 
 void main() {	
 	v2f.FragPos = vec3(model * vec4(aPosition, 1.0));

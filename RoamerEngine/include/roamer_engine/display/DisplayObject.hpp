@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <vector>
 #include "Renderer.hpp"
@@ -24,7 +24,7 @@ namespace qy::cg {
 			return obj;
 		}
 
-		TransformPtr transform() { return m_transform; }
+		TransformPtr transform() const { return m_transform; }
 
 		template <ComponentType T>
 		ptr<T> addComponent();

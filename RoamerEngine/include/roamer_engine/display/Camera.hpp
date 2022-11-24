@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "DisplayObject.hpp"
 
 namespace qy::cg {
@@ -44,6 +44,11 @@ namespace qy::cg {
 		void setClearFlags(CameraClearFlags value);
 		glm::vec4 getBackgroundColor() const;
 		void setBackgroundColor(glm::vec4 value);
+
+		mat4 viewMatrix() const;
+		mat4 projMatrix() const;
+
+		void clearBuffer() const;
 
 		void render();
 

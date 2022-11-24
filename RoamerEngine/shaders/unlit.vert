@@ -12,8 +12,12 @@ out VS_OUT {
 } v2f;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
+
+layout(std140, binding = 0) uniform Camera {
+	vec3 viewPos;
+	mat4 view;
+	mat4 proj;
+};
 
 uniform vec4 _Color;
 

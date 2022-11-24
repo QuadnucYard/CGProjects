@@ -1,13 +1,25 @@
 ﻿#pragma once
 #include "../Object.hpp"
-#include "../display/Light.hpp"
+#include "UniformBufferObject.hpp"
 #include "ShadowMapping.hpp"
+
+namespace qy::cg {
+	class Camera;
+	class Light;
+}
 
 namespace qy::cg::rendering {
 
 	class RenderMaster {
 
-		struct Light {
+		struct CameraUBO {
+			glm::vec3 viewPos;
+			int __0;
+			glm::mat4 view;
+			glm::mat4 proj;
+		};
+
+		struct LightUBO {
 			int type;				// 0
 			float range;			// 4
 			float cutOff;			// 8
@@ -21,13 +33,12 @@ namespace qy::cg::rendering {
 			float __1;				// 92
 		};
 
-		struct Lights {
-			glm::vec3 viewPos;
+		struct LightsUBO {
 			int numLights;
-			glm::vec4 globalAmbient;
 			float farPlane;
-			char __0[12];
-			Light lights[256];
+			int __0[2];
+			glm::vec4 globalAmbient;
+			LightUBO lights[256];
 		};
 
 	private:
@@ -41,14 +52,17 @@ namespace qy::cg::rendering {
 		RenderMaster();
 
 	public:
-		void prepareShadowing();
-		void shadowing(qy::cg::Light* light);
+		void setCamera(Camera* camera);
 
-		void lighting(const std::vector<qy::cg::Light*>& lightList, glm::vec3 viewPos, glm::vec4 globalAmbient);
+		void prepareShadowing();
+
+		void shadowing(Light* light);
+
+		void lighting(const std::vector<Light*>& lightList, glm::vec4 globalAmbient);
 
 	private:
-		GLuint uboLights;
-		Lights lights;
+		UniformBufferObject<CameraUBO> uboCamera;
+		UniformBufferObject<LightsUBO> uboLights;
 	public:
 		ShadowMapping shadowMap;
 	};

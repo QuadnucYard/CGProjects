@@ -1,7 +1,5 @@
 ﻿#include "roamer_engine/display/Camera.hpp"
 #include "roamer_engine/display/Scene.hpp"
-#include "roamer_engine/display/Mesh.hpp"
-#include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/Shader.hpp"
 #include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/display/SkyBox.hpp"
@@ -47,6 +45,31 @@ namespace qy::cg {
 	glm::vec4 Camera::getBackgroundColor() const { return pImpl->backgroundColor; }
 	void Camera::setBackgroundColor(glm::vec4 value) { pImpl->backgroundColor = value; }
 
+	mat4 Camera::viewMatrix() const {
+		return glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});
+	}
+
+	mat4 Camera::projMatrix() const {
+		if (isOrthographic()) {
+			float h = getOrthographicSize(), w = getOrthographicSize() * getAspect();
+			return glm::ortho(-w, w, -h, h, pImpl->nearClipPlane, pImpl->farClipPlane);
+		} else {
+			return glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
+		}
+	}
+
+	void Camera::clearBuffer() const {
+		if (pImpl->clearFlags == CameraClearFlags::SolidColor || pImpl->clearFlags == CameraClearFlags::Skybox) {
+			auto&& c = pImpl->backgroundColor;
+			glClearColor(c.r, c.g, c.b, c.a);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		} else if (pImpl->clearFlags == CameraClearFlags::Depth) {
+			auto&& c = pImpl->backgroundColor;
+			glClearColor(c.r, c.g, c.b, c.a);
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
+	}
+
 	void Camera::render() {
 
 		struct RenderItem {
@@ -82,28 +105,10 @@ namespace qy::cg {
 			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
 		});
 
-		if (pImpl->clearFlags == CameraClearFlags::SolidColor || pImpl->clearFlags == CameraClearFlags::Skybox) {
-			auto&& c = pImpl->backgroundColor;
-			glClearColor(c.r, c.g, c.b, c.a);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		} else if (pImpl->clearFlags ==  CameraClearFlags::Depth) {
-			auto&& c = pImpl->backgroundColor;
-			glClearColor(c.r, c.g, c.b, c.a);
-			glClear(GL_DEPTH_BUFFER_BIT);
-		}
-
-		auto view = glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});
-		glm::mat4 proj;
-		if (isOrthographic()) {
-			float h = getOrthographicSize(), w = getOrthographicSize() * getAspect();
-			proj = glm::ortho(-w, w, -h, h, pImpl->nearClipPlane, pImpl->farClipPlane);
-		} else {
-			proj = glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
-		}
-
-		glClear(GL_DEPTH_BUFFER_BIT);
 
 		auto&& master = rendering::RenderMaster::instance();
+
+		master->setCamera(this);
 
 		// Shadow rendering
 		master->prepareShadowing();
@@ -120,12 +125,13 @@ namespace qy::cg {
 		// render scene as normal 
 
 		glViewport(0, 0, Screen::width(), Screen::height());
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		clearBuffer();
 
 		// Lighting
-		master->lighting(lights, transform()->position(), Scene::current()->getAmbientColor());
+		master->lighting(lights, Scene::current()->getAmbientColor());
 
 		// Render
+		auto view = viewMatrix(), proj = projMatrix();
 		for (auto&& r : renderList) {
 			for (auto&& mat : r.renderer->__getMaterials()) {
 				auto&& shader = mat->getShader();

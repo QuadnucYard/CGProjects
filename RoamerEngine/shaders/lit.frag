@@ -33,15 +33,17 @@ uniform samplerCube depthMap;
 uniform vec4 _Color;
 uniform Material material;
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
 
-
-layout(std140, binding = 0) uniform Lights {
+layout(std140, binding = 0) uniform Camera {
 	vec3 viewPos;
+	mat4 view;
+	mat4 proj;
+};
+
+layout(std140, binding = 2) uniform Lights {
 	int numLights;
-	vec4 globalAmbient;
 	float farPlane;
+	vec4 globalAmbient;
 	Light lights[256];
 };
 

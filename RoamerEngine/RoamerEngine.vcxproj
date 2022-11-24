@@ -89,6 +89,7 @@
     <ClInclude Include="include\roamer_engine\rendering\Buffers.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\ShadowMapping.hpp" />
+    <ClInclude Include="include\roamer_engine\rendering\UniformBufferObject.hpp" />
     <ClInclude Include="include\roamer_engine\Screen.hpp" />
     <ClInclude Include="include\roamer_engine\Assets.hpp" />
     <ClInclude Include="include\roamer_engine\Time.hpp" />

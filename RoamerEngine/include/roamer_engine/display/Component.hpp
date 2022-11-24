@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../Object.hpp"
 #include <vector>
 
@@ -23,7 +23,7 @@ namespace qy::cg {
 		bool enabled() const;
 		void enabled(bool value);
 
-		ptr<Transform> transform();
+		ptr<Transform> transform() const;
 
 		template <ComponentType T>
 		ptr<T> addComponent(const ptr<T>& component);
