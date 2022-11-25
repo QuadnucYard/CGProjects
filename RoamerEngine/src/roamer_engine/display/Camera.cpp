@@ -1,11 +1,5 @@
 ﻿#include "roamer_engine/display/Camera.hpp"
-#include "roamer_engine/display/Scene.hpp"
-#include "roamer_engine/display/Shader.hpp"
-#include "roamer_engine/display/Material.hpp"
-#include "roamer_engine/display/SkyBox.hpp"
-#include "roamer_engine/display/Light.hpp"
 #include "roamer_engine/rendering/RenderMaster.hpp"
-#include "roamer_engine/Screen.hpp"
 
 namespace qy::cg {
 
@@ -71,84 +65,7 @@ namespace qy::cg {
 	}
 
 	void Camera::render() {
-
-		struct RenderItem {
-			int renderOrder;
-			int layerOrder;
-			Renderer* renderer;
-			glm::mat4 model;
-		};
-		std::vector<RenderItem> renderList;
-		std::vector<Light*> lights;
-
-		const auto& dfs = [&](const TransformPtr& parent, const glm::mat4& model) {
-			const auto& s = [&](auto&& self, const TransformPtr& parent, const glm::mat4& model) -> void {
-				int i = 0;
-				for (auto&& child : parent) {
-					auto model2 = model * child->modelMatrix();
-					for (auto&& r : child->getComponents<Renderer>()) {
-						renderList.emplace_back(0, i, r.get(), model2);
-					}
-					for (auto&& light : child->getComponents<Light>()) {
-						lights.push_back(light.get());
-					}
-					self(self, child, model2);
-					i++;
-				}
-			};
-			s(s, parent, model);
-		};
-
-		dfs(Scene::current()->root(), Scene::current()->root()->modelMatrix());
-
-		std::ranges::sort(renderList, [](const RenderItem& o1, const RenderItem& o2) {
-			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
-		});
-
-
-		auto&& master = rendering::RenderMaster::instance();
-
-		master->setCamera(this);
-
-		// Shadow rendering
-		master->prepareShadowing();
-		for (auto&& light : lights) {
-			master->shadowing(light);
-			//master->shadowMap.simpleDepthShader.use();
-			for (auto&& r : renderList) {
-				master->shadowMap.simpleDepthShader.setMat4("model", r.model);
-				r.renderer->__render();
-			}
-		}
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-		// render scene as normal 
-
-		glViewport(0, 0, Screen::width(), Screen::height());
-		clearBuffer();
-
-		// Lighting
-		master->lighting(lights, Scene::current()->getAmbientColor());
-
-		// Render
-		auto view = viewMatrix(), proj = projMatrix();
-		for (auto&& r : renderList) {
-			for (auto&& mat : r.renderer->__getMaterials()) {
-				auto&& shader = mat->getShader();
-				shader.use();
-				shader.setMat4("model", r.model);
-				shader.setMat4("view", view);
-				shader.setMat4("proj", proj);
-				mat->__applyProperties();
-				shader.setInt("depthMap", 31);
-			}
-			r.renderer->__render();
-		}
-
-		// Render SkyBox
-		if (pImpl->clearFlags == CameraClearFlags::Skybox) {
-			getComponent<SkyBox>()->__render(view, proj);
-		}
+		rendering::RenderMaster::instance()->pass(this);
 	}
 
 }

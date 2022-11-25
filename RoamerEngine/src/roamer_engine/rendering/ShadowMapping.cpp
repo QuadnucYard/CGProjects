@@ -3,8 +3,16 @@
 namespace qy::cg {
 
 	ShadowMapping::ShadowMapping() {
-		auto path = fs::current_path().parent_path() / "RoamerEngine" / "shaders";
-		simpleDepthShader = Shader::fromSourceFile(path / "point-shadow-depth.vert", path / "point-shadow-depth.frag", path / "point-shadow-depth.geom");
+		if (!simpleDepthShader) {
+			auto path = fs::current_path().parent_path() / "RoamerEngine" / "shaders";
+			simpleDepthShader = Shader::fromSourceFile(
+				path / "point-shadow-depth.vert",
+				path / "point-shadow-depth.frag",
+				path / "point-shadow-depth.geom"
+			);
+			simpleDepthShader.use();
+			simpleDepthShader.setFloat("farPlane", FAR_PLANE);
+		}
 
 		// create depth cubemap texture
 		glGenTextures(1, &depthCubemap);
@@ -25,7 +33,5 @@ namespace qy::cg {
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			throw "ERROR::FRAMEBUFFER:: Framebuffer is not complete!";
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-
 	}
 }

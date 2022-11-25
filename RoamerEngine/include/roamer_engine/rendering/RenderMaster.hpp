@@ -2,6 +2,7 @@
 #include "../Object.hpp"
 #include "UniformBufferObject.hpp"
 #include "ShadowMapping.hpp"
+#include <array>
 
 namespace qy::cg {
 	class Camera;
@@ -28,9 +29,9 @@ namespace qy::cg::rendering {
 			glm::vec4 diffuse;		// 32
 			glm::vec4 specular;		// 48
 			glm::vec3 position;		// 64
-			float __0;				// 76
+			int shadows;			// 76
 			glm::vec3 direction;	// 80
-			float __1;				// 92
+			float shadowStrength;	// 92
 		};
 
 		struct LightsUBO {
@@ -54,17 +55,17 @@ namespace qy::cg::rendering {
 	public:
 		void setCamera(Camera* camera);
 
-		void prepareShadowing();
-
-		void shadowing(Light* light);
+		void shadowing(int index, Light* light);
 
 		void lighting(const std::vector<Light*>& lightList, glm::vec4 globalAmbient);
+
+		void pass(Camera* camera);
 
 	private:
 		UniformBufferObject<CameraUBO> uboCamera;
 		UniformBufferObject<LightsUBO> uboLights;
-	public:
-		ShadowMapping shadowMap;
+		std::array<ShadowMapping, 16> shadowMaps;
+		inline static int maxTextures;
 	};
 
 }

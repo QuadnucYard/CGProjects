@@ -36,6 +36,8 @@ namespace qy::cg {
 			return *this;
 		}
 
+		operator bool() const { return ID; }
+
 		/// @brief Create shader from source file.
 		/// @param vertexPath Path of vertex shader.
 		/// @param fragmentPath Path of fragment shader.
