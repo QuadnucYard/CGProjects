@@ -22,7 +22,7 @@ protected:
 		scene = Scene::create();
 		cam = scene->createCamera();
 		cam->setBackgroundColor({0.4f, 0.3f, 0.1f, 1.0f});
-		cam->obj()->transform()->position({0, 0, 5});
+		cam->obj()->transform()->position({0, 0.5f, 5});
 		cam->addComponent(SkyBox::loadFromFile(
 			"assets/skybox/right.jpg",
 			"assets/skybox/left.jpg",
@@ -32,7 +32,63 @@ protected:
 			"assets/skybox/back.jpg"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
-		auto obj = Primitives::createCube();
+		
+		{
+			auto lightObj = Primitives::createSphere();
+			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
+			scene->root()->addChild(lightObj->transform());
+			lightObj->transform()->position({1, 4, 1});
+			auto&& light = lightObj->addComponent<Light>();
+			light->setType(LightType::Point);
+			light->setAmbient({0.5f, 0.0f, 0.0f, 1.0f});
+			light->setDiffuse({1.0f, 0.1f, 0.1f, 1.0f});
+			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
+			light->setRange(100);
+			light->setShadows(LightShadow::Soft);
+		}
+		{
+			auto lightObj = Primitives::createSphere();
+			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
+			scene->root()->addChild(lightObj->transform());
+			lightObj->transform()->position({-1, 3, 1});
+			auto&& light = lightObj->addComponent<Light>();
+			light->setType(LightType::Point);
+			light->setAmbient({0.0f, 0.5f, 0.0f, 1.0f});
+			light->setDiffuse({0.1f, 1.0f, 0.1f, 1.0f});
+			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
+			light->setRange(100);
+			light->setShadows(LightShadow::Hard);
+		}
+		{
+			auto lightObj = Primitives::createSphere();
+			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
+			scene->root()->addChild(lightObj->transform());
+			lightObj->transform()->position({0, 2, -1});
+			auto&& light = lightObj->addComponent<Light>();
+			light->setType(LightType::Point);
+			light->setAmbient({0.0f, 0.0f, 0.5f, 1.0f});
+			light->setDiffuse({0.1f, 0.1f, 1.0f, 1.0f});
+			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
+			light->setRange(100);
+			light->setShadows(LightShadow::Soft);
+		}
+		//scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
+		{
+			auto obj = Primitives::createCube();
+			obj->transform()->position({0, -1, 0});
+			obj->transform()->scale({10, 1, 10});
+			//obj->getComponent<MeshRenderer>()->getMaterial()->setColor("material.ambient", {0.1f, 0.1f, 0.1f, 1.0f});
+			obj->getComponent<MeshRenderer>()->getMaterial()->setTexture("_SpecTex", Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
+			scene->root()->addChild(obj->transform());
+		}
+		{
+			auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
+			obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
+			scene->root()->addChild(obj2->transform());
+		}
+		
+		/*auto obj = Primitives::createCube();
 		obj->transform()->position({1.0f, 0, 0});
 		obj->transform()->scale({0.3f, 0.3f, 0.3f});
 		obj->transform()->rotation(glm::vec3(0.3f, 0.2f, 0.6f));
@@ -56,14 +112,7 @@ protected:
 		obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
 		scene->root()->addChild(obj2->transform());
 
-		auto&& light = cam->addComponent<Light>();
-		light->setType(LightType::Point);
-		light->setAmbient({0.05f, 0.05f, 0.05f, 1.0f});
-		light->setDiffuse({1.0f, 1.0f, 1.0f, 1.0f});
-		light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
-		light->setIntensity(1.0f);
-		light->setRange(100);
-		light->setSpotAngle(15);
+		
 
 		{
 			auto obj = DisplayObject::create();
@@ -71,7 +120,7 @@ protected:
 			obj->addComponent<SpriteRenderer>()->setSprite(Sprite::create(texture, {0.0f, 0.0f, (float)texture->width(), (float)texture->height()}, {0.5f, 0.5f}, 100));
 			obj->transform()->position({0, 0, -10});
 			scene->root()->addChild(obj->transform());
-		}
+		}*/
 	}
 
 	void update() override {
