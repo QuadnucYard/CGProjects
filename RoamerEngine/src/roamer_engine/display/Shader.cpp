@@ -32,6 +32,9 @@ namespace qy::cg {
 		}
 
 		static std::string readShaderFile(const std::filesystem::path& path) {
+			if (!fs::exists(path)) {
+				throw std::runtime_error("File not exist");
+			}
 			// 1. retrieve the vertex/fragment source code from filePath
 			std::string code;
 			std::ifstream shaderFile;
@@ -40,6 +43,9 @@ namespace qy::cg {
 			try {
 				// open files
 				shaderFile.open(path);
+				if (!shaderFile.is_open()) {
+					throw std::runtime_error("Fail to open shader file");
+				}
 				std::stringstream shaderStream;
 				// read file's buffer contents into streams
 				shaderStream << shaderFile.rdbuf();
@@ -83,7 +89,7 @@ namespace qy::cg {
 		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(prog.ID);
 		glLinkProgram(prog.ID);
 		prog.checkCompileErrors();
-		++refCount[prog.ID];
+		//++refCount[prog.ID];
 		return prog;
 	}
 
@@ -95,7 +101,7 @@ namespace qy::cg {
 		SubShader(geom, GL_GEOMETRY_SHADER, "GEOMERTY").attachTo(prog.ID);
 		glLinkProgram(prog.ID);
 		prog.checkCompileErrors();
-		++refCount[prog.ID];
+		//++refCount[prog.ID];
 		return prog;
 	}
 

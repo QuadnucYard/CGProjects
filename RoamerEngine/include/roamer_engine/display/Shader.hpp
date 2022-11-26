@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <filesystem>
-#include <unordered_map>
+//#include <unordered_map>
 
 namespace qy::cg {
 
@@ -18,23 +18,32 @@ namespace qy::cg {
 
 	private:
 		GLuint ID;
-		inline static std::unordered_map<GLuint, unsigned> refCount;
+		//inline static std::unordered_map<GLuint, unsigned> refCount;
 
 	public:
 
-		Shader(): ID(0) {}
-		Shader(const Shader& o): ID(o.ID) { ++refCount[o.ID]; }
+		Shader() noexcept: ID(0) {}
+		//Shader(const Shader& o): ID(o.ID) { ++refCount[ID]; }
+		//Shader(Shader&& o) noexcept:ID(o.ID) { o.ID = 0; }
 
 		~Shader() {
-			if (ID != 0 && --refCount[ID] == 0) glDeleteProgram(ID);
+			//if (ID != 0 && --refCount[ID] == 0) glDeleteProgram(ID);
 		}
 
-		Shader& operator= (const Shader& o) {
+		/*Shader& operator= (const Shader& o) {
+			if (this == &o) return *this;
 			--refCount[ID];
 			ID = o.ID;
 			++refCount[ID];
 			return *this;
 		}
+
+		Shader& operator= (Shader&& o) {
+			if (this == &o) return *this;
+			ID = o.ID;
+			o.ID = 0;
+			return *this;
+		}*/
 
 		operator bool() const { return ID; }
 

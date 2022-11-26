@@ -30,6 +30,7 @@
     <None Include="shaders\skybox.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\roamer_engine\Application.cpp" />
     <ClCompile Include="src\roamer_engine\rendering\ShadowMapping.cpp" />
     <ClCompile Include="src\roamer_engine\display\Camera.cpp" />
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
