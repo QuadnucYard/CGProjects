@@ -1,9 +1,11 @@
 ﻿#include <roamer_engine.hpp>
+#include <roamer_editor.hpp>
 #include <cmath>
 #include <numbers>
 #include <random>
 
-class MyApplication: public qy::cg::Application {
+
+class MyApplication: public qy::cg::editor::EditorApplication {
 
 
 private:
@@ -32,7 +34,7 @@ protected:
 			"assets/skybox/back.jpg"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
-		
+
 		{
 			auto lightObj = Primitives::createSphere();
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
@@ -58,6 +60,8 @@ protected:
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
 			light->setRange(100);
 			light->setShadows(LightShadow::Hard);
+			auto&& obj222 = DisplayObject::create("test");
+			lightObj->transform()->addChild(obj222->transform());
 		}
 		{
 			auto lightObj = Primitives::createSphere();
@@ -71,6 +75,8 @@ protected:
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
 			light->setRange(100);
 			light->setShadows(LightShadow::Soft);
+			auto&& obj222 = DisplayObject::create("test");
+			lightObj->transform()->addChild(obj222->transform());
 		}
 		//scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
 		{
@@ -86,41 +92,10 @@ protected:
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
 			obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
 			scene->root()->addChild(obj2->transform());
+			obj2->name("35454");
+			auto&& obj222 = DisplayObject::create("test");
+			obj2->transform()->addChild(obj222->transform());
 		}
-		
-		/*auto obj = Primitives::createCube();
-		obj->transform()->position({1.0f, 0, 0});
-		obj->transform()->scale({0.3f, 0.3f, 0.3f});
-		obj->transform()->rotation(glm::vec3(0.3f, 0.2f, 0.6f));
-		obj->getComponent<MeshFilter>()->mesh()->setColors(
-			{{0, 0, 0, 1}, {.5f, 0, 0, 1}, {0, .5f, 0, 1}, {0, 0, .5f, 1}, {.5f, .5f, 0, 1}, {.5f, 0, .5f, 1}, {0, .5f, .5f, 1}, {.5f, .5f, .5f, 1}});
-		scene->root()->addChild(obj->transform());
-		obj = Primitives::createSphere();
-		obj->transform()->position({0.1f, 0.3f, -0.2f});
-		//obj->transform()->scale({0.3f, 0.1f, 0.4f});
-		obj->transform()->rotation(glm::vec3(0.7f, -0.3f, 0.1f));
-		auto&& mat = instantiate<Material>();
-		mat->setShader(Shader::fromSourceFile("assets/shaders/ball.vert", "assets/shaders/ball.frag"));
-		//mat->setColor(Color::rgba(222, 143, 228, 127));
-		auto tex = Assets::load<Texture2D>("assets/earth.jpg");
-		mat->setMainTexture(tex);
-		obj->getComponent<MeshRenderer>()->setMaterial(mat);
-		scene->root()->addChild(obj->transform());
-
-		auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-		obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-		obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
-		scene->root()->addChild(obj2->transform());
-
-		
-
-		{
-			auto obj = DisplayObject::create();
-			auto texture = Assets::load<Texture2D>("assets/earth.jpg");
-			obj->addComponent<SpriteRenderer>()->setSprite(Sprite::create(texture, {0.0f, 0.0f, (float)texture->width(), (float)texture->height()}, {0.5f, 0.5f}, 100));
-			obj->transform()->position({0, 0, -10});
-			scene->root()->addChild(obj->transform());
-		}*/
 	}
 
 	void update() override {
