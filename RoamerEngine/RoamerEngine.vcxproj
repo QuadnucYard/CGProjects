@@ -85,6 +85,7 @@
     <ClInclude Include="include\roamer_engine\input\KeyCode.hpp" />
     <ClInclude Include="include\roamer_engine\Object.hpp" />
     <ClInclude Include="include\roamer_engine\Random.hpp" />
+    <ClInclude Include="include\roamer_engine\recfg.hpp" />
     <ClInclude Include="include\roamer_engine\Rect.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\Buffers.hpp" />
     <ClInclude Include="include\roamer_engine\rendering\RenderMaster.hpp" />

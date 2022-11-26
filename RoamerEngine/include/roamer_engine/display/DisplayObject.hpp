@@ -19,7 +19,12 @@ namespace qy::cg {
 		}
 
 		static ptr<DisplayObject> create() {
+			return create("DisplayObject");
+		}
+
+		static ptr<DisplayObject> create(std::string name) {
 			auto obj = instantiate<DisplayObject>();
+			obj->name(std::move(name));
 			obj->_init();
 			return obj;
 		}
@@ -36,9 +41,9 @@ namespace qy::cg {
 		ptr<T> getComponent();
 
 		template <ComponentType T>
-		std::vector<ptr<T>> getComponents();
+		ptr_vector<T> getComponents();
 
-		std::vector<ptr<Component>> getComponents() {
+		const ptr_vector<Component>& getComponents() {
 			return m_components;
 		}
 
@@ -70,8 +75,8 @@ namespace qy::cg {
 	}
 
 	template<ComponentType T>
-	inline std::vector<ptr<T>> DisplayObject::getComponents() {
-		std::vector<ptr<T>> ret;
+	inline ptr_vector<T> DisplayObject::getComponents() {
+		ptr_vector<T> ret;
 		for (auto& t : m_components) {
 			if (isinstance<T>(t)) ret.push_back(std::dynamic_pointer_cast<T>(t));
 		}

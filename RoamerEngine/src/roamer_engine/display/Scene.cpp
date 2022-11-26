@@ -13,6 +13,7 @@ namespace qy::cg {
 
 	ptr<Scene> Scene::create() {
 		auto scene = instantiate<Scene>();
+		scene->name("Scene");
 		scene->pImpl->root = instantiate<Transform>();
 		_currentScene = scene;
 		return scene;

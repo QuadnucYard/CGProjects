@@ -16,7 +16,7 @@ namespace qy::cg {
 		static int VERSION_MAJOR;
 		static int VERSION_MINOR;
 
-	private:
+	protected:
 		inline static Application* s_main;
 
 		GLFWwindow* window;
@@ -57,15 +57,15 @@ namespace qy::cg {
 		Application* run() {
 			internalInit();
 			init();
-			//事件循环，接收输入事件
 			while (!glfwWindowShouldClose(window)) {
+				glfwPollEvents();
 				internalUpdate();
 				update();
-				display(); //绘制函数，主体
-				glfwSwapBuffers(window); //交换颜色缓存
+				internalRender();
+				display();
 				internalLateUpdate();
-				glfwPollEvents(); // 检查有没有触发什么事件（比如键盘输入、鼠标移动等）
 				lateUpdate();
+				glfwSwapBuffers(window);
 			}
 			return this;
 		}
@@ -78,8 +78,8 @@ namespace qy::cg {
 			return s_main->window;
 		}
 
-	private:
-		void internalInit() {
+	protected:
+		virtual void internalInit() {
 			glEnable(GL_DEPTH_TEST);
 			glEnable(GL_CULL_FACE);
 			glFrontFace(GL_CCW);
@@ -89,13 +89,14 @@ namespace qy::cg {
 			Materials::__init__();
 		}
 
-		void internalUpdate() {
+		virtual void internalUpdate() {
 			Time::__update(glfwGetTime());
-		}
-
-		void internalLateUpdate() {
 			Input::__update__(); // Input状态重置
 		}
+
+		virtual void internalRender() {}
+
+		virtual void internalLateUpdate() {}
 
 	protected:
 

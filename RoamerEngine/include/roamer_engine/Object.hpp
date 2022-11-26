@@ -1,13 +1,5 @@
 ﻿#pragma once
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <memory>
-#include <algorithm>
-#include <numeric>
-#include <ranges>
-#include <type_traits>
-#include <vector>
-#include <filesystem>
+#include "recfg.hpp"
 
 namespace qy::cg {
 
@@ -17,40 +9,13 @@ namespace qy::cg {
 	public:
 		Object() = default;
 		Object(const Object& other) = delete;
+
+		const std::string& name() const { return m_name; }
+		void name(std::string value) { m_name = std::move(value); }
+
+	protected:
+		std::string m_name;
 	};
-
-	template <class T>
-	using ptr = std::shared_ptr<T>;
-
-	template <class T>
-	using impl_ptr = std::unique_ptr<T>;
-
-	template <class T>
-	using ptr_vector = std::vector<ptr<T>>;
-
-	using color_t = glm::vec4;
-	using glm::vec2, glm::vec3, glm::vec4, glm::mat3, glm::mat4, glm::quat;
-
-	template <class T, class U>
-	inline constexpr bool isinstance(const ptr<U>& x) {
-		return (bool)std::dynamic_pointer_cast<T>(x);
-		//return std::is_constructible_v<typename std::shared_ptr<U>::element_type, T>;
-	}
-
-	template <class T, class U>
-	inline constexpr bool isinstance(ptr<U>&& x) {
-		return (bool)std::dynamic_pointer_cast<T>(x);
-	}
-
-	template <class T>
-	inline auto instantiate() {
-		return std::make_shared<T>();
-	}
-
-	template <class T>
-	inline auto enum_cast(T value) {
-		return static_cast<std::underlying_type_t<T>>(value);
-	}
 
 #define DECL_OBJECT(class_) \
 	class_(); \
@@ -66,6 +31,5 @@ namespace qy::cg {
 #define DEFINE_OBJECT(class_) \
 	class_::class_() : pImpl(std::make_unique<class_::Impl>()) {} \
 	class_::~class_() = default;
-
 
 }

@@ -233,5 +233,8 @@
     <ClInclude Include="include\roamer_engine\rendering\UniformBufferObject.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\recfg.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
