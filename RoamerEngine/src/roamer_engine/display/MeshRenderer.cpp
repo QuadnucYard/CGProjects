@@ -12,7 +12,9 @@ namespace qy::cg {
 	DEFINE_OBJECT(MeshRenderer);
 
 	void MeshRenderer::__render() {
-		getComponent<MeshFilter>()->mesh()->__render();
+		if (auto&& mf = getComponent<MeshFilter>(); mf->enabled()) {
+			mf->mesh()->__render();
+		}
 	}
 
 }

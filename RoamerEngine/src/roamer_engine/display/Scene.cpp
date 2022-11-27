@@ -36,7 +36,8 @@ namespace qy::cg {
 
 	void Scene::dispatch_update() {
 		for (auto&& c : *pImpl->root) {
-			c->obj()->update();
+			if (c->obj()->activeSelf())
+				c->obj()->update();
 		}
 	}
 

@@ -2,6 +2,7 @@
 #include "roamer_engine/display/Transform.hpp"
 #include "roamer_engine/display/Camera.hpp"
 #include "roamer_engine/display/Light.hpp"
+#include "roamer_engine/display/Renderer.hpp"
 #include "roamer_engine/display/Scene.hpp"
 #include "roamer_engine/display/Skybox.hpp"
 #include "roamer_engine/display/Shader.hpp"
@@ -106,6 +107,7 @@ namespace qy::cg::rendering {
 		const auto dfs = [&](this auto&& self, const TransformPtr& parent, const glm::mat4& model) -> void {
 			int i = 0;
 			for (auto&& child : parent) {
+				if (!child->obj()->activeSelf()) continue;
 				auto model2 = model * child->modelMatrix();
 				for (auto&& r : child->getComponents<Renderer>()) {
 					if (r->enabled())

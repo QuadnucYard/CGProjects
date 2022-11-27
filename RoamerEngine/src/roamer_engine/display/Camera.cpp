@@ -1,5 +1,7 @@
 ﻿#include "roamer_engine/display/Camera.hpp"
+#include "roamer_engine/display/Transform.hpp"
 #include "roamer_engine/rendering/RenderMaster.hpp"
+#include "roamer_engine/Screen.hpp"
 
 namespace qy::cg {
 
@@ -19,6 +21,11 @@ namespace qy::cg {
 	};
 
 	DEFINE_OBJECT(Camera);
+
+	inline void Camera::start() {
+		s_main = std::dynamic_pointer_cast<Camera>(shared_from_this());
+		resetAspect();
+	}
 
 	float Camera::getAspect() const { return pImpl->aspect; }
 	void Camera::setAspect(float value) { pImpl->aspect = value; }
@@ -50,6 +57,10 @@ namespace qy::cg {
 		} else {
 			return glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
 		}
+	}
+
+	void Camera::resetAspect() {
+		setAspect((float)Screen::width() / Screen::height());
 	}
 
 	void Camera::clearBuffer() const {

@@ -22,9 +22,7 @@ namespace qy::cg {
 			return s_main;
 		}
 
-		void start() override {
-			s_main = std::dynamic_pointer_cast<Camera>(shared_from_this());
-		}
+		void start() override;
 
 		float getAspect() const;
 		void setAspect(float value);
@@ -47,6 +45,8 @@ namespace qy::cg {
 
 		mat4 viewMatrix() const;
 		mat4 projMatrix() const;
+
+		void resetAspect();
 
 		void clearBuffer() const;
 
