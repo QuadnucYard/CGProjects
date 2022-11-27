@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "imgui.hpp"
+#include "EditorGUI.hpp"
 #include <memory>
 
 namespace qy::cg {
@@ -8,7 +8,7 @@ namespace qy::cg {
 
 namespace qy::cg::editor {
 
-	class Inspector {
+	class Inspector : public EditorGUI {
 
 	public:
 		static void onGUI();

@@ -23,6 +23,7 @@
     <ClInclude Include="include\roamer_editor\CameraEditor.hpp" />
     <ClInclude Include="include\roamer_editor\Editor.hpp" />
     <ClInclude Include="include\roamer_editor\EditorApplication.hpp" />
+    <ClInclude Include="include\roamer_editor\EditorGUI.hpp" />
     <ClInclude Include="include\roamer_editor\Hierarchy.hpp" />
     <ClInclude Include="include\roamer_editor\imgui.hpp" />
     <ClInclude Include="include\roamer_editor\Inspector.hpp" />

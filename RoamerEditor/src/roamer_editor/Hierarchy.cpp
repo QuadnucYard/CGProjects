@@ -10,11 +10,15 @@ namespace qy::cg::editor {
 
 		const auto dfs = [&](this auto&& self, const TransformPtr& parent) -> void {
 			for (auto&& child : parent) {
-				int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanFullWidth;
+				int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
 				if (child->childCount() == 0) {
 					flags |= ImGuiTreeNodeFlags_Leaf;
 				}
 				with_TreeNodeEx(child.get(), flags, child->obj()->name().c_str()) {
+					if (ImGui::IsMouseClicked(0)) {
+						auto x = ImGui::IsItemHovered();
+						auto y = 0;
+					}
 					if (ImGui::IsItemClicked()) {
 						Inspector::inspectedObject = child->obj();
 					}

@@ -18,12 +18,21 @@ namespace qy::cg::editor {
 
 		if (!inspectedObject.expired()) {
 			auto obj = inspectedObject.lock();
+			obj->setActive(CheckBox("##Active", obj->activeSelf()));
+			ImGui::SameLine();
+			obj->name(InputText("##Name", obj->name()));
 			const int flags = ImGuiTreeNodeFlags_DefaultOpen;
 			for (auto&& comp : obj->getComponents()) {
-				with_TreeNodeEx(comp.get(), flags, disqualifiedName(typeid(*comp).name()).data()) {
+				bool tree = ImGui::TreeNodeEx(comp.get(), flags, disqualifiedName(typeid(*comp).name()).data());
+				ImGui::SameLine(ImGui::GetWindowWidth() - 40);
+				comp->enabled(CheckBox("##Enabled", comp->enabled()));
+				if (tree) {
 					if (isinstance<Transform>(comp)) TransformEditor(comp).onInspectorGUI();
 					if (isinstance<Camera>(comp)) CameraEditor(comp).onInspectorGUI();
 					if (isinstance<Light>(comp)) LightEditor(comp).onInspectorGUI();
+					//auto n = typeid(decltype(*comp)).name();
+					//不知道为啥nameof能正确rtti  但没啥用  还是不能反射
+					ImGui::TreePop();
 				}
 			}
 		}

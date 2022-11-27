@@ -42,6 +42,9 @@
     <ClInclude Include="include\roamer_editor\LightEditor.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_editor\EditorGUI.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_editor\EditorApplication.cpp">

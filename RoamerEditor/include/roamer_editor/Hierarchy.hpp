@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "imgui.hpp"
+#include "EditorGUI.hpp"
 
 namespace qy::cg::editor {
 
-	class Hierarchy {
+	class Hierarchy : public EditorGUI {
 
 	public:
 		static void onGUI();
