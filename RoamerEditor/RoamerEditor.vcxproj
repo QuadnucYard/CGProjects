@@ -28,12 +28,17 @@
     <ClInclude Include="include\roamer_editor\imgui.hpp" />
     <ClInclude Include="include\roamer_editor\Inspector.hpp" />
     <ClInclude Include="include\roamer_editor\LightEditor.hpp" />
+    <ClInclude Include="include\roamer_editor\RendererEditor.hpp" />
     <ClInclude Include="include\roamer_editor\TransformEditor.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\roamer_editor\CameraEditor.cpp" />
     <ClCompile Include="src\roamer_editor\EditorApplication.cpp" />
     <ClCompile Include="src\roamer_editor\Hierarchy.cpp" />
     <ClCompile Include="src\roamer_editor\Inspector.cpp" />
+    <ClCompile Include="src\roamer_editor\LightEditor.cpp" />
+    <ClCompile Include="src\roamer_editor\RendererEditor.cpp" />
+    <ClCompile Include="src\roamer_editor\TransformEditor.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

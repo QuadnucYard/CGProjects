@@ -2,6 +2,7 @@
 #include "roamer_editor/Editor.hpp"
 #include "roamer_editor/CameraEditor.hpp"
 #include "roamer_editor/LightEditor.hpp"
+#include "roamer_editor/RendererEditor.hpp"
 #include "roamer_editor/TransformEditor.hpp"
 #include <roamer_engine/display/DisplayObject.hpp>
 
@@ -24,16 +25,19 @@ namespace qy::cg::editor {
 			const int flags = ImGuiTreeNodeFlags_DefaultOpen;
 			for (auto&& comp : obj->getComponents()) {
 				bool tree = ImGui::TreeNodeEx(comp.get(), flags, disqualifiedName(typeid(*comp).name()).data());
-				ImGui::SameLine(ImGui::GetWindowWidth() - 40);
+				ImGui::SameLine(ImGui::GetWindowWidth() - 50);
 				comp->enabled(CheckBox("##Enabled", comp->enabled()));
+				
 				if (tree) {
 					if (isinstance<Transform>(comp)) TransformEditor(comp).onInspectorGUI();
 					if (isinstance<Camera>(comp)) CameraEditor(comp).onInspectorGUI();
 					if (isinstance<Light>(comp)) LightEditor(comp).onInspectorGUI();
+					if (isinstance<Renderer>(comp)) RendererEditor(comp).onInspectorGUI();
 					//auto n = typeid(decltype(*comp)).name();
 					//不知道为啥nameof能正确rtti  但没啥用  还是不能反射
 					ImGui::TreePop();
 				}
+				
 			}
 		}
 	}

@@ -45,6 +45,9 @@
     <ClInclude Include="include\roamer_editor\EditorGUI.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_editor\RendererEditor.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_editor\EditorApplication.cpp">
@@ -54,6 +57,18 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="src\roamer_editor\Hierarchy.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_editor\RendererEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_editor\LightEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_editor\CameraEditor.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_editor\TransformEditor.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

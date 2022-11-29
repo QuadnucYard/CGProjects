@@ -1,5 +1,6 @@
-#pragma once
+﻿#pragma once
 #include "../Object.hpp"
+#include <unordered_map>
 
 namespace qy::cg {
 
@@ -7,6 +8,9 @@ namespace qy::cg {
 	class Texture;
 
 	class Material: public Object {
+
+		template <class T>
+		using prop_dict = std::unordered_map<std::string, T>;
 
 	public:
 		DECL_OBJECT(Material);
@@ -32,6 +36,11 @@ namespace qy::cg {
 		void setColor(const color_t& value);
 		const ptr<Texture>& getMainTexture();
 		void setMainTexture(const ptr<Texture>& value);
+
+		const prop_dict<int>& getInts() const;
+		const prop_dict<float>& getFloats() const;
+		const prop_dict<color_t>& getColors() const;
+		const prop_dict<ptr<Texture>>& getTextures() const;
 
 		void __applyProperties() const;
 

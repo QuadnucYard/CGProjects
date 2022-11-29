@@ -1,15 +1,16 @@
 ﻿#pragma once
 #include "Editor.hpp"
-#include <roamer_engine/display/Camera.hpp>
+#include <roamer_engine/display/Renderer.hpp>
 
 namespace qy::cg::editor {
 
-	class CameraEditor: public Editor<Camera> {
+	class RendererEditor: public Editor<Renderer> {
 
 	public:
 		using Editor::Editor;
 
 		void onInspectorGUI() override;
+
 	};
 
 }

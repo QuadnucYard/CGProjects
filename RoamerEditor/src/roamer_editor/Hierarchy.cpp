@@ -11,14 +11,12 @@ namespace qy::cg::editor {
 		const auto dfs = [&](this auto&& self, const TransformPtr& parent) -> void {
 			for (auto&& child : parent) {
 				int flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_SpanFullWidth;
-				if (child->childCount() == 0) {
+				if (child->childCount() == 0) 
 					flags |= ImGuiTreeNodeFlags_Leaf;
-				}
+				if (child->obj() == Inspector::inspectedObject.lock()) 
+					flags |= ImGuiTreeNodeFlags_Selected;				
 				with_TreeNodeEx(child.get(), flags, child->obj()->name().c_str()) {
-					if (ImGui::IsMouseClicked(0)) {
-						auto x = ImGui::IsItemHovered();
-						auto y = 0;
-					}
+					// 问题在于，上一个item不是这个结点
 					if (ImGui::IsItemClicked()) {
 						Inspector::inspectedObject = child->obj();
 					}
