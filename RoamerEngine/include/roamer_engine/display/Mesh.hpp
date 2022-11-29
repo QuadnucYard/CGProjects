@@ -24,7 +24,9 @@ namespace qy::cg {
 		class MeshData;
 
 	public:
-		DECL_OBJECT(Mesh);
+		//DECL_OBJECT(Mesh);
+		Mesh();
+		~Mesh();
 
 		std::vector<glm::vec3> getVertices() const;
 
