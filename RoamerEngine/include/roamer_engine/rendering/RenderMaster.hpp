@@ -4,6 +4,13 @@
 #include "ShadowMapping.hpp"
 #include <array>
 
+#ifndef NUM_DIRECT_SHADOWMAP
+#define NUM_DIRECT_SHADOWMAP 8 // If you change this value, together with that in shader.
+#endif
+#ifndef NUM_POINT_SHADOWMAP
+#define NUM_POINT_SHADOWMAP 8 // If you change this value, together with that in shader.
+#endif
+
 namespace qy::cg {
 	class Camera;
 	class Light;
@@ -36,35 +43,31 @@ namespace qy::cg::rendering {
 
 		struct LightsUBO {
 			int numLights;
+			int numDirectShadows;
+			int numPointShadows;
 			float farPlane;
-			int __0[2];
 			glm::vec4 globalAmbient;
+			glm::mat4 lightSpaceMatrices[NUM_DIRECT_SHADOWMAP];
 			LightUBO lights[256];
 		};
 
-	private:
-		inline static RenderMaster* _instance {nullptr};
 	public:
-		static RenderMaster* instance() {
-			if (!_instance) _instance = new RenderMaster();
-			return _instance;
-		}
+		static RenderMaster* instance();
 
 		RenderMaster();
 
 	public:
-		void setCamera(Camera* camera);
+		void setCamera(const Camera* camera);
 
-		void shadowing(int index, Light* light);
+		void lighting(const std::vector<Light*>& lightList);
 
-		void lighting(const std::vector<Light*>& lightList, glm::vec4 globalAmbient);
-
-		void pass(Camera* camera);
+		void pass(const Camera* camera);
 
 	private:
 		UniformBufferObject<CameraUBO> uboCamera;
 		UniformBufferObject<LightsUBO> uboLights;
-		std::array<ShadowMapping, 16> shadowMaps;
+		std::array<DirectShadowMapping, NUM_DIRECT_SHADOWMAP> directShadowMaps;
+		std::array<PointShadowMapping, NUM_POINT_SHADOWMAP> pointShadowMaps;
 		inline static int maxTextures;
 	};
 

@@ -1,4 +1,4 @@
-﻿#version 460
+#version 460
 
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aNormal;
@@ -10,6 +10,7 @@ out VS_OUT {
 	vec3 FragPos;
 	vec3 Normal;
 	vec2 TexCoords;
+	vec4 FragPosLightSpace[8];
 } v2f;
 
 uniform mat4 model;
@@ -20,10 +21,36 @@ layout(std140, binding = 0) uniform Camera {
 	mat4 proj;
 };
 
+struct Light {
+	int type;
+	float range;
+	float cutOff;
+	float outerCutOff;
+	vec4 ambient;
+	vec4 diffuse;
+	vec4 specular;
+	vec3 position;
+	int shadows;
+	vec3 direction;
+	float shadowStrength;
+};
+
+layout(std140, binding = 2) uniform Lights {
+	int numLights;
+	int numDirectShadows;
+	int numPointShadows;
+	float farPlane;
+	vec4 globalAmbient;
+	mat4 lightSpaceMatrices[8];
+	Light lights[256];
+};
+
 void main() {	
 	v2f.FragPos = vec3(model * vec4(aPosition, 1.0));
 	v2f.Normal = normalize(mat3(transpose(inverse(model))) * aNormal);
 	v2f.TexCoords = aTexCoords;
+	for (int i = 0; i < numDirectShadows; i++)
+		v2f.FragPosLightSpace[i] = lightSpaceMatrices[i] * vec4(v2f.FragPos, 1.0);
 	
 	gl_Position = proj * view * vec4(v2f.FragPos, 1.0);
 }

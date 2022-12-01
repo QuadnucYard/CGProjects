@@ -28,14 +28,15 @@ namespace qy::cg {
 		template <ComponentType T>
 		ptr<T> addComponent(const ptr<T>& component);
 
-		template <ComponentType T>
-		ptr<T> getComponent();
+		ptr<Component> addComponent(const ptr<Component>& component);
 
 		template <ComponentType T>
-		ptr_vector<T> getComponents();
+		ptr<T> getComponent() const;
+
+		template <ComponentType T>
+		ptr_vector<T> getComponents() const;
 
 		const ptr_vector<Component>& getComponents() const;
-		ptr_vector<Component>& getComponents();
 
 		virtual void update();
 
@@ -45,21 +46,18 @@ namespace qy::cg {
 
 
 	template <ComponentType T>
-	inline ptr<T> DisplayObject::addComponent() {
+	ptr<T> DisplayObject::addComponent() {
 		return addComponent(instantiate<T>());
 	}
 
 	template<ComponentType T>
-	inline ptr<T> DisplayObject::addComponent(const ptr<T>& comp) {
-		auto baseComp = std::dynamic_pointer_cast<Component>(comp);
-		getComponents().push_back(baseComp);
-		baseComp->_setObj(shared_from_this());
-		comp->start();
-		return comp;
+	ptr<T> DisplayObject::addComponent(const ptr<T>& component) {
+		addComponent(std::dynamic_pointer_cast<Component>(component));
+		return component;
 	}
 
 	template<ComponentType T>
-	inline ptr<T> DisplayObject::getComponent() {
+	ptr<T> DisplayObject::getComponent() const {
 		auto&& components = getComponents();
 		auto it = std::ranges::find_if(components, [](auto& t) { return isinstance<T>(t); });
 		if (it == components.end()) return nullptr;
@@ -67,7 +65,7 @@ namespace qy::cg {
 	}
 
 	template<ComponentType T>
-	inline ptr_vector<T> DisplayObject::getComponents() {
+	ptr_vector<T> DisplayObject::getComponents() const {
 		ptr_vector<T> ret;
 		for (auto& t : getComponents()) {
 			if (isinstance<T>(t)) ret.push_back(std::dynamic_pointer_cast<T>(t));

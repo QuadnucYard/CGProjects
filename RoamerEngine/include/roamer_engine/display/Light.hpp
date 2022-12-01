@@ -1,15 +1,8 @@
 ﻿#pragma once
 #include "Component.hpp"
+#include "LightType.hpp"
 
 namespace qy::cg {
-
-	enum class LightType {
-		Directional, Point, Spot,
-	};
-
-	enum class LightShadow {
-		None, Hard, Soft,
-	};
 
 	class Light: public Component {
 
@@ -25,6 +18,8 @@ namespace qy::cg {
 		void setDiffuse(color_t value);
 		color_t getSpecular() const;
 		void setSpecular(color_t value);
+		color_t getColor() const; 
+		void setColor(color_t value);
 
 		float getIntensity() const;
 		void setIntensity(float value);

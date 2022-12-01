@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\direct-shadow-depth.frag" />
+    <None Include="shaders\direct-shadow-depth.vert" />
     <None Include="shaders\point-shadow-depth.frag" />
     <None Include="shaders\point-shadow-depth.geom" />
     <None Include="shaders\point-shadow-depth.vert" />
@@ -64,6 +66,7 @@
     <ClInclude Include="include\roamer_engine\display\Component.hpp" />
     <ClInclude Include="include\roamer_engine\display\DisplayObject.hpp" />
     <ClInclude Include="include\roamer_engine\display\Light.hpp" />
+    <ClInclude Include="include\roamer_engine\display\LightType.hpp" />
     <ClInclude Include="include\roamer_engine\display\Material.hpp" />
     <ClInclude Include="include\roamer_engine\display\Materials.hpp" />
     <ClInclude Include="include\roamer_engine\display\Mesh.hpp" />

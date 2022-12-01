@@ -43,11 +43,14 @@ namespace qy::cg {
 
 	TransformPtr DisplayObject::transform() const { return pImpl->transform; }
 
-	const ptr_vector<Component>& DisplayObject::getComponents() const {
-		return pImpl->components;
+	ptr<Component> DisplayObject::addComponent(const ptr<Component>& component) {
+		pImpl->components.push_back(component);
+		component->_setObj(shared_from_this());
+		component->start();
+		return component;
 	}
 
-	ptr_vector<Component>& DisplayObject::getComponents() {
+	const ptr_vector<Component>& DisplayObject::getComponents() const {
 		return pImpl->components;
 	}
 

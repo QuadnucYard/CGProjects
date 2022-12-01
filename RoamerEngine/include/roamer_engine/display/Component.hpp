@@ -18,7 +18,7 @@ namespace qy::cg {
 		virtual void start() {}
 		virtual void update() {}
 
-		ptr<DisplayObject> obj();
+		ptr<DisplayObject> obj() const;
 
 		bool enabled() const;
 		void enabled(bool value);
@@ -32,12 +32,12 @@ namespace qy::cg {
 		ptr<T> addComponent();
 
 		template <ComponentType T>
-		ptr<T> getComponent();
+		ptr<T> getComponent() const;
 
 		template <ComponentType T>
-		std::vector<ptr<T>> getComponents();
+		ptr_vector<T> getComponents() const;
 
-		std::vector<ptr<Component>> getComponents();
+		const ptr_vector<Component>& getComponents() const;
 
 	private:
 		void _setObj(ptr<DisplayObject> _obj);
@@ -55,9 +55,9 @@ namespace qy::cg {
 	ptr<T> Component::addComponent(const ptr<T>& component) { return obj()->template addComponent<T>(component); }
 
 	template <ComponentType T>
-	ptr<T> Component::getComponent() { return obj()->template getComponent<T>(); }
+	ptr<T> Component::getComponent() const { return obj()->template getComponent<T>(); }
 
 	template <ComponentType T>
-	std::vector<ptr<T>> Component::getComponents() { return obj()->template getComponents<T>(); }
+	ptr_vector<T> Component::getComponents() const { return obj()->template getComponents<T>(); }
 
 }

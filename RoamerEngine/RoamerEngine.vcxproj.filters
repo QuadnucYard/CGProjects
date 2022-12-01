@@ -46,6 +46,8 @@
     <None Include="shaders\point-shadow-depth.vert" />
     <None Include="shaders\point-shadow-depth.frag" />
     <None Include="shaders\point-shadow-depth.geom" />
+    <None Include="shaders\direct-shadow-depth.vert" />
+    <None Include="shaders\direct-shadow-depth.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -237,6 +239,9 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\recfg.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\LightType.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

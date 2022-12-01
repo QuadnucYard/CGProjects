@@ -8,9 +8,13 @@
 #include "roamer_engine/display/Shader.hpp"
 #include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/Screen.hpp"
-#include <format>
 
 namespace qy::cg::rendering {
+
+	RenderMaster* RenderMaster::instance() {
+		static RenderMaster _instance;
+		return &_instance;
+	}
 
 	RenderMaster::RenderMaster(): uboCamera(0), uboLights(2) {
 		maxTextures = []() {
@@ -20,48 +24,18 @@ namespace qy::cg::rendering {
 		}();
 	}
 
-	void RenderMaster::setCamera(Camera* camera) {
+	void RenderMaster::setCamera(const Camera* camera) {
 		uboCamera->viewPos = camera->transform()->position();
 		uboCamera->view = camera->viewMatrix();
 		uboCamera->proj = camera->projMatrix();
 		uboCamera.upload();
 	}
 
-	void RenderMaster::shadowing(int index, Light* light) {
-		// 0. create depth cubemap transformation matrices
-		// -----------------------------------------------
-		const glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 
-			(float)ShadowMapping::SHADOW_WIDTH / ShadowMapping::SHADOW_HEIGHT, 
-			ShadowMapping::NEAR_PLANE, ShadowMapping::FAR_PLANE);
-
-		const ShadowMapping& shadowMap = shadowMaps[index];
-
-		glViewport(0, 0, ShadowMapping::SHADOW_WIDTH, ShadowMapping::SHADOW_HEIGHT);
-		glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.depthMapFBO);
-		glClear(GL_DEPTH_BUFFER_BIT);
-
-		auto lightPos = light->transform()->position();
-		glm::mat4 shadowTransforms[] {
-			shadowProj * glm::lookAt(lightPos, lightPos + vec3(1.0f, 0.0f, 0.0f), {0.0f, -1.0f, 0.0f}),
-			shadowProj * glm::lookAt(lightPos, lightPos + vec3(-1.0f, 0.0f, 0.0f), {0.0f, -1.0f, 0.0f}),
-			shadowProj * glm::lookAt(lightPos, lightPos + vec3(0.0f, 1.0f, 0.0f), {0.0f, 0.0f, 1.0f}),
-			shadowProj * glm::lookAt(lightPos, lightPos + vec3(0.0f, -1.0f, 0.0f), {0.0f, 0.0f, -1.0f}),
-			shadowProj * glm::lookAt(lightPos, lightPos + vec3(0.0f, 0.0f, 1.0f), {0.0f, -1.0f, 0.0f}),
-			shadowProj * glm::lookAt(lightPos, lightPos + vec3(0.0f, 0.0f, -1.0f), {0.0f, -1.0f, 0.0f}),
-		};
-		// 1. render scene to depth cubemap
-		// --------------------------------
-		shadowMap.simpleDepthShader.use();
-		for (unsigned int i = 0; i < 6; ++i)
-			shadowMap.simpleDepthShader.setMat4(std::format("shadowMatrices[{}]", i), shadowTransforms[i]);
-		shadowMap.simpleDepthShader.setVec3("lightPos", lightPos);
-	}
-
-	void RenderMaster::lighting(const std::vector<qy::cg::Light*>& lightList, glm::vec4 globalAmbient) {
+	void RenderMaster::lighting(const std::vector<qy::cg::Light*>& lightList) {
 		uboLights->numLights = static_cast<int>(lightList.size());
-		uboLights->globalAmbient = globalAmbient;
+		uboLights->globalAmbient = Scene::current()->getAmbientColor();
 		uboLights->farPlane = ShadowMapping::FAR_PLANE;
-		int s = 0;
+		int s1 = 0, s2 = 0; // direct和point的数量
 		for (size_t i = 0; i < lightList.size(); i++) {
 			auto&& light = lightList[i];
 			auto&& uboLight = uboLights->lights[i];
@@ -74,24 +48,38 @@ namespace qy::cg::rendering {
 			uboLight.range = light->getRange();
 			uboLight.outerCutOff = glm::cos(glm::radians(light->getSpotAngle()));
 			uboLight.cutOff = glm::cos(glm::radians(light->getInnerSpotAngle()));
-			switch (light->getShadows()) {
-				case LightShadow::None:
-					uboLight.shadows = 0;
-					break;
-				case LightShadow::Hard:
-					uboLight.shadows = ++s;
-					uboLight.shadowStrength = light->getShadowStrength();
-					break;
-				case LightShadow::Soft:
-					uboLight.shadows = -(++s);
-					uboLight.shadowStrength = light->getShadowStrength();
-					break;
+
+			if (light->getShadows() == LightShadow::None) {
+				uboLight.shadows = 0;
+			} else {
+				bool isPoint = light->getType() == LightType::Point;
+				if (isPoint) {
+					if (s2 >= NUM_POINT_SHADOWMAP) continue;
+					s2++;
+				} else {
+					if (s1 >= NUM_DIRECT_SHADOWMAP) continue;
+					uboLights->lightSpaceMatrices[s1] = directShadowMaps[s1].lightSpaceMatrix;
+					s1++;
+				}
+
+				switch (light->getShadows()) {
+					case LightShadow::Hard:
+						uboLight.shadows = isPoint ? s2 : s1;
+						uboLight.shadowStrength = light->getShadowStrength();
+						break;
+					case LightShadow::Soft:
+						uboLight.shadows = -(isPoint ? s2 : s1);
+						uboLight.shadowStrength = light->getShadowStrength();
+						break;
+				}
 			}
 		}
+		uboLights->numDirectShadows = s1;
+		uboLights->numPointShadows = s2;
 		uboLights.upload();
 	}
 
-	void RenderMaster::pass(Camera* camera) {
+	void RenderMaster::pass(const Camera* camera) {
 
 		// Get renderers and lights 
 
@@ -133,21 +121,42 @@ namespace qy::cg::rendering {
 
 		// Shadow rendering
 
-		int numShadows = 0;
+		int numDirectShadows = 0, numPointShadows = 0;
 		for (auto&& light : lights) {
 			if (light->getShadows() == LightShadow::None) continue;
-			shadowing(numShadows, light);
+			Shader* depthShader {nullptr};
+			LightType lightType = light->getType();
+			switch (lightType) {
+				case LightType::Directional:
+				case LightType::Spot:
+					if (numDirectShadows == directShadowMaps.size()) break;
+					depthShader = directShadowMaps[numDirectShadows].shadowing(lightType, light->transform()->position());
+					++numDirectShadows;
+					break;
+				case LightType::Point:
+					if (numPointShadows == pointShadowMaps.size()) break;
+					depthShader = pointShadowMaps[numPointShadows].shadowing(lightType, light->transform()->position());
+					++numPointShadows;
+					break;
+			}
+			if (!depthShader) continue;
 			// Not the active shader is depth shader.
 			for (auto&& r : renderList) {
-				shadowMaps[numShadows].simpleDepthShader.setMat4("model", r.model);
+				depthShader->setMat4("model", r.model);
 				r.renderer->__render();
 			}
-			if (++numShadows == shadowMaps.size()) break;
 		}
 		// All depthMaps should have values.
-		for (int i = 0; i < shadowMaps.size(); i++) {
-			glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, shadowMaps[i].depthCubemap);
+		// 
+		for (int i = 0; i < directShadowMaps.size(); i++) {
+			glBindTextureUnit(maxTextures - i - 1, directShadowMaps[i].depthTexture);
+			//glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1);
+			//glBindTexture(GL_TEXTURE_2D, directShadowMaps[i].depthTexture); // 可以赋值0！
+		}
+		for (int i = 0; i < pointShadowMaps.size(); i++) {
+			glBindTextureUnit(maxTextures - i - 1 - (int)directShadowMaps.size(), pointShadowMaps[i].depthTexture);
+			//glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1 - (int)directShadowMaps.size());
+			//glBindTexture(GL_TEXTURE_CUBE_MAP, pointShadowMaps[i].depthTexture);
 		}
 
 		// render scene as normal 
@@ -157,7 +166,7 @@ namespace qy::cg::rendering {
 		camera->clearBuffer();
 
 		// Lighting
-		lighting(lights, Scene::current()->getAmbientColor());
+		lighting(lights);
 
 		// Render
 		for (auto&& r : renderList) {
@@ -165,16 +174,13 @@ namespace qy::cg::rendering {
 				auto&& shader = mat->getShader();
 				shader.use();
 				shader.setMat4("model", r.model);
-				auto a1 = shader.locAttrib("_MainTex");
-				auto a2 = shader.locAttrib("_SpecTex");
-				auto a3 = shader.locAttrib("depthMaps[0]");
-				auto a4 = shader.locAttrib("depthMaps[1]");
-				auto a5 = shader.locAttrib("model");
-				auto a6 = shader.locAttrib("material.ambient");
 				mat->__applyProperties();
 				// All depthMaps should have values
-				for (int i = 0; i < shadowMaps.size(); i++)
+				// Maybe this only need do once
+				for (int i = 0; i < directShadowMaps.size(); i++)
 					shader.setInt(std::format("depthMaps[{}]", i), maxTextures - 1 - i);
+				for (int i = 0; i < pointShadowMaps.size(); i++)
+					shader.setInt(std::format("depthCubemaps[{}]", i), maxTextures - 1 - i - (int)directShadowMaps.size());
 			}
 			r.renderer->__render();
 		}
