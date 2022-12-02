@@ -22,7 +22,7 @@ namespace qy::cg::rendering {
 
 		struct CameraUBO {
 			glm::vec3 viewPos;
-			int __0;
+			float time;
 			glm::mat4 view;
 			glm::mat4 proj;
 		};

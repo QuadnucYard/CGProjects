@@ -8,6 +8,7 @@
 #include "roamer_engine/display/Shader.hpp"
 #include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/Screen.hpp"
+#include "roamer_engine/Time.hpp"
 
 namespace qy::cg::rendering {
 
@@ -25,6 +26,7 @@ namespace qy::cg::rendering {
 	}
 
 	void RenderMaster::setCamera(const Camera* camera) {
+		uboCamera->time = Time::time();
 		uboCamera->viewPos = camera->transform()->position();
 		uboCamera->view = camera->viewMatrix();
 		uboCamera->proj = camera->projMatrix();

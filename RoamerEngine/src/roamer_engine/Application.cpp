@@ -64,7 +64,7 @@ namespace qy::cg {
 	}
 
 	void Application::internalUpdate() {
-		Time::__update(glfwGetTime());
+		Time::__update(static_cast<float>(glfwGetTime()));
 		Input::__update__(); // Input状态重置
 	}
 }

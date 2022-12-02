@@ -17,6 +17,7 @@ uniform mat4 model;
 
 layout(std140, binding = 0) uniform Camera {
 	vec3 viewPos;
+	float _Time;
 	mat4 view;
 	mat4 proj;
 };
