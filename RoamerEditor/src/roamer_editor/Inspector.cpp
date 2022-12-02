@@ -10,7 +10,7 @@ namespace qy::cg::editor {
 
 	struct Inspector::Impl {
 		std::weak_ptr<DisplayObject> inspectedObject;
-		ptr_vector<EditorBase> editors;
+		ptr_vector<Editor> editors;
 	};
 
 	DEFINE_OBJECT(Inspector);
@@ -25,19 +25,13 @@ namespace qy::cg::editor {
 		pImpl->inspectedObject = obj;
 		pImpl->editors.clear();
 		for (auto&& comp : obj->getComponents()) {
-			auto name = NAMEOF_TYPE_RTTI(*comp);
-			/*auto editor = ObjectFactory::create(name + "Editor");
-			if (editor) {
-				auto editor2 = dynamic_cast<EditorBase*>(editor);
-				editor2->setTarget(comp); // 这里反射做不到了
-				pImpl->editors.emplace_back(editor2);
-			}*/
-			if (isinstance<Transform>(comp)) { auto e = instantiate<TransformEditor>(); e->setTarget(comp); pImpl->editors.push_back(std::move(e)); }
-			if (isinstance<Camera>(comp)) { auto e = instantiate<CameraEditor>(); e->setTarget(comp); pImpl->editors.push_back(std::move(e)); }
-			if (isinstance<Light>(comp)) { auto e = instantiate<LightEditor>(); e->setTarget(comp); pImpl->editors.push_back(std::move(e)); }
-			if (isinstance<Renderer>(comp)) { auto e = instantiate<RendererEditor>(); e->setTarget(comp); pImpl->editors.push_back(std::move(e)); }
+			auto name = NAMEOF_SHORT_TYPE_RTTI(*comp);
+			auto editor = EditorFactory::create(name);
+			if (!editor) editor = std::make_unique<Editor>();
+			editor->target = comp;
+			pImpl->editors.emplace_back(std::move(editor));
 		}
-		std::ranges::for_each(pImpl->editors, &EditorBase::start);
+		std::ranges::for_each(pImpl->editors, &Editor::start);
 	}
 
 	ptr<DisplayObject> Inspector::inspectedObject() const {
@@ -45,32 +39,21 @@ namespace qy::cg::editor {
 	}
 
 	void Inspector::onGUI() {
-		auto const disqualifiedName = [](std::string_view name) {
-			if (size_t p = name.rfind(':'); p != std::string_view::npos) {
-				return name.substr(p + 1);
-			} else {
-				return name;
-			}
-		};
-
-		if (!pImpl->inspectedObject.expired()) {
-			auto obj = pImpl->inspectedObject.lock();
-			obj->setActive(CheckBox("##Active", obj->activeSelf()));
-			ImGui::SameLine();
-			obj->name(InputText("##Name", obj->name()));
-			const int flags = ImGuiTreeNodeFlags_DefaultOpen;
-			for (auto&& comp : obj->getComponents()) {
-				bool tree = ImGui::TreeNodeEx(comp.get(), flags, disqualifiedName(typeid(*comp).name()).data());
-				ImGui::SameLine(ImGui::GetWindowWidth() - 50);
-				comp->enabled(CheckBox("##Enabled", comp->enabled()));
-				
-				if (tree) {
-					std::ranges::for_each(pImpl->editors, &EditorBase::onInspectorGUI);
-					//auto n = typeid(decltype(*comp)).name();
-					//不知道为啥nameof能正确rtti  但没啥用  还是不能反射
-					ImGui::TreePop();
-				}
-				
+		if (pImpl->inspectedObject.expired())
+			return;
+		auto obj = pImpl->inspectedObject.lock();
+		obj->setActive(CheckBox("##Active", obj->activeSelf()));
+		ImGui::SameLine();
+		obj->name(InputText("##Name", obj->name()));
+		const int flags = ImGuiTreeNodeFlags_DefaultOpen;
+		for (auto&& e : pImpl->editors) {
+			bool tree = ImGui::TreeNodeEx(e.get(), flags, NAMEOF_SHORT_TYPE_RTTI(*e->target.lock().get()).c_str());
+			ImGui::SameLine(ImGui::GetWindowWidth() - 50);
+			auto&& target = e->target.lock();
+			target->enabled(CheckBox("##Enabled", target->enabled()));
+			if (tree) {
+				e->onInspectorGUI();
+				ImGui::TreePop();
 			}
 		}
 	}

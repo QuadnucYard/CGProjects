@@ -32,6 +32,7 @@
     <ClInclude Include="include\roamer_editor\TransformEditor.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\roamer_editor\Editor.cpp" />
     <ClCompile Include="src\roamer_editor\CameraEditor.cpp" />
     <ClCompile Include="src\roamer_editor\EditorApplication.cpp" />
     <ClCompile Include="src\roamer_editor\Hierarchy.cpp" />

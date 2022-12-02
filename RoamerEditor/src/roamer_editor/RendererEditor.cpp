@@ -1,10 +1,11 @@
 ﻿#include "roamer_editor/RendererEditor.hpp"
+#include <roamer_engine/display/Renderer.hpp>
 #include <roamer_engine/display/Material.hpp>
 
 namespace qy::cg::editor {
 
 	void RendererEditor::onInspectorGUI() {
-		auto&& renderer = target.lock();
+		auto&& renderer = lockTarget<Renderer>();
 		ImGui::Text("Materials");
 		ImGui::SameLine();
 		if (ImGui::Button("Make exclusive")) {

@@ -1,14 +1,11 @@
 ﻿#pragma once
 #include "Editor.hpp"
-#include <roamer_engine/display/Light.hpp>
 
 namespace qy::cg::editor {
 
-	class LightEditor: public Editor<Light> {
-
+	class LightEditor: public Editor {
+		RegisterEditor(LightEditor, Light);
 	public:
-		using Editor::Editor;
-
 		void onInspectorGUI() override;
 	};
 

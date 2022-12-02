@@ -1,12 +1,10 @@
 ﻿#include "roamer_editor/LightEditor.hpp"
-#include <unordered_map>
-#include <magic_enum.hpp>
-#include <nameof.hpp>
+#include <roamer_engine/display/Light.hpp>
 
 namespace qy::cg::editor {
 
 	void LightEditor::onInspectorGUI() {
-		auto&& light = target.lock();
+		auto&& light = lockTarget<Light>();
 
 		light->setIntensity(DragFloat("Intensity", light->getIntensity(), 0.01f));
 		light->setAmbient(ColorEdit4("Ambient", light->getAmbient()));

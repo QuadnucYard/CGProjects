@@ -1,9 +1,10 @@
 ﻿#include "roamer_editor/CameraEditor.hpp"
+#include <roamer_engine/display/Camera.hpp>
 
 namespace qy::cg::editor {
 
 	void CameraEditor::onInspectorGUI() {
-		auto&& camera = target.lock();
+		auto&& camera = lockTarget<Camera>();
 
 		if (auto ortho = CheckBox("Orthographic", camera->isOrthographic()); camera->setOrthographic(ortho), ortho) {
 			camera->setOrthographicSize(DragFloat("OrthographicSize", camera->getOrthographicSize(), 0.1f));
