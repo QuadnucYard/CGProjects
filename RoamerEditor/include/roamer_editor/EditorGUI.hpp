@@ -1,12 +1,12 @@
 ﻿#pragma once
 #include "imgui.hpp"
-#include <roamer_engine/recfg.hpp>
+#include <roamer_engine/Object.hpp>
 #include <magic_enum.hpp>
 #include <format>
 
 namespace qy::cg::editor {
 
-	class EditorGUI {
+	class EditorGUI : public Object {
 
 	public:
 		static color_t ColorEdit4(std::string_view label, color_t col, ImGuiColorEditFlags flags = 0) {
@@ -14,7 +14,7 @@ namespace qy::cg::editor {
 			return col;
 		}
 
-		static float DragInt(std::string_view label, int v, float v_speed = 1) {
+		static int DragInt(std::string_view label, int v, float v_speed = 1) {
 			ImGui::DragInt(label.data(), &v, v_speed);
 			return v;
 		}

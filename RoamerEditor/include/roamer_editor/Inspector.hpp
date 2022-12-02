@@ -1,6 +1,5 @@
 ﻿#pragma once
 #include "EditorGUI.hpp"
-#include <memory>
 
 namespace qy::cg {
 	class DisplayObject;
@@ -11,10 +10,15 @@ namespace qy::cg::editor {
 	class Inspector : public EditorGUI {
 
 	public:
-		static void onGUI();
+		DECL_OBJECT(Inspector);
 
-	public:
-		inline static std::weak_ptr<DisplayObject> inspectedObject;
+		static Inspector* instance();
+		void inspect(const ptr<DisplayObject>& obj);
+		ptr<DisplayObject> inspectedObject() const;
+		void onGUI();
+
+	private:
+		DECL_PIMPL;
 	};
 
 }

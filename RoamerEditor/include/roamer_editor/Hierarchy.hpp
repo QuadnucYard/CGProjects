@@ -6,7 +6,8 @@ namespace qy::cg::editor {
 	class Hierarchy : public EditorGUI {
 
 	public:
-		static void onGUI();
+		static Hierarchy* instance();
+		void onGUI();
 	};
 
 }

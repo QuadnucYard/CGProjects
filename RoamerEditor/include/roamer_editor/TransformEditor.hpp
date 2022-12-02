@@ -9,7 +9,12 @@ namespace qy::cg::editor {
 	public:
 		using Editor::Editor;
 
+		void start() override;
+
 		void onInspectorGUI() override;
+
+	private:
+		glm::vec3 eulerAngles;
 	};
 
 }

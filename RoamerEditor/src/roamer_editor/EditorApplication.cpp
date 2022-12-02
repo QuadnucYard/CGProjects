@@ -43,10 +43,10 @@ namespace qy::cg::editor {
 
 	void EditorApplication::onGUI() {
 		with_Window("Hierarchy") {
-			Hierarchy::onGUI();
+			Hierarchy::instance()->onGUI();
 		}
 		with_Window("Inspector") {
-			Inspector::onGUI();
+			Inspector::instance()->onGUI();
 		}
 	}
 }

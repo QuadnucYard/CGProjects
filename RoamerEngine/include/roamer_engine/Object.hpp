@@ -16,6 +16,8 @@ namespace qy::cg {
 		const std::string& name() const { return m_name; }
 		void name(std::string value) { m_name = std::move(value); }
 
+		virtual void __() {}
+
 	protected:
 		std::string m_name;
 	};
@@ -55,6 +57,10 @@ namespace qy::cg {
 			create(const std::string& type)
 		{
 			return std::unique_ptr<T>(static_cast<T*>(create(type)));
+		}
+
+		static bool has(const std::string& type) {
+			return type_creator_map.contains(type);
 		}
 
 		template <typename T>
