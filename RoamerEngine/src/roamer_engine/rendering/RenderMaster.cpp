@@ -120,7 +120,7 @@ namespace qy::cg::rendering {
 		setCamera(camera);
 
 		// Shadow rendering
-
+		glCullFace(GL_FRONT);
 		int numDirectShadows = 0, numPointShadows = 0;
 		for (auto&& light : lights) {
 			if (light->getShadows() == LightShadow::None) continue;
@@ -130,12 +130,12 @@ namespace qy::cg::rendering {
 				case LightType::Directional:
 				case LightType::Spot:
 					if (numDirectShadows == directShadowMaps.size()) break;
-					depthShader = directShadowMaps[numDirectShadows].shadowing(lightType, light->transform()->position());
+					depthShader = directShadowMaps[numDirectShadows].shadowing(light);
 					++numDirectShadows;
 					break;
 				case LightType::Point:
 					if (numPointShadows == pointShadowMaps.size()) break;
-					depthShader = pointShadowMaps[numPointShadows].shadowing(lightType, light->transform()->position());
+					depthShader = pointShadowMaps[numPointShadows].shadowing(light);
 					++numPointShadows;
 					break;
 			}
@@ -160,7 +160,7 @@ namespace qy::cg::rendering {
 		}
 
 		// render scene as normal 
-
+		glCullFace(GL_BACK);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Screen::width(), Screen::height());
 		camera->clearBuffer();

@@ -95,6 +95,8 @@ float CalcDirectShadow(Light light)
 	
 	// get depth of current fragment from light's perspective
 	float currentDepth = projCoords.z;
+	// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+	float closestDepth = texture(depthMaps[index], projCoords.xy).r; 
 	// calculate bias (based on depth map resolution and slope)
 	vec3 normal = normalize(v2f.Normal);
 	vec3 lightDir = normalize(light.position - v2f.FragPos);
@@ -102,11 +104,8 @@ float CalcDirectShadow(Light light)
 	// check whether current frag pos is in shadow
 	float shadow = 0.0;
 	if (light.shadows > 0) { // Hard
-		// get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-		float closestDepth = texture(depthMaps[index], projCoords.xy).r; 
 		shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
 	} else { // Soft
-		float closestDepth = texture(depthMaps[index], projCoords.xy).r; 
 		// PCF
 		vec2 texelSize = 1.0 / textureSize(depthMaps[index], 0);
 		for(int x = -1; x <= 1; ++x) {

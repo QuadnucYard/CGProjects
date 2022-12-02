@@ -1,9 +1,12 @@
 ﻿#pragma once
 #include "../Object.hpp"
 #include "../display/Shader.hpp"
-#include "../display/LightType.hpp"
 
 namespace qy::cg {
+	class Light;
+};
+
+namespace qy::cg::rendering {
 
 	class ShadowMapping {
 
@@ -11,7 +14,7 @@ namespace qy::cg {
 		ShadowMapping();
 
 		virtual void activate() = 0;
-		virtual Shader* shadowing(LightType type, vec3 lightPos);
+		virtual Shader* shadowing(const Light* light);
 
 	protected:
 		void initFrameBuffer();
@@ -31,7 +34,7 @@ namespace qy::cg {
 		DirectShadowMapping();
 
 		void activate() override;
-		Shader* shadowing(LightType type, vec3 lightPos) override;
+		Shader* shadowing(const Light* light) override;
 
 	public:
 		glm::mat4 lightSpaceMatrix {};
@@ -46,7 +49,7 @@ namespace qy::cg {
 		PointShadowMapping();
 
 		void activate() override;
-		Shader* shadowing(LightType type, vec3 lightPos) override;
+		Shader* shadowing(const Light* light) override;
 
 	private:
 		inline static Shader depthShader;

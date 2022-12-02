@@ -1,14 +1,16 @@
 ﻿#include "roamer_engine/rendering/ShadowMapping.hpp"
+#include "roamer_engine/display/Light.hpp"
 #include "roamer_engine/display/Shaders.hpp"
+#include "roamer_engine/display/Transform.hpp"
 #include <format>
 
-namespace qy::cg {
+namespace qy::cg::rendering {
 
 	ShadowMapping::ShadowMapping() {
 		// Need to activate
 	}
 
-	Shader* ShadowMapping::shadowing(LightType type, vec3 lightPos) {
+	Shader* ShadowMapping::shadowing(const Light* light) {
 		activate();
 		glViewport(0, 0, SHADOW_WIDTH, SHADOW_HEIGHT);
 		glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
@@ -51,14 +53,17 @@ namespace qy::cg {
 		initFrameBuffer();
 	}
 
-	Shader* DirectShadowMapping::shadowing(LightType type, vec3 lightPos) {
+	Shader* DirectShadowMapping::shadowing(const Light* light) {
 		static const glm::mat4 DIR_PROJ {glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, NEAR_PLANE, FAR_PLANE)};
 		static const glm::mat4 SPOT_PROJ {glm::perspective(glm::radians(45.0f), SHADOW_ASPECT, NEAR_PLANE, FAR_PLANE)};
 		
-		ShadowMapping::shadowing(type, lightPos);
-		// TODO 这里没考虑光源方向
-		const glm::mat4& lightProjection = type == LightType::Directional ? DIR_PROJ : SPOT_PROJ;
-		glm::mat4 lightView = glm::lookAt(lightPos, vec3(0.0f), {0.0, 1.0, 0.0});
+		ShadowMapping::shadowing(light);
+
+		auto lightPos = light->transform()->position();
+		auto dir = light->transform()->rotation() * vec3(0, 0, 1);
+		// TODO 光源方向
+		const glm::mat4& lightProjection = light->getType() == LightType::Directional ? DIR_PROJ : SPOT_PROJ;
+		glm::mat4 lightView = glm::lookAt(lightPos, lightPos - dir, {0.0, 1.0, 0.0});
 		lightSpaceMatrix = lightProjection * lightView;
 		depthShader.use();
 		depthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
@@ -92,13 +97,14 @@ namespace qy::cg {
 		initFrameBuffer();
 	}
 
-	Shader* PointShadowMapping::shadowing(LightType type, vec3 lightPos) {
+	Shader* PointShadowMapping::shadowing(const Light* light) {
 		// 0. create depth cubemap transformation matrices
 		// -----------------------------------------------
 		static const glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), SHADOW_ASPECT, NEAR_PLANE, FAR_PLANE);
 
-		ShadowMapping::shadowing(type, lightPos);
+		ShadowMapping::shadowing(light);
 
+		auto lightPos = light->transform()->position();
 		glm::mat4 shadowTransforms[] {
 			shadowProj * glm::lookAt(lightPos, lightPos + vec3(1.0f, 0.0f, 0.0f), {0.0f, -1.0f, 0.0f}),
 			shadowProj * glm::lookAt(lightPos, lightPos + vec3(-1.0f, 0.0f, 0.0f), {0.0f, -1.0f, 0.0f}),
