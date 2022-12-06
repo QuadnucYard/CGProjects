@@ -41,8 +41,8 @@ namespace qy::cg {
 		internalInit();
 		init();
 		while (!glfwWindowShouldClose(window)) {
-			glfwPollEvents();
 			internalUpdate();
+			glfwPollEvents();
 			update();
 			internalRender();
 			display();
