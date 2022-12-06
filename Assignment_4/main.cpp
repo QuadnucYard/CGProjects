@@ -2,6 +2,8 @@
 #include <cmath>
 #include <numbers>
 #include <random>
+#include<roamer_engine/display/SkyBox.hpp>
+#include<roamer_engine/display/Texture.hpp>
 #include"Maze.hpp"
 #include"Wall.hpp"
 #include"MoveControl.hpp"
@@ -84,7 +86,7 @@ protected:
 		cam->addComponent<MoveControl>();
 
 		//设置光标不可见
-		glfwSetInputMode(mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		//glfwSetInputMode(mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 		auto&& light = cam->addComponent<Light>();
 		light->setType(LightType::Spot);
@@ -116,15 +118,6 @@ protected:
 					continue;
 				}
 
-				if (i == width - 1 && j == 2) {
-					monkey = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
-					monkey->transform()->position({i * 2.0, -1.0, (j - height + 1) * 2.0});
-					monkey->transform()->scale({0.03f, 0.03f, 0.03f});
-					monkey->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/ApexPlasmaMasterDiffuse.png"));
-					scene->root()->addChild(monkey->transform());
-					monkey->addComponent<Spinning>();
-				}
-
 				if (maze[i][j] == -1) {
 					Wall w;
 					w.position({i * 2.0, 0.0, (j - height + 1) * 2.0});
@@ -142,45 +135,6 @@ protected:
 					}
 				}
 			}
-		}
-
-		{
-			auto darkCastle = ModelLoader::loadObj("assets/DarkCastle.obj");
-			darkCastle->transform()->position({-10, -5, -5});
-			darkCastle->transform()->scale(glm::vec3 {1.0f});
-			darkCastle->transform()->rotation(glm::radians(glm::vec3 {0, -90, 0}));
-			darkCastle->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/DarkCastleDiffuse.png"));
-			scene->root()->addChild(darkCastle->transform());
-		}
-		{
-			auto cornfield = ModelLoader::loadObj("assets/CornField.obj");
-			cornfield->transform()->position({1, 1, 0});
-			//cornfield->transform()->scale(glm::vec3 {1.0f});
-			//cornfield->transform()->rotation(glm::radians(glm::vec3 {0, -90, 0}));
-			cornfield->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/CornfieldDiffuse.png"));
-			scene->root()->addChild(cornfield->transform());
-		}
-		{
-			auto model = ModelLoader::loadObj("assets/Lotus.obj");
-			model->transform()->position({3, -1, 0});
-			model->transform()->scale(glm::vec3 {0.1f});
-			//cornfield->transform()->rotation(glm::radians(glm::vec3 {0, -90, 0}));
-			model->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Texture::loadFromFile("assets/LotusTree.png"));
-			scene->root()->addChild(model->transform());
-		}
-		{
-			auto obj = DisplayObject::create();
-			obj->transform()->position({0, 10, 0});
-			auto&& light = obj->addComponent<Light>();
-			light->setType(LightType::Point);
-			light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
-			light->setDiffuse(Color::rgba(250, 250, 250));
-			//light->setSpecular(Color::rgba(250, 250, 236));
-			light->setIntensity(1.0f);
-			light->setRange(100);
-			//light->setInnerSpotAngle(90);
-			//light->setSpotAngle(90);
-			scene->root()->addChild(obj->transform());
 		}
 	}
 
@@ -216,7 +170,7 @@ protected:
 			}
 		}
 
-		monkey->transform()->rotation(glm::vec3(0.0, glm::radians(Time::deltaTime()), 0.0));
+		//monkey->transform()->rotation(glm::vec3(0.0, glm::radians(Time::deltaTime()), 0.0));
 
 		scene->dispatch_update();
 		if (Input::getKey(KeyCode::ESCAPE)) {

@@ -44,7 +44,7 @@ Wall::Wall() {
 
 	if (!wallMaterial) {
 		wallMaterial = Materials::Lit->clone();
-		auto tex = Texture::loadFromFile("assets/wall.jpg");
+		auto tex = Texture2D::load("assets/wall.jpg");
 		wallMaterial->setMainTexture(tex);
 		wallMaterial->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
 		wallMaterial->setColor("material.diffuse", { 1.0f, 1.0f, 1.0f, 1.0f });

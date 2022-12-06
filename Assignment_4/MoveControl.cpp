@@ -2,6 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include <GLFW/glfw3.h>
 #include <roamer_engine/input.hpp>
 #include <roamer_engine/Time.hpp>
 #include <roamer_engine/display/Camera.hpp>
@@ -23,6 +24,9 @@ struct MoveControl::Impl {
 	float speed = 3;
 	float jumpHeight = 0.5;
 	std::map<MoveDirection, KeyCode> move2keyMap;
+	bool hideMouse = true;
+	bool mouseLeftPressed = false;
+	bool mouseMidPressed = false;
 
 	Impl() {
 		front = front_init;
@@ -51,6 +55,7 @@ void MoveControl::start() {
 	pImpl->rot_init = transform()->rotation();
 	pImpl->update();
 }
+
 void  MoveControl::setUp(glm::vec3 value) { pImpl->up = value; }
 glm::vec3  MoveControl::getUp() { return pImpl->up; }
 glm::vec3 MoveControl::getFront() { return pImpl->front; }
@@ -68,6 +73,7 @@ void  MoveControl::setMove2CodeMap(std::map<MoveDirection, KeyCode> value) { pIm
 void  MoveControl::updateKeyMap(MoveDirection md, KeyCode code) { pImpl->move2keyMap.insert_or_assign(md, code); }
 	
 void MoveControl::update(){
+	//get basic position information
 	float moveSpeed = (float)Time::deltaTime() * pImpl->speed;
 	auto objPos = transform()->position();
 	glm::vec3 goFront;
@@ -84,6 +90,24 @@ void MoveControl::update(){
 	default:
 		break;
 	}
+
+	//update state
+	if (Input::getMouseButtonDown(GLFW_MOUSE_BUTTON_MIDDLE) && !pImpl->mouseMidPressed) {
+		pImpl->mouseMidPressed = true;
+	}
+	if (Input::getMouseButtonUp(GLFW_MOUSE_BUTTON_MIDDLE) && pImpl->mouseMidPressed) {
+		pImpl->mouseMidPressed = false;
+		//hide/unhide mouse pointer. Control by middle button
+		if (Input::getMouseButtonUp(GLFW_MOUSE_BUTTON_MIDDLE)) {
+			if (pImpl->hideMouse)
+				pImpl->hideMouse = false;
+			else
+				pImpl->hideMouse = true;
+		}
+	}
+
+
+	//move, control by keybord
 	if (Input::getKey(pImpl->move2keyMap[MoveDirection::Front])) objPos += moveSpeed * goFront;
 	if (Input::getKey(pImpl->move2keyMap[MoveDirection::Right])) objPos -= moveSpeed * goFront;
 	if (Input::getKey(pImpl->move2keyMap[MoveDirection::Left])) objPos -= glm::normalize(glm::cross(goFront, pImpl->up)) * moveSpeed;
@@ -103,23 +127,43 @@ void MoveControl::update(){
 		break;
 	}
 
-	float xOffset, yOffset;
+	//direction control
+	float xOffset = 0, yOffset = 0;
 	if (pImpl->directController == DirectController::Mouse) {
-		if (pImpl->firstMouse) {
-			pImpl->mousePosLast = Input::mousePosition();
-			pImpl->firstMouse = false;
+		if (pImpl->hideMouse) {
+			glfwSetInputMode(Application::mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			if (pImpl->firstMouse) {
+				pImpl->mousePosLast = Input::mousePosition();
+				pImpl->firstMouse = false;
+			}
+			glm::vec3 mousePosNow = Input::mousePosition();
+			glm::vec3 posDelta = mousePosNow - pImpl->mousePosLast;
+			pImpl->mousePosLast = mousePosNow;
+			xOffset = posDelta.x * pImpl->sensitivity;
+			yOffset = -posDelta.y * pImpl->sensitivity;
 		}
-		glm::vec3 mousePosNow = Input::mousePosition();
-		glm::vec3 posDelta = mousePosNow - pImpl->mousePosLast;
-		pImpl->mousePosLast = mousePosNow;
-		xOffset = posDelta.x * pImpl->sensitivity;
-		yOffset = -posDelta.y * pImpl->sensitivity;
+		else {//controled after pressed left mouse
+			glfwSetInputMode(Application::mainWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			if (Input::getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT) && !pImpl->mouseLeftPressed) {
+				pImpl->mousePosLast = Input::mousePosition();
+				pImpl->mouseLeftPressed = true;
+			}
+			if (Input::getMouseButtonUp(GLFW_MOUSE_BUTTON_LEFT)) {
+				pImpl->mouseLeftPressed = false;
+			}
+			if (Input::getMouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
+				glm::vec3 posNow = Input::mousePosition();
+				glm::vec3 posDelta = posNow - pImpl->mousePosLast;
+				pImpl->mousePosLast = posNow;
+				xOffset = posDelta.x * pImpl->sensitivity;
+				yOffset = -posDelta.y * pImpl->sensitivity;
+			}
+		}
 	}
 	else if (pImpl->directController == DirectController::KeyBoard) {
 		if (Input::getKey(pImpl->move2keyMap[MoveDirection::TurnRight])) xOffset = 3;
 		if (Input::getKey(pImpl->move2keyMap[MoveDirection::TurnLeft])) xOffset = -3;
 	}
-
 	pImpl->yaw += xOffset;
 	pImpl->pitch += yOffset;
 
@@ -132,7 +176,8 @@ void MoveControl::update(){
 	frontNew.x = cos(glm::radians(pImpl->yaw)) * cos(glm::radians(pImpl->pitch));
 	frontNew.y = sin(glm::radians(pImpl->pitch));
 	frontNew.z = sin(glm::radians(pImpl->yaw)) * cos(glm::radians(pImpl->pitch));
-		
+	
+	//change position and rotation
 	pImpl->front = glm::normalize(frontNew);
 	transform()->position(objPos);
 	transform()->rotation(RotU2V(pImpl->front_init, pImpl->front)*pImpl->rot_init);

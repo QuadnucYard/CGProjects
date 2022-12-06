@@ -1,5 +1,7 @@
 ﻿#pragma once
 #include<roamer_engine/display/Component.hpp>
+#include<roamer_engine/display/Transform.hpp>
+#include<roamer_engine/Application.hpp>
 #include<map>
 #include<roamer_engine/input.hpp>
 
