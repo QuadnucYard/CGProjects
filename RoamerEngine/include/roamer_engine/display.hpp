@@ -8,6 +8,7 @@
 #include "display/MeshFilter.hpp"
 #include "display/MeshRenderer.hpp"
 #include "display/ModelLoader.hpp"
+#include "display/MoveController.hpp"
 #include "display/Primitives.hpp"
 #include "display/Scene.hpp"
 #include "display/Shaders.hpp"
