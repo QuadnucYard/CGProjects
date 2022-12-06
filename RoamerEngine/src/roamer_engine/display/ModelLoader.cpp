@@ -1,8 +1,11 @@
 ﻿#include "roamer_engine/display/ModelLoader.hpp"
+#include "roamer_engine/display/Mesh.hpp"
 #include "roamer_engine/display/MeshFilter.hpp"
 #include "roamer_engine/display/MeshRenderer.hpp"
 #include "roamer_engine/display/DisplayObject.hpp"
 #include "roamer_engine/display/Materials.hpp"
+#include "roamer_engine/display/Material.hpp"
+#include "roamer_engine/display/Texture2D.hpp"
 #include <tiny_obj_loader.h>
 #include <iostream>
 
@@ -12,10 +15,7 @@ namespace qy::cg {
 		tinyobj::ObjReader reader;
 
 		if (!reader.ParseFromFile(path.string())) {
-			if (!reader.Error().empty()) {
-				std::cerr << "TinyObjReader: " << reader.Error();
-			}
-			exit(1);
+			throw std::runtime_error("TinyObjReader: " + reader.Error());
 		}
 
 		if (!reader.Warning().empty()) {
@@ -27,7 +27,7 @@ namespace qy::cg {
 		auto& materials = reader.GetMaterials();
 
 		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
+		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Lit);
 		auto&& mesh = obj->addComponent<MeshFilter>()->sharedMesh();
 		// 默认各属性的索引是一样的
 		mesh->setVertices({
@@ -51,6 +51,14 @@ namespace qy::cg {
 			mesh->setTriangles(triangles, s);
 		}
 	
+		return obj;
+	}
+
+	ptr<DisplayObject> ModelLoader::loadObjWithTexture(const fs::path& objPath, const fs::path& texturePath) {
+		auto obj = loadObj(objPath);
+		auto mat = obj->getComponent<MeshRenderer>()->getSharedMaterial()->clone();
+		mat->setMainTexture(Texture2D::load(texturePath));
+		obj->getComponent<MeshRenderer>()->setSharedMaterial(mat);
 		return obj;
 	}
 

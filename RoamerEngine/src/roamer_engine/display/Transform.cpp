@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Transform.hpp"
+ï»¿#include "roamer_engine/display/Transform.hpp"
 #include "roamer_engine/display/DisplayObject.hpp"
 #include <vector>
 
@@ -32,7 +32,7 @@ namespace qy::cg {
 		return model;
 	}
 
-	// TODO Õâ¸ömatrixÃ»¿¼ÂÇ¸¸×Ó¹ØÏµ
+	// TODO è¿™ä¸ªmatrixæ²¡è€ƒè™‘çˆ¶å­å…³ç³»
 	glm::mat4x4 Transform::localToWorldMatrix() const {
 		return modelMatrix();
 	}
@@ -42,6 +42,10 @@ namespace qy::cg {
 	}
 
 	TransformPtr Transform::parent() const { return pImpl->parent; }
+
+	size_t Transform::childCount() const {
+		return pImpl->children.size();
+	}
 
 	Transform::const_iterator Transform::begin() const { return pImpl->children.begin(); }
 

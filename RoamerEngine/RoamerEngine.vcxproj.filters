@@ -43,6 +43,11 @@
     <None Include="shaders\skybox.frag" />
     <None Include="shaders\lit.frag" />
     <None Include="shaders\lit.vert" />
+    <None Include="shaders\point-shadow-depth.vert" />
+    <None Include="shaders\point-shadow-depth.frag" />
+    <None Include="shaders\point-shadow-depth.geom" />
+    <None Include="shaders\direct-shadow-depth.vert" />
+    <None Include="shaders\direct-shadow-depth.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -97,6 +102,24 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\roamer_engine\display\Shaders.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\MeshFilter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Scene.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\Sprite.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\SpriteRenderer.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\rendering\ShadowMapping.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\Application.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -198,6 +221,27 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\ModelLoader.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Rect.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Assets.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\ShadowMapping.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\Screen.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\UniformBufferObject.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\recfg.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\LightType.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

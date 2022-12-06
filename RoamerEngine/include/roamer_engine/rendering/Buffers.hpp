@@ -1,5 +1,5 @@
-#pragma once
-#include <gl/glew.h>
+﻿#pragma once
+#include <glad/glad.h>
 #include <string>
 #include <unordered_map>
 

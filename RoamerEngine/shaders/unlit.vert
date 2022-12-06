@@ -1,4 +1,4 @@
-﻿#version 460
+#version 460
 
 layout (location = 0) in vec3 aPosition;
 layout (location = 1) in vec3 aNormal;
@@ -12,8 +12,13 @@ out VS_OUT {
 } v2f;
 
 uniform mat4 model;
-uniform mat4 view;
-uniform mat4 proj;
+
+layout(std140, binding = 0) uniform Camera {
+	vec3 viewPos;
+	float _Time;
+	mat4 view;
+	mat4 proj;
+};
 
 uniform vec4 _Color;
 

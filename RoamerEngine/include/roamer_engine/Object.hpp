@@ -1,13 +1,8 @@
-#pragma once
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include <memory>
-#include <algorithm>
-#include <numeric>
-#include <ranges>
-#include <type_traits>
-#include <vector>
-#include <filesystem>
+﻿#pragma once
+#include "recfg.hpp"
+#include <map>
+#include <functional>
+#include <nameof.hpp>
 
 namespace qy::cg {
 
@@ -17,54 +12,69 @@ namespace qy::cg {
 	public:
 		Object() = default;
 		Object(const Object& other) = delete;
+
+		const std::string& name() const { return m_name; }
+		void name(std::string value) { m_name = std::move(value); }
+
+		virtual void __() {}
+
+	protected:
+		std::string m_name;
 	};
 
-	template <class T>
-	using ptr = std::shared_ptr<T>;
-
-	template <class T>
-	using impl_ptr = std::unique_ptr<T>;
-
-	template <class T>
-	using ptr_vector = std::vector<ptr<T>>;
-
-	using color_t = glm::vec4;
-
-	template <class T, class U>
-	inline constexpr bool isinstance(const ptr<U>& x) {
-		return (bool)std::dynamic_pointer_cast<T>(x);
-		//return std::is_constructible_v<typename std::shared_ptr<U>::element_type, T>;
-	}
-
-	template <class T, class U>
-	inline constexpr bool isinstance(ptr<U>&& x) {
-		return (bool)std::dynamic_pointer_cast<T>(x);
-	}
-
-	template <class T>
-	inline auto instantiate() {
-		return std::make_shared<T>();
-	}
-
-	template <class T>
-	inline auto enum_cast(T value) {
-		return static_cast<std::underlying_type_t<T>>(value);
-	}
 
 #define DECL_OBJECT(class_) \
 	class_(); \
-	~class_();
+	~class_(); \
+	RegisterType(class_)
 
 #define DECL_PIMPL \
 	struct Impl; \
 	impl_ptr<Impl> pImpl;
 
-#define MAKE_PIMPL(class_) \
-	pImpl(std::make_unique<class_::Impl>())
+#define MAKE_PIMPL \
+	pImpl(std::make_unique<Impl>())
 
 #define DEFINE_OBJECT(class_) \
 	class_::class_() : pImpl(std::make_unique<class_::Impl>()) {} \
 	class_::~class_() = default;
 
+	////////////////////////////////////////////////////////////////////////////////
+	// Get object by name
+
+	struct ObjectFactory {
+		inline static std::map<std::string, std::function<Object*()>> type_creator_map;
+
+		static Object* create(const std::string& type)
+		{
+			if (auto it = type_creator_map.find(type); it != type_creator_map.end())
+				return it->second();
+			return nullptr;
+		}
+
+		template <typename T>
+		static std::enable_if_t<std::is_base_of_v<Object, T>, std::unique_ptr<T>>
+			create(const std::string& type)
+		{
+			return std::unique_ptr<T>(static_cast<T*>(create(type)));
+		}
+
+		static bool has(const std::string& type) {
+			return type_creator_map.contains(type);
+		}
+
+		template <typename T>
+		struct RegisterTypeHelper {
+			RegisterTypeHelper(const std::string& id) {
+				if constexpr (std::is_constructible_v<T>) {
+					type_creator_map.insert({id, []() { return new T(); }});
+					type_creator_map.insert({std::string(NAMEOF_TYPE(T)), []() { return new T(); }});
+				}
+			}
+		};
+	};
+
+#define RegisterType(Type) \
+	inline static ObjectFactory::RegisterTypeHelper<Type> __register_type_global_##Type{#Type};
 
 }

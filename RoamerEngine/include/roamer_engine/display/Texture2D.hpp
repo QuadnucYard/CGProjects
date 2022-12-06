@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Texture.hpp"
 
 namespace qy::cg {
@@ -9,6 +9,8 @@ namespace qy::cg {
 
 		//static ptr<Texture2D> createExternalTexture();
 		static ptr<Texture2D> whiteTexture();
+
+		static ptr<Texture2D> load(const fs::path& path);
 
 	private:
 		static ptr<Texture2D> createOnePixelTexture(const color_t& color);
