@@ -1,4 +1,4 @@
-#include "roamer_engine/display/Light.hpp"
+ï»¿#include "roamer_engine/display/Light.hpp"
 
 namespace qy::cg {
 
@@ -7,10 +7,12 @@ namespace qy::cg {
 		color_t ambient {0.0f, 0.0f, 0.0f, 0.0f};
 		color_t diffuse {1.0f, 1.0f, 1.0f, 1.0f};
 		color_t specular {1.0f, 1.0f, 1.0f, 1.0f};
-		float intensity {1};
+		float intensity {1.0f};
 		float range {10};
-		float spotAngle {10};
-		float innerSpotAngle {90};
+		float spotAngle {60};
+		float innerSpotAngle {30};
+		LightShadow shadows {LightShadow::None};
+		float shadowStrength {1.0f};
 	};
 
 	DEFINE_OBJECT(Light);
@@ -24,6 +26,8 @@ namespace qy::cg {
 	void Light::setDiffuse(color_t value) { pImpl->diffuse = value; }
 	color_t Light::getSpecular() const { return pImpl->specular; }
 	void Light::setSpecular(color_t value) { pImpl->specular = value; }
+	color_t Light::getColor() const { return pImpl->diffuse; }
+	void Light::setColor(color_t value) { pImpl->ambient = pImpl->diffuse = pImpl->specular = value; }
 
 	float Light::getIntensity() const { return pImpl->intensity; }
 	void Light::setIntensity(float value) { pImpl->intensity = value; }
@@ -33,10 +37,15 @@ namespace qy::cg {
 	void Light::setSpotAngle(float value) { pImpl->spotAngle = value; }
 	float Light::getInnerSpotAngle() const { return pImpl->innerSpotAngle; }
 	void Light::setInnerSpotAngle(float value) { pImpl->innerSpotAngle = value; }
+
+	LightShadow Light::getShadows() const { return pImpl->shadows; }
+	void Light::setShadows(LightShadow value) { pImpl->shadows = value; }
+	float Light::getShadowStrength() const { return pImpl->shadowStrength; }
+	void Light::setShadowStrength(float value) { pImpl->shadowStrength = value; }
 }
 
 /*
-Ôİ¶¨Õâ¸ö¹«Ê½
+æš‚å®šè¿™ä¸ªå…¬å¼
 a = 1.0
 b = 4.6/(r+1)
 c = 80/((r+1)^2)

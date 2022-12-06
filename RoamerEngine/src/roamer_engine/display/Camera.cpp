@@ -1,10 +1,7 @@
 ﻿#include "roamer_engine/display/Camera.hpp"
-#include "roamer_engine/display/Scene.hpp"
-#include "roamer_engine/display/MeshFilter.hpp"
-#include "roamer_engine/display/Shader.hpp"
-#include "roamer_engine/display/SkyBox.hpp"
-#include "roamer_engine/display/Light.hpp"
+#include "roamer_engine/display/Transform.hpp"
 #include "roamer_engine/rendering/RenderMaster.hpp"
+#include "roamer_engine/Screen.hpp"
 
 namespace qy::cg {
 
@@ -25,6 +22,11 @@ namespace qy::cg {
 
 	DEFINE_OBJECT(Camera);
 
+	inline void Camera::start() {
+		s_main = std::dynamic_pointer_cast<Camera>(shared_from_this());
+		resetAspect();
+	}
+
 	float Camera::getAspect() const { return pImpl->aspect; }
 	void Camera::setAspect(float value) { pImpl->aspect = value; }
 	float Camera::getDepth() const { return pImpl->depth; }
@@ -44,81 +46,37 @@ namespace qy::cg {
 	glm::vec4 Camera::getBackgroundColor() const { return pImpl->backgroundColor; }
 	void Camera::setBackgroundColor(glm::vec4 value) { pImpl->backgroundColor = value; }
 
-	void Camera::render() {
+	mat4 Camera::viewMatrix() const {
+		return glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});
+	}
 
-		struct RenderItem {
-			int renderOrder;
-			int layerOrder;
-			Renderer* renderer;
-			glm::mat4 model;
-		};
-		std::vector<RenderItem> renderList;
-		std::vector<Light*> lights;
+	mat4 Camera::projMatrix() const {
+		if (isOrthographic()) {
+			float h = getOrthographicSize(), w = getOrthographicSize() * getAspect();
+			return glm::ortho(-w, w, -h, h, pImpl->nearClipPlane, pImpl->farClipPlane);
+		} else {
+			return glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
+		}
+	}
 
-		const auto& dfs = [&](const TransformPtr& parent, const glm::mat4& model) {
-			const auto& s = [&](auto&& self, const TransformPtr& parent, const glm::mat4& model) -> void {
-				int i = 0;
-				for (auto&& child : parent) {
-					auto model2 = model * child->modelMatrix();
-					for (auto&& r : child->getComponents<Renderer>()) {
-						renderList.emplace_back(0, i, r.get(), model2);
-					}
-					for (auto&& light : child->getComponents<Light>()) {
-						lights.push_back(light.get());
-					}
-					self(self, child, model2);
-					i++;
-				}
-			};
-			s(s, parent, model);
-		};
+	void Camera::resetAspect() {
+		setAspect((float)Screen::width() / Screen::height());
+	}
 
-		dfs(Scene::current()->root(), Scene::current()->root()->modelMatrix());
-
-		std::ranges::sort(renderList, [](const RenderItem& o1, const RenderItem& o2) {
-			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
-		});
-
+	void Camera::clearBuffer() const {
 		if (pImpl->clearFlags == CameraClearFlags::SolidColor || pImpl->clearFlags == CameraClearFlags::Skybox) {
 			auto&& c = pImpl->backgroundColor;
 			glClearColor(c.r, c.g, c.b, c.a);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		} else if (pImpl->clearFlags ==  CameraClearFlags::Depth) {
+		} else if (pImpl->clearFlags == CameraClearFlags::Depth) {
 			auto&& c = pImpl->backgroundColor;
 			glClearColor(c.r, c.g, c.b, c.a);
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
+	}
 
-		auto view = glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});
-		glm::mat4 proj;
-		if (isOrthographic()) {
-			float h = getOrthographicSize(), w = getOrthographicSize() * getAspect();
-			proj = glm::ortho(-w, w, -h, h, pImpl->nearClipPlane, pImpl->farClipPlane);
-		} else {
-			proj = glm::perspective(glm::radians(pImpl->fieldOfView), pImpl->aspect, pImpl->nearClipPlane, pImpl->farClipPlane);
-		}
-
-		// Lighting
-		rendering::RenderMaster::instance()->lighting(lights, transform()->position(), Scene::current()->getAmbientColor());
-
-		// Now only support MeshRenderer
-		for (auto&& r : renderList) {
-			for (auto&& mat : r.renderer->__getMaterials()) {
-				auto&& shader = mat->getShader();
-				shader.use();
-				shader.setMat4("model", r.model);
-				shader.setMat4("view", view);
-				shader.setMat4("proj", proj);
-				mat->__applyProperties();
-			}
-			auto mf = r.renderer->getComponent<MeshFilter>();
-			mf->mesh()->__render();
-		}
-
-		// Render SkyBox
-		if (pImpl->clearFlags == CameraClearFlags::Skybox) {
-			getComponent<SkyBox>()->__render(view, proj);
-		}
+	void Camera::render() {
+		rendering::RenderMaster::instance()->pass(this);
 	}
 
 }

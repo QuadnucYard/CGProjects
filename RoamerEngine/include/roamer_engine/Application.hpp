@@ -1,97 +1,45 @@
-#pragma once
-#include <GL/glew.h>
+Ôªø#pragma once
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <cstdlib>
 #include <string_view>
-#include "display/Shaders.hpp"
-#include "display/Materials.hpp"
-#include "Time.hpp"
-#include "input/Input.hpp"
 
 namespace qy::cg {
 
 	class Application {
-	public:
-		static int VERSION_MAJOR;
-		static int VERSION_MINOR;
+	protected:
+		inline static int VERSION_MAJOR = 4;
+		inline static int VERSION_MINOR = 6;
 
-	private:
 		inline static Application* s_main;
 
 		GLFWwindow* window;
 
 	public:
-		Application() {
-			//glfw≥ı ºªØ
-			if (!glfwInit()) {
-				std::exit(EXIT_FAILURE);
-			}
-			//¥∞ø⁄∞Ê±æ
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR); //÷˜∞Ê±æ∫≈
-			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, VERSION_MINOR); //¥Œ∞Ê±æ∫≈
-			window = nullptr;
-			s_main = this;
-		}
+		Application();
 
-		~Application() {
-			if (window) glfwDestroyWindow(window);
-			glfwTerminate();
-			exit(EXIT_SUCCESS);
-		}
+		~Application();
 
-		Application* createWindow(int width, int height, std::string_view title) {
-			window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
-			glfwMakeContextCurrent(window);
-			//…Ë÷√ª∫¥ÊÀ¢–¬ ±º‰
-			glfwSwapInterval(1);
-			//glew≥ı ºªØ
-			if (glewInit() != GLEW_OK) {
-				exit(EXIT_FAILURE);
-			}
-			return this;
-		}
+		Application* createWindow(int width, int height, std::string_view title);
 
-		Application* run() {
-			internalInit();
-			init();
-			// ¬º˛—≠ª∑£¨Ω” ’ ‰»Î ¬º˛
-			while (!glfwWindowShouldClose(window)) {
-				internalUpdate();
-				update();
-				display(); //ªÊ÷∆∫Ø ˝£¨÷˜ÃÂ
-				glfwSwapBuffers(window); //Ωªªª—’…´ª∫¥Ê
-				internalLateUpdate();
-				glfwPollEvents(); // ºÏ≤È”–√ª”–¥•∑¢ ≤√¥ ¬º˛£®±»»Áº¸≈Ã ‰»Î°¢ Û±Í“∆∂Øµ»£©
-				lateUpdate();
-			}
-			return this;
-		}
+		Application* run();
 
-		static Application* main() {
+		inline static Application* main() {
 			return s_main;
 		}
 
-		static GLFWwindow* mainWindow() {
+		inline static GLFWwindow* mainWindow() {
 			return s_main->window;
 		}
 
-	private:
-		void internalInit() {
-			glEnable(GL_DEPTH_TEST);
-			glEnable(GL_CULL_FACE);
-			glFrontFace(GL_CCW);
-			Input::__init__(window);
-			Shaders::__INIT__();
-			Materials::__init__();
-		}
+	protected:
+		virtual void internalInit();
 
-		void internalUpdate() {
-			Time::__update(glfwGetTime());
-		}
+		virtual void internalUpdate();
 
-		void internalLateUpdate() {
-			Input::__update__(); // Input◊¥Ã¨÷ÿ÷√
-		}
+		virtual void internalRender() {}
+
+		virtual void internalLateUpdate() {}
 
 	protected:
 
@@ -101,6 +49,3 @@ namespace qy::cg {
 		virtual void display() {}
 	};
 }
-
-int qy::cg::Application::VERSION_MAJOR = 4;
-int qy::cg::Application::VERSION_MINOR = 3;

@@ -1,55 +1,34 @@
-#pragma once
-#include "DisplayObject.hpp"
-#include "Camera.hpp"
+﻿#pragma once
+#include "../Object.hpp"
 
 namespace qy::cg {
+
+	class Transform;
+	class Camera;
 
 	class Scene : public Object {
 	private:
 		inline static ptr<Scene> _currentScene;
 
 	public:
-		Scene() {}
+		DECL_OBJECT(Scene);
 
-		static ptr<Scene> create() { 
-			auto scene = instantiate<Scene>(); 
-			scene->m_root = instantiate<Transform>();
-			_currentScene = scene;
-			return scene;
-		}
+		static ptr<Scene> create();
 
-		static ptr<Scene> current() {
-			return _currentScene;
-		}
+		static ptr<Scene> current();
 
-		auto root() { 
-			return m_root;
-		}
+		ptr<Transform> root();
 
-		auto createCamera() {
-			auto obj = DisplayObject::create();
-			auto cam = obj->addComponent<Camera>();
-			root()->addChild(obj->transform());
-			return cam;
-		}
+		ptr<Camera> createCamera();
 
-		void dispatch_update() {
-			for (auto&& c : *m_root) {
-				c->obj()->update();
-			}
-		}
+		void dispatch_update();
 
-		void dispatch_render() {
-			if (Camera::main())
-				Camera::main()->render();
-		}
+		void dispatch_render();
 
-		color_t getAmbientColor() const { return m_ambientColor; }
-		void setAmbientColor(color_t value) { m_ambientColor = value; }
-
+		color_t getAmbientColor() const;
+		void setAmbientColor(color_t value);
 
 	private:
-		TransformPtr m_root;
-		color_t m_ambientColor {0.0f, 0.0f, 0.0f, 0.0f};
+		DECL_PIMPL;
 	};
 }

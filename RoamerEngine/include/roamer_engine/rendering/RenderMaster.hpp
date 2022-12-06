@@ -1,12 +1,33 @@
 ﻿#pragma once
 #include "../Object.hpp"
-#include "../display/Light.hpp"
+#include "UniformBufferObject.hpp"
+#include "ShadowMapping.hpp"
+#include <array>
+
+#ifndef NUM_DIRECT_SHADOWMAP
+#define NUM_DIRECT_SHADOWMAP 8 // If you change this value, together with that in shader.
+#endif
+#ifndef NUM_POINT_SHADOWMAP
+#define NUM_POINT_SHADOWMAP 8 // If you change this value, together with that in shader.
+#endif
+
+namespace qy::cg {
+	class Camera;
+	class Light;
+}
 
 namespace qy::cg::rendering {
 
 	class RenderMaster {
 
-		struct Light {
+		struct CameraUBO {
+			glm::vec3 viewPos;
+			float time;
+			glm::mat4 view;
+			glm::mat4 proj;
+		};
+
+		struct LightUBO {
 			int type;				// 0
 			float range;			// 4
 			float cutOff;			// 8
@@ -15,34 +36,39 @@ namespace qy::cg::rendering {
 			glm::vec4 diffuse;		// 32
 			glm::vec4 specular;		// 48
 			glm::vec3 position;		// 64
-			float __0;				// 76
+			int shadows;			// 76
 			glm::vec3 direction;	// 80
-			float __1;				// 92
+			float shadowStrength;	// 92
 		};
 
-		struct Lights {
-			glm::vec3 viewPos;
+		struct LightsUBO {
 			int numLights;
+			int numDirectShadows;
+			int numPointShadows;
+			float farPlane;
 			glm::vec4 globalAmbient;
-			Light lights[256];
+			glm::mat4 lightSpaceMatrices[NUM_DIRECT_SHADOWMAP];
+			LightUBO lights[256];
 		};
 
-	private:
-		inline static RenderMaster* _instance {nullptr};
 	public:
-		static RenderMaster* instance() {
-			if (!_instance) _instance = new RenderMaster();
-			return _instance;
-		}
+		static RenderMaster* instance();
 
 		RenderMaster();
 
 	public:
-		void lighting(const std::vector<qy::cg::Light*>& lightList, glm::vec3 viewPos, glm::vec4 globalAmbient);
+		void setCamera(const Camera* camera);
+
+		void lighting(const std::vector<Light*>& lightList);
+
+		void pass(const Camera* camera);
 
 	private:
-		GLuint uboLights;
-		Lights lights;
+		UniformBufferObject<CameraUBO> uboCamera;
+		UniformBufferObject<LightsUBO> uboLights;
+		std::array<DirectShadowMapping, NUM_DIRECT_SHADOWMAP> directShadowMaps;
+		std::array<PointShadowMapping, NUM_POINT_SHADOWMAP> pointShadowMaps;
+		inline static int maxTextures;
 	};
 
 }

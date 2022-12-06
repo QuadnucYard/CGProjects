@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -30,6 +30,8 @@ namespace qy::cg {
 		void lookAt(const glm::vec3& target);
 
 		pointer parent() const;
+
+		size_t childCount() const;
 
 		void addChild(pointer child);
 

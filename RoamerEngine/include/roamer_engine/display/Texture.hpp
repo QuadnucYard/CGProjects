@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../Object.hpp"
 
 namespace qy::cg {
@@ -10,13 +10,15 @@ namespace qy::cg {
 		Mirror = GL_MIRRORED_REPEAT,
 		MirrorOnce = GL_MIRROR_CLAMP_TO_EDGE,
 	};
-	
+
 
 	enum class TextureFilterMode {
 		Nearest = GL_NEAREST,
 		Linear = GL_LINEAR,
 	};
 
+
+	class Texture2D;
 
 	class Texture: public Object {
 	public:
@@ -37,7 +39,8 @@ namespace qy::cg {
 		TextureWrapMode getWrapModeV() const;
 		void setWrapModeV(TextureWrapMode value);
 
-		static ptr<Texture> loadFromFile(const fs::path& path);
+	protected:
+		void __setSize(int width, int height);
 
 	protected:
 		DECL_PIMPL;

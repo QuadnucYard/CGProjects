@@ -1,24 +1,20 @@
 ﻿#include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/display/Shader.hpp"
 #include "roamer_engine/display/Texture.hpp"
-#include <unordered_map>
 
 namespace qy::cg {
 
 	struct Material::Impl {
 		Shader shader;
 
-		template <class T>
-		using prop_dict = std::unordered_map<std::string, T>;
-
 		prop_dict<int> intProps;
 		prop_dict<float> floatProps;
 		prop_dict<color_t> colorProps;
 		prop_dict<ptr<Texture>> textureProps;
 
-		Impl() { 
+		Impl() {
 			textureProps["_MainTex"] = nullptr;
-			colorProps["_Color"] = {1.0f, 1.0f, 1.0f, 1.0f}; 
+			colorProps["_Color"] = {1.0f, 1.0f, 1.0f, 1.0f};
 			colorProps["material.ambient"] = {1.0f, 1.0f, 1.0f, 1.0f};
 			colorProps["material.diffuse"] = {1.0f, 1.0f, 1.0f, 1.0f};
 			colorProps["material.specular"] = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -83,7 +79,13 @@ namespace qy::cg {
 
 	void Material::setMainTexture(const ptr<Texture>& value) { setTexture("_MainTex", value); }
 
-	void Material::__applyProperties() const {
-		pImpl->applyProperties();
-	}
+	const Material::prop_dict<int>& Material::getInts() const { return pImpl->intProps; }
+
+	const Material::prop_dict<float>& Material::getFloats() const { return pImpl->floatProps; }
+
+	const Material::prop_dict<color_t>& Material::getColors() const { return pImpl->colorProps; }
+
+	const Material::prop_dict<ptr<Texture>>& Material::getTextures() const { return pImpl->textureProps; }
+
+	void Material::__applyProperties() const { pImpl->applyProperties(); }
 }

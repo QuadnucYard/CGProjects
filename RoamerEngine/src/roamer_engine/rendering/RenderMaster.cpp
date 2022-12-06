@@ -1,35 +1,195 @@
 ﻿#include "roamer_engine/rendering/RenderMaster.hpp"
 #include "roamer_engine/display/Transform.hpp"
+#include "roamer_engine/display/Camera.hpp"
+#include "roamer_engine/display/Light.hpp"
+#include "roamer_engine/display/Renderer.hpp"
+#include "roamer_engine/display/Scene.hpp"
+#include "roamer_engine/display/Skybox.hpp"
+#include "roamer_engine/display/Shader.hpp"
+#include "roamer_engine/display/Material.hpp"
+#include "roamer_engine/Screen.hpp"
+#include "roamer_engine/Time.hpp"
 
 namespace qy::cg::rendering {
 
-	RenderMaster::RenderMaster() {
-		glGenBuffers(1, &uboLights);
-
-		glBindBuffer(GL_UNIFORM_BUFFER, uboLights);
-		glBufferData(GL_UNIFORM_BUFFER, sizeof(Lights), NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0); // 这里可能是0？
-		glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboLights, 0, sizeof(Lights));
+	RenderMaster* RenderMaster::instance() {
+		static RenderMaster _instance;
+		return &_instance;
 	}
 
-	void RenderMaster::lighting(const std::vector<qy::cg::Light*>& lightList, glm::vec3 viewPos, glm::vec4 globalAmbient) {
-		lights.numLights = lightList.size();
-		lights.globalAmbient = globalAmbient; sizeof(Light); alignof(Light);
-		lights.viewPos = viewPos;
+	RenderMaster::RenderMaster(): uboCamera(0), uboLights(2) {
+		maxTextures = []() {
+			int iUnits;
+			glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &iUnits);
+			return iUnits;
+		}();
+	}
+
+	void RenderMaster::setCamera(const Camera* camera) {
+		uboCamera->time = Time::time();
+		uboCamera->viewPos = camera->transform()->position();
+		uboCamera->view = camera->viewMatrix();
+		uboCamera->proj = camera->projMatrix();
+		uboCamera.upload();
+	}
+
+	void RenderMaster::lighting(const std::vector<qy::cg::Light*>& lightList) {
+		uboLights->numLights = static_cast<int>(lightList.size());
+		uboLights->globalAmbient = Scene::current()->getAmbientColor();
+		uboLights->farPlane = ShadowMapping::FAR_PLANE;
+		int s1 = 0, s2 = 0; // direct和point的数量
 		for (size_t i = 0; i < lightList.size(); i++) {
 			auto&& light = lightList[i];
-			lights.lights[i].type = static_cast<int>(light->getType());
-			lights.lights[i].ambient = light->getAmbient() * light->getIntensity();
-			lights.lights[i].diffuse = light->getDiffuse() * light->getIntensity();
-			lights.lights[i].specular = light->getSpecular() * light->getIntensity();
-			lights.lights[i].position = light->transform()->position();
-			lights.lights[i].direction = light->transform()->rotation() * glm::vec3(0, 0, -1.0f);
-			lights.lights[i].range = light->getRange();
-			lights.lights[i].outerCutOff = glm::cos(glm::radians(light->getSpotAngle()));
-			lights.lights[i].cutOff = glm::cos(glm::radians(light->getInnerSpotAngle()));
+			auto&& uboLight = uboLights->lights[i];
+			uboLight.type = static_cast<int>(light->getType());
+			uboLight.ambient = light->getAmbient() * light->getIntensity();
+			uboLight.diffuse = light->getDiffuse() * light->getIntensity();
+			uboLight.specular = light->getSpecular() * light->getIntensity();
+			uboLight.position = light->transform()->position();
+			uboLight.direction = light->transform()->rotation() * glm::vec3(0, 0, -1.0f);
+			uboLight.range = light->getRange();
+			uboLight.outerCutOff = glm::cos(glm::radians(light->getSpotAngle()));
+			uboLight.cutOff = glm::cos(glm::radians(light->getInnerSpotAngle()));
+
+			if (light->getShadows() == LightShadow::None) {
+				uboLight.shadows = 0;
+			} else {
+				bool isPoint = light->getType() == LightType::Point;
+				if (isPoint) {
+					if (s2 >= NUM_POINT_SHADOWMAP) continue;
+					s2++;
+				} else {
+					if (s1 >= NUM_DIRECT_SHADOWMAP) continue;
+					uboLights->lightSpaceMatrices[s1] = directShadowMaps[s1].lightSpaceMatrix;
+					s1++;
+				}
+
+				switch (light->getShadows()) {
+					case LightShadow::Hard:
+						uboLight.shadows = isPoint ? s2 : s1;
+						uboLight.shadowStrength = light->getShadowStrength();
+						break;
+					case LightShadow::Soft:
+						uboLight.shadows = -(isPoint ? s2 : s1);
+						uboLight.shadowStrength = light->getShadowStrength();
+						break;
+				}
+			}
 		}
-		glBindBuffer(GL_UNIFORM_BUFFER, uboLights);
-		glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(Lights), &lights);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		uboLights->numDirectShadows = s1;
+		uboLights->numPointShadows = s2;
+		uboLights.upload();
+	}
+
+	void RenderMaster::pass(const Camera* camera) {
+
+		// Get renderers and lights 
+
+		struct RenderItem {
+			int renderOrder;
+			int layerOrder;
+			Renderer* renderer;
+			glm::mat4 model;
+		};
+		std::vector<RenderItem> renderList;
+		std::vector<Light*> lights;
+
+		const auto dfs = [&](this auto&& self, const TransformPtr& parent, const glm::mat4& model) -> void {
+			int i = 0;
+			for (auto&& child : parent) {
+				if (!child->obj()->activeSelf()) continue;
+				auto model2 = model * child->modelMatrix();
+				for (auto&& r : child->getComponents<Renderer>()) {
+					if (r->enabled())
+						renderList.emplace_back(0, i, r.get(), model2);
+				}
+				for (auto&& light : child->getComponents<Light>()) {
+					if (light->enabled())
+						lights.push_back(light.get());
+				}
+				self(child, model2);
+				i++;
+			}
+		};
+
+		dfs(Scene::current()->root(), Scene::current()->root()->modelMatrix());
+
+		// Sort render items
+		std::ranges::sort(renderList, [](const RenderItem& o1, const RenderItem& o2) {
+			return std::tie(o1.renderOrder, o2.layerOrder) < std::tie(o2.renderOrder, o2.layerOrder);
+		});
+
+		setCamera(camera);
+
+		// Shadow rendering
+		glCullFace(GL_FRONT);
+		int numDirectShadows = 0, numPointShadows = 0;
+		for (auto&& light : lights) {
+			if (light->getShadows() == LightShadow::None) continue;
+			Shader* depthShader {nullptr};
+			LightType lightType = light->getType();
+			switch (lightType) {
+				case LightType::Directional:
+				case LightType::Spot:
+					if (numDirectShadows == directShadowMaps.size()) break;
+					depthShader = directShadowMaps[numDirectShadows].shadowing(light);
+					++numDirectShadows;
+					break;
+				case LightType::Point:
+					if (numPointShadows == pointShadowMaps.size()) break;
+					depthShader = pointShadowMaps[numPointShadows].shadowing(light);
+					++numPointShadows;
+					break;
+			}
+			if (!depthShader) continue;
+			// Not the active shader is depth shader.
+			for (auto&& r : renderList) {
+				depthShader->setMat4("model", r.model);
+				r.renderer->__render();
+			}
+		}
+		// All depthMaps should have values.
+		// 
+		for (int i = 0; i < directShadowMaps.size(); i++) {
+			glBindTextureUnit(maxTextures - i - 1, directShadowMaps[i].depthTexture);
+			//glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1);
+			//glBindTexture(GL_TEXTURE_2D, directShadowMaps[i].depthTexture); // 可以赋值0！
+		}
+		for (int i = 0; i < pointShadowMaps.size(); i++) {
+			glBindTextureUnit(maxTextures - i - 1 - (int)directShadowMaps.size(), pointShadowMaps[i].depthTexture);
+			//glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1 - (int)directShadowMaps.size());
+			//glBindTexture(GL_TEXTURE_CUBE_MAP, pointShadowMaps[i].depthTexture);
+		}
+
+		// render scene as normal 
+		glCullFace(GL_BACK);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glViewport(0, 0, Screen::width(), Screen::height());
+		camera->clearBuffer();
+
+		// Lighting
+		lighting(lights);
+
+		// Render
+		for (auto&& r : renderList) {
+			for (auto&& mat : r.renderer->__getMaterials()) {
+				auto&& shader = mat->getShader();
+				shader.use();
+				shader.setMat4("model", r.model);
+				mat->__applyProperties();
+				// All depthMaps should have values
+				// Maybe this only need do once
+				for (int i = 0; i < directShadowMaps.size(); i++)
+					shader.setInt(std::format("depthMaps[{}]", i), maxTextures - 1 - i);
+				for (int i = 0; i < pointShadowMaps.size(); i++)
+					shader.setInt(std::format("depthCubemaps[{}]", i), maxTextures - 1 - i - (int)directShadowMaps.size());
+			}
+			r.renderer->__render();
+		}
+
+		// Render SkyBox
+		if (camera->getClearFlags() == CameraClearFlags::Skybox) {
+			camera->getComponent<SkyBox>()->__render(uboCamera->view, uboCamera->proj);
+		}
 	}
 }
