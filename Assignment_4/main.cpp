@@ -6,7 +6,6 @@
 #include<roamer_engine/display/Texture.hpp>
 #include"Maze.hpp"
 #include"Wall.hpp"
-#include"MoveControl.hpp"
 
 using namespace qy::cg;
 
@@ -39,14 +38,15 @@ public:
 		obj = Primitives::createSphere();
 		obj->transform()->scale({0.1, 0.1, 0.05});
 		obj->transform()->rotation(glm::vec3({glm::radians(-90.0), 0.0, 0.0}));
-
 		auto color = Color::hsv2rgb(Random::range(0.0f, 1.0f), 1.0f, 0.5f, 1.0);
+		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
+		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
 		auto&& light = obj->addComponent<Light>();
 		light->setType(LightType::Spot);
 		light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
 		light->setDiffuse(color);
 		light->setSpecular(color);
-		light->setIntensity(1.0f);
+		light->setIntensity(3.0f);
 		light->setRange(30);
 		light->setInnerSpotAngle(20);
 		light->setSpotAngle(60);
@@ -75,25 +75,22 @@ protected:
 		cam->obj()->transform()->position({0, 0, 0});
 		cam->obj()->transform()->rotation(glm::vec3({0.0, glm::radians(-90.0), 0.0}));
 		cam->addComponent(SkyBox::loadFromFile(
-			"assets/skybox/right.jpg",
-			"assets/skybox/left.jpg",
-			"assets/skybox/top.jpg",
-			"assets/skybox/bottom.jpg",
-			"assets/skybox/front.jpg",
-			"assets/skybox/back.jpg"
+			"assets/skybox/interstellar_rt.png",
+			"assets/skybox/interstellar_lf.png",
+			"assets/skybox/interstellar_up.png",
+			"assets/skybox/interstellar_dn.png",
+			"assets/skybox/interstellar_ft.png",
+			"assets/skybox/interstellar_bk.png"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
-		cam->addComponent<MoveControl>();
-
-		//设置光标不可见
-		//glfwSetInputMode(mainWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
 		auto&& light = cam->addComponent<Light>();
 		light->setType(LightType::Spot);
 		light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
 		light->setDiffuse(Color::rgba(250, 250, 236));
 		light->setSpecular(Color::rgba(250, 250, 236));
-		light->setIntensity(1.0f);
+		light->setIntensity(2.0f);
 		light->setRange(20);
 		light->setInnerSpotAngle(20);
 		light->setSpotAngle(60);
@@ -173,10 +170,11 @@ protected:
 		//monkey->transform()->rotation(glm::vec3(0.0, glm::radians(Time::deltaTime()), 0.0));
 
 		scene->dispatch_update();
-		if (Input::getKey(KeyCode::ESCAPE)) {
-			if (mainWindow()) glfwDestroyWindow(mainWindow());
-			glfwTerminate();
-			exit(EXIT_SUCCESS);
+		if (Input::getKeyDown(KeyCode::F11)) {
+			Screen::setFullScreen(!Screen::isFullScreen());
+		}
+		if (Input::getKeyDown(KeyCode::ESCAPE)) {
+			quit();
 		}
 	}
 

@@ -30,7 +30,8 @@ namespace qy::cg {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 		} else if (nrChannels == 4) {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-
+		} else if (nrChannels == 1) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE16, width, height, 0, GL_LUMINANCE16, GL_UNSIGNED_BYTE, data);
 		} else {
 			throw std::runtime_error("Not supported image format!");
 		}

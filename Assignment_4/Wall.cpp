@@ -1,5 +1,6 @@
 ﻿#include"Wall.hpp" 
 #include<roamer_engine/display/Materials.hpp>
+#include<numbers>
 
 Wall::Wall() {
 	static ptr<Material> wallMaterial;
@@ -7,49 +8,114 @@ Wall::Wall() {
 	wallObj = DisplayObject::create();
 	// wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
 	auto mesh = wallObj->addComponent<MeshFilter>()->mesh();
-	static size_t vertNum = 24;
-	mesh->setVertices({
-		{-1, -1, 1}, {-1, 1, 1}, {1, 1, 1}, {1, -1, 1},
-		{1, -1, 1}, {1, 1, 1}, {1, 1, -1},{1, -1, -1},
-		{1, -1, -1}, {1, 1, -1}, {-1, 1, -1}, {-1, -1, -1},
-		{-1,-1,-1}, {-1, 1, -1}, {-1, 1, 1}, {-1,-1,1},
-		{-1,1,1}, {-1,1,-1}, {1, 1,-1}, {1, 1, 1},
-		{-1,-1,-1}, {-1, -1, 1}, {1,-1,1}, {1,-1,-1},
-		});
-	mesh->setColors({ vertNum, {1.0f, 1.0f, 1.0f, 1.0f} });
-	mesh->setIndices({
-		1, 0, 3, 3, 2, 1,
-		5, 4, 7, 7, 6, 5,
-		9, 8, 11, 11, 10, 9,
-		13, 12, 15, 15, 14, 13,
-		17, 16, 19, 19, 18, 17,
-		21, 20, 23, 23, 22, 21
-		}, MeshTopology::Triangles, 0);
-	mesh->setNormals({
-		{0, 0, 1}, {0, 0, 1}, {0, 0, 1}, {0, 0, 1},
-		{1, 0, 0}, {1, 0, 0}, {1, 0, 0},{1, 0, 0},
-		{0, 0, -1}, {0, 0, -1}, {0, 0, -1}, {0, 0, -1},
-		{-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0}, {-1, 0, 0},
-		{0, 1, 0}, {0, 1, 0}, {0, 1, 0}, {0, 1, 0},
-		{0,-1, 0}, {0, -1, 0}, {0,-1,0}, {0,-1, 0},
-		});
-	mesh->setUVs({
-		{0,0},{0,1},{1,1},{1,0},
-		{0,0},{0,1},{1,1},{1,0},
-		{0,0},{0,1},{1,1},{1,0},
-		{0,0},{0,1},{1,1},{1,0},
-		{0,0},{0,1},{1,1},{1,0},
-		{0,0},{0,1},{1,1},{1,0}
-		});
+	
+	static int divNum = 40;
+	static int vertNum = (divNum + 1) * (divNum + 1) * 6;
+
+	std::vector<glm::vec3> vertices(vertNum);
+	std::vector<glm::vec3> normals(vertNum);
+	std::vector<glm::vec4> tangents(vertNum);
+	std::vector<glm::vec2> uvs(vertNum);
+	std::vector<GLuint> triangles(divNum * divNum * 3 * 2 * 6);
+	std::vector<glm::vec4> colors(vertNum, {1.0f, 1.0f, 1.0f, 1.0f});
+
+	const float pi = std::numbers::pi_v<float>;
+	int idx = 0, idx_ = 0;
+	for (int k = 0; k < 6; k++) {
+		for (int i = 0; i <= divNum; i++) {
+			for (int j = 0; j <= divNum; j++) {
+				float u = (float)i / divNum, v = (float)j / divNum;	//[0,1]
+				float p = u * 2 - 1, q = v * 2 - 1;	//[-1,1]
+				uvs[idx] = {u, v};
+				switch (k)
+				{
+				case 0: 
+					vertices[idx] = {p, q, 1};
+					normals[idx] = {0, 0, 1};
+					tangents[idx] = {1, 0, 0, 1};
+					break;
+				case 1:	
+					vertices[idx] = {p, q, -1};
+					normals[idx] = {0, 0, -1};
+					tangents[idx] = {1, 0, 0, 1};
+					break;
+				case 2:
+					vertices[idx] = {p, 1, q};
+					normals[idx] = {0, 1, 0};
+					tangents[idx] = {1, 0, 0, 1};
+					break;
+				case 3:
+					vertices[idx] = {p, -1, q};
+					normals[idx] = {0, -1, 0};
+					tangents[idx] = {1, 0, 0, 1};
+					break;
+				case 4:
+					vertices[idx] = {1, p, q};
+					normals[idx] = {1, 0, 0};
+					tangents[idx] = {0, 1, 0, 1};
+					break;
+				case 5:
+					vertices[idx] = {-1, p, q};
+					normals[idx] = {-1, 0, 0};
+					tangents[idx] = {0, 1, 0, 1};
+					break;
+				default:
+					break;
+				}
+				idx++;
+
+				if (i < divNum && j < divNum) {
+					int vList[4];
+					switch (k)
+					{
+					case 0: case 3: case 4:
+						vList[0] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j;
+						vList[1] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j;
+						vList[2] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j + 1;
+						vList[3] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j + 1;
+						break;	   
+					case 1: case 2: case 5:
+						vList[1] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j;
+						vList[0] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j;
+						vList[3] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j + 1;
+						vList[2] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j + 1;
+						break;
+					default:
+						break;
+					}
+					triangles[idx_++] = vList[0];
+					triangles[idx_++] = vList[1];
+					triangles[idx_++] = vList[2];
+					triangles[idx_++] = vList[0];
+					triangles[idx_++] = vList[2];
+					triangles[idx_++] = vList[3];
+				}
+
+			}
+		}
+	}
+
+	mesh->setVertices(vertices);
+	mesh->setTangents(tangents);
+	mesh->setUVs(uvs);
+	mesh->setTriangles(triangles);
+	mesh->setColors(colors);
+	mesh->setNormals(normals);
 
 	if (!wallMaterial) {
-		wallMaterial = Materials::Lit->clone();
-		auto tex = Texture2D::load("assets/wall.jpg");
-		wallMaterial->setMainTexture(tex);
+		auto path = std::filesystem::current_path() /"assets" / "shaders";
+		auto normalMapShader = Shader::fromSourceFile(path / "wall-map.vert", path / "wall-map.frag");
+		wallMaterial = instantiate<Material>();
+		wallMaterial->setShader(normalMapShader);
 		wallMaterial->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });
 		wallMaterial->setColor("material.diffuse", { 1.0f, 1.0f, 1.0f, 1.0f });
 		wallMaterial->setColor("material.specular", { 0.00f, 0.0f, 0.0f, 1.0f });
-		wallMaterial->setFloat("material.shininess", 1);
+		wallMaterial->setFloat("material.shininess", 0.2);
+		wallMaterial->setMainTexture(Texture2D::load("assets/Rock034_2K_Color.png"));
+		wallMaterial->setTexture("_NormalTex", Texture2D::load("assets/Rock034_2K_NormalGL.png"));
+		wallMaterial->setTexture("_SpecTex", Texture2D::load("assets/Rock034_2K_Roughness.png"));
+		wallMaterial->setTexture("_DisplaceTex", Texture2D::load("assets/Rock034_2K_Displacement.png"));
+
 	}
 	wallObj->addComponent<MeshRenderer>()->setSharedMaterials({wallMaterial});
 }
