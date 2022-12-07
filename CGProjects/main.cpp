@@ -81,7 +81,7 @@ protected:
 			light->setShadows(LightShadow::Soft);
 			lightObj->setActive(false);
 		}
-		scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
+		//scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
 		{
 			auto obj = Primitives::createCube();
 			obj->transform()->position({0, -1, 0});
@@ -97,12 +97,18 @@ protected:
 			scene->root()->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 		}
+		return;
 	}
 
 	void update() override {
 		using namespace qy::cg;
 		scene->dispatch_update();
-
+		if (Input::getKeyDown(KeyCode::F11)) {
+			Screen::setFullScreen(!Screen::isFullScreen());
+		}
+		if (Input::getKeyDown(KeyCode::ESCAPE)) {
+			quit();
+		}
 	}
 
 	void display() override {
