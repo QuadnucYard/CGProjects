@@ -4,7 +4,6 @@
 #include <numbers>
 #include <random>
 
-
 class MyApplication: public qy::cg::editor::EditorApplication {
 
 
@@ -35,6 +34,7 @@ protected:
 		));
 		cam->obj()->name("Camera");
 		cam->setClearFlags(CameraClearFlags::Skybox);
+		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
 		{
 			auto lightObj = Primitives::createSphere();
@@ -102,17 +102,6 @@ protected:
 	void update() override {
 		using namespace qy::cg;
 		scene->dispatch_update();
-
-		float cameraSpeed = (float)Time::deltaTime() * 5;
-		auto camPos = cam->obj()->transform()->position();
-		if (Input::getKey(KeyCode::W)) camPos += cameraSpeed * camFront;
-		if (Input::getKey(KeyCode::S)) camPos -= cameraSpeed * camFront;
-		if (Input::getKey(KeyCode::A)) camPos -= glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
-		if (Input::getKey(KeyCode::D)) camPos += glm::normalize(glm::cross(camFront, camUp)) * cameraSpeed;
-		if (Input::getKey(KeyCode::SPACE)) camPos += camUp * cameraSpeed;
-		if (Input::getKey(KeyCode::LEFT_SHIFT)) camPos -= camUp * cameraSpeed;
-		cam->transform()->position(camPos);
-		cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 80.0f));
 
 	}
 

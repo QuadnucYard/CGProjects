@@ -122,6 +122,9 @@
     <ClCompile Include="src\roamer_engine\Application.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\roamer_engine\display\MoveController.cpp">
+      <Filter>src\roamer_engine\display</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine\Time.hpp">
@@ -243,6 +246,9 @@
     </ClInclude>
     <ClInclude Include="include\roamer_engine\display\LightType.hpp">
       <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\display\MoveController.hpp">
+      <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
