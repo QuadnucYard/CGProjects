@@ -1,5 +1,7 @@
-#pragma once
+﻿#pragma once
+#include "../Application.hpp"
 #include "KeyCode.hpp"
+#include "MouseButton.hpp"
 #include <array>
 
 namespace qy::cg {
@@ -37,16 +39,16 @@ namespace qy::cg {
 			return __scroll;
 		}
 
-		static bool getMouseButtonDown(int button) {
-			return glfwGetMouseButton(__window, button) == GLFW_PRESS;
+		static bool getMouseButtonDown(MouseButton button) {
+			return glfwGetMouseButton(__window, enum_cast(button)) == GLFW_PRESS;
 		}
 
-		static bool getMouseButtonUp(int button) {
-			return glfwGetMouseButton(__window, button) == GLFW_RELEASE;
+		static bool getMouseButtonUp(MouseButton button) {
+			return glfwGetMouseButton(__window, enum_cast(button)) == GLFW_RELEASE;
 		}
 
-		static bool getMouseButton(int button) {
-			return __mouseButtonState[button];
+		static bool getMouseButton(MouseButton button) {
+			return __mouseButtonState[enum_cast(button)];
 		}
 
 	private:
@@ -65,10 +67,10 @@ namespace qy::cg {
 		}
 
 		static void __cbKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
-			if (key == GLFW_PRESS) {
+			if (action == GLFW_PRESS) {
 				__keyCount++;
 				__keyDown = true;
-			} else if (key == GLFW_RELEASE) {
+			} else if (action == GLFW_RELEASE) {
 				__keyCount--;
 			}
 			if (key >= 0 && key <= GLFW_KEY_LAST) {

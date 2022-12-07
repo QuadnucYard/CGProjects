@@ -5,6 +5,8 @@
 #include "roamer_engine/Color.hpp"
 #include "roamer_engine/Object.hpp"
 #include "roamer_engine/Random.hpp"
+#include "roamer_engine/Rect.hpp"
+#include "roamer_engine/Screen.hpp"
 #include "roamer_engine/Time.hpp"
 
 #include "roamer_engine/display.hpp"
