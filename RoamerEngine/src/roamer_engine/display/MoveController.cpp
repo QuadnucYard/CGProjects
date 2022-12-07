@@ -92,13 +92,13 @@ namespace qy::cg {
 		}
 
 		//update state
-		if (Input::getMouseButtonDown(MouseButton::Middle) && !pImpl->mouseMidPressed) {
+		if (Input::getKeyDown(KeyCode::TAB) && !pImpl->mouseMidPressed) {
 			pImpl->mouseMidPressed = true;
 		}
-		if (Input::getMouseButtonUp(MouseButton::Middle) && pImpl->mouseMidPressed) {
+		if (Input::getKeyUp(KeyCode::TAB) && pImpl->mouseMidPressed) {
 			pImpl->mouseMidPressed = false;
 			//hide/unhide mouse pointer. Control by middle button
-			if (Input::getMouseButtonUp(MouseButton::Middle)) {
+			if (Input::getKeyUp(KeyCode::TAB)) {
 				if (pImpl->hideMouse)
 					pImpl->hideMouse = false;
 				else

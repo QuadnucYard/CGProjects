@@ -27,7 +27,6 @@ namespace qy::cg {
 	Application* Application::createWindow(int width, int height, std::string_view title) {
 		window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 		glfwMakeContextCurrent(window);
-		Screen::__update__(width, height);
 		//设置缓存刷新时间
 		glfwSwapInterval(1);
 		//glad初始化
@@ -42,8 +41,8 @@ namespace qy::cg {
 		internalInit();
 		init();
 		while (!glfwWindowShouldClose(window)) {
-			glfwPollEvents();
 			internalUpdate();
+			glfwPollEvents();
 			update();
 			internalRender();
 			display();
@@ -52,6 +51,10 @@ namespace qy::cg {
 			glfwSwapBuffers(window);
 		}
 		return this;
+	}
+
+	void Application::quit() {
+		glfwSetWindowShouldClose(window, true);
 	}
 
 	void Application::internalInit() {
