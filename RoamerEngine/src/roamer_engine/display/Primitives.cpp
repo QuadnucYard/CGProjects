@@ -104,6 +104,7 @@ namespace qy::cg {
 			mesh->setUVs(uvs);
 			mesh->setTriangles(triangles);
 			mesh->setColors(colors);
+			mesh->setNormals(normals);
 
 			return mesh;
 		}();

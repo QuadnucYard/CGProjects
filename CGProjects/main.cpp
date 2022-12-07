@@ -97,6 +97,19 @@ protected:
 			scene->root()->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 		}
+		{
+			auto testObj = Primitives::createSphere();
+			testObj->name("test sphere");
+			scene->root()->addChild(testObj->transform());
+			testObj->transform()->position({-3, 2, 0});
+			auto path = std::filesystem::current_path().parent_path() / "RoamerEngine" / "shaders";
+			auto normalMapShader = Shader::fromSourceFile(path / "normal-map.vert", path / "normal-map.frag");
+			auto mat = instantiate<Material>();
+			mat->setShader(normalMapShader);
+			mat->setMainTexture(Assets::load<Texture2D>("assets/Ground054_1K_Color.jpg"));
+			mat->setTexture("_NormalTex", Assets::load<Texture2D>("assets/Ground054_1K_NormalGL.jpg"));
+			testObj->getComponent<MeshRenderer>()->setMaterial(mat);
+		}
 		return;
 	}
 
