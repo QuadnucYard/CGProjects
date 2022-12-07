@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "../Application.hpp"
 #include "KeyCode.hpp"
 #include <array>
@@ -66,10 +66,10 @@ namespace qy::cg {
 		}
 
 		static void __cbKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
-			if (key == GLFW_PRESS) {
+			if (action == GLFW_PRESS) {
 				__keyCount++;
 				__keyDown = true;
-			} else if (key == GLFW_RELEASE) {
+			} else if (action == GLFW_RELEASE) {
 				__keyCount--;
 			}
 			if (key >= 0 && key <= GLFW_KEY_LAST) {
