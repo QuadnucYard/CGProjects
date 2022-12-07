@@ -250,5 +250,11 @@
     <ClInclude Include="include\roamer_engine\display\MoveController.hpp">
       <Filter>include\roamer_engine\display</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\input\MouseButton.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\input\Cursor.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 #include "roamer_engine/display/Materials.hpp"
 #include "roamer_engine/display/Shaders.hpp"
 #include "roamer_engine/input/Input.hpp"
+#include "roamer_engine/input/Cursor.hpp"
 #include "roamer_engine/Screen.hpp"
 #include "roamer_engine/Time.hpp"
 
@@ -59,6 +60,7 @@ namespace qy::cg {
 		glFrontFace(GL_CCW);
 		Screen::__init__(window);
 		Input::__init__(window);
+		Cursor::__init__(window);
 		Shaders::__INIT__();
 		Materials::__init__();
 	}
