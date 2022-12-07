@@ -62,6 +62,7 @@
     <ClInclude Include="include\roamer_engine.hpp" />
     <ClInclude Include="include\roamer_engine\Application.hpp" />
     <ClInclude Include="include\roamer_engine\Color.hpp" />
+    <ClInclude Include="include\roamer_engine\input\Cursor.hpp" />
     <ClInclude Include="include\roamer_engine\display.hpp" />
     <ClInclude Include="include\roamer_engine\display\Camera.hpp" />
     <ClInclude Include="include\roamer_engine\display\Component.hpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="include\roamer_engine\input.hpp" />
     <ClInclude Include="include\roamer_engine\input\Input.hpp" />
     <ClInclude Include="include\roamer_engine\input\KeyCode.hpp" />
+    <ClInclude Include="include\roamer_engine\input\MouseButton.hpp" />
     <ClInclude Include="include\roamer_engine\Object.hpp" />
     <ClInclude Include="include\roamer_engine\Random.hpp" />
     <ClInclude Include="include\roamer_engine\recfg.hpp" />

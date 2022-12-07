@@ -2,6 +2,7 @@
 #include "roamer_engine/display/Materials.hpp"
 #include "roamer_engine/display/Shaders.hpp"
 #include "roamer_engine/input/Input.hpp"
+#include "roamer_engine/input/Cursor.hpp"
 #include "roamer_engine/Screen.hpp"
 #include "roamer_engine/Time.hpp"
 
@@ -26,7 +27,6 @@ namespace qy::cg {
 	Application* Application::createWindow(int width, int height, std::string_view title) {
 		window = glfwCreateWindow(width, height, title.data(), nullptr, nullptr);
 		glfwMakeContextCurrent(window);
-		Screen::__update__(width, height);
 		//设置缓存刷新时间
 		glfwSwapInterval(1);
 		//glad初始化
@@ -53,12 +53,17 @@ namespace qy::cg {
 		return this;
 	}
 
+	void Application::quit() {
+		glfwSetWindowShouldClose(window, true);
+	}
+
 	void Application::internalInit() {
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_CULL_FACE);
 		glFrontFace(GL_CCW);
 		Screen::__init__(window);
 		Input::__init__(window);
+		Cursor::__init__(window);
 		Shaders::__INIT__();
 		Materials::__init__();
 	}

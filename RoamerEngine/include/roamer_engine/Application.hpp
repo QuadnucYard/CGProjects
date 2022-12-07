@@ -24,6 +24,8 @@ namespace qy::cg {
 
 		Application* run();
 
+		void quit();
+
 		inline static Application* main() {
 			return s_main;
 		}

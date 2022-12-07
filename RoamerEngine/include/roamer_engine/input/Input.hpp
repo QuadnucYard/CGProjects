@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "../Application.hpp"
 #include "KeyCode.hpp"
+#include "MouseButton.hpp"
 #include <array>
 
 namespace qy::cg {
@@ -38,16 +39,16 @@ namespace qy::cg {
 			return __scroll;
 		}
 
-		static bool getMouseButtonDown(int button) {
-			return glfwGetMouseButton(__window, button) == GLFW_PRESS;
+		static bool getMouseButtonDown(MouseButton button) {
+			return glfwGetMouseButton(__window, enum_cast(button)) == GLFW_PRESS;
 		}
 
-		static bool getMouseButtonUp(int button) {
-			return glfwGetMouseButton(__window, button) == GLFW_RELEASE;
+		static bool getMouseButtonUp(MouseButton button) {
+			return glfwGetMouseButton(__window, enum_cast(button)) == GLFW_RELEASE;
 		}
 
-		static bool getMouseButton(int button) {
-			return __mouseButtonState[button];
+		static bool getMouseButton(MouseButton button) {
+			return __mouseButtonState[enum_cast(button)];
 		}
 
 	private:
