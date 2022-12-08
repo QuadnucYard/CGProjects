@@ -80,7 +80,7 @@ protected:
 			"assets/skybox/interstellar_bk.png"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
-		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
+		cam->addComponent<MoveController>()->setMoveType(MoveType::Flat);
 
 		auto&& light = cam->addComponent<Light>();
 		light->setType(LightType::Spot);
@@ -190,7 +190,7 @@ protected:
 		{
 			auto obj = Primitives::createCube();
 			obj->name("Ground");
-			obj->transform()->position({0, -4, 0});
+			obj->transform()->position({0, -7, 0});
 			obj->transform()->scale({100, 1, 100});
 			obj->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/Rock050_1K_Color.jpg"));
 			//obj->getComponent<MeshRenderer>()->getMaterial()->setColor("material.ambient", {0.1f, 0.1f, 0.1f, 1.0f});
@@ -203,6 +203,8 @@ protected:
 			container->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 		}
+
+		
 	}
 
 	void update() override {
