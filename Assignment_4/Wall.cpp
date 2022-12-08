@@ -4,103 +4,109 @@
 
 Wall::Wall() {
 	static ptr<Material> wallMaterial;
+	static ptr<Mesh> wallMesh = [] {
+		auto mesh = instantiate<Mesh>();
+
+		static int divNum = 40;
+		static int vertNum = (divNum + 1) * (divNum + 1) * 6;
+
+		std::vector<glm::vec3> vertices(vertNum);
+		std::vector<glm::vec3> normals(vertNum);
+		std::vector<glm::vec4> tangents(vertNum);
+		std::vector<glm::vec2> uvs(vertNum);
+		std::vector<GLuint> triangles(divNum * divNum * 3 * 2 * 6);
+		std::vector<glm::vec4> colors(vertNum, {1.0f, 1.0f, 1.0f, 1.0f});
+
+		const float pi = std::numbers::pi_v<float>;
+		int idx = 0, idx_ = 0;
+		for (int k = 0; k < 6; k++) {
+			for (int i = 0; i <= divNum; i++) {
+				for (int j = 0; j <= divNum; j++) {
+					float u = (float)i / divNum, v = (float)j / divNum;	//[0,1]
+					float p = u * 2 - 1, q = v * 2 - 1;	//[-1,1]
+					uvs[idx] = {u, v};
+					switch (k)
+					{
+						case 0:
+							vertices[idx] = {p, q, 1};
+							normals[idx] = {0, 0, 1};
+							tangents[idx] = {1, 0, 0, 1};
+							break;
+						case 1:
+							vertices[idx] = {p, q, -1};
+							normals[idx] = {0, 0, -1};
+							tangents[idx] = {1, 0, 0, 1};
+							break;
+						case 2:
+							vertices[idx] = {p, 1, q};
+							normals[idx] = {0, 1, 0};
+							tangents[idx] = {1, 0, 0, 1};
+							break;
+						case 3:
+							vertices[idx] = {p, -1, q};
+							normals[idx] = {0, -1, 0};
+							tangents[idx] = {1, 0, 0, 1};
+							break;
+						case 4:
+							vertices[idx] = {1, p, q};
+							normals[idx] = {1, 0, 0};
+							tangents[idx] = {0, 1, 0, 1};
+							break;
+						case 5:
+							vertices[idx] = {-1, p, q};
+							normals[idx] = {-1, 0, 0};
+							tangents[idx] = {0, 1, 0, 1};
+							break;
+						default:
+							break;
+					}
+					idx++;
+
+					if (i < divNum && j < divNum) {
+						int vList[4];
+						switch (k)
+						{
+							case 0: case 3: case 4:
+								vList[0] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j;
+								vList[1] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j;
+								vList[2] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j + 1;
+								vList[3] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j + 1;
+								break;
+							case 1: case 2: case 5:
+								vList[1] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j;
+								vList[0] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j;
+								vList[3] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j + 1;
+								vList[2] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j + 1;
+								break;
+							default:
+								break;
+						}
+						triangles[idx_++] = vList[0];
+						triangles[idx_++] = vList[1];
+						triangles[idx_++] = vList[2];
+						triangles[idx_++] = vList[0];
+						triangles[idx_++] = vList[2];
+						triangles[idx_++] = vList[3];
+					}
+
+				}
+			}
+		}
+
+		mesh->setVertices(vertices);
+		mesh->setTangents(tangents);
+		mesh->setUVs(uvs);
+		mesh->setTriangles(triangles);
+		mesh->setColors(colors);
+		mesh->setNormals(normals);
+
+		return mesh;
+	}();
 
 	wallObj = DisplayObject::create();
 	// wallObj->addComponent<MeshRenderer>()->setMaterial(Materials::Lit);
-	auto mesh = wallObj->addComponent<MeshFilter>()->mesh();
+	wallObj->addComponent<MeshFilter>()->setSharedMesh(wallMesh);
 	
-	static int divNum = 40;
-	static int vertNum = (divNum + 1) * (divNum + 1) * 6;
-
-	std::vector<glm::vec3> vertices(vertNum);
-	std::vector<glm::vec3> normals(vertNum);
-	std::vector<glm::vec4> tangents(vertNum);
-	std::vector<glm::vec2> uvs(vertNum);
-	std::vector<GLuint> triangles(divNum * divNum * 3 * 2 * 6);
-	std::vector<glm::vec4> colors(vertNum, {1.0f, 1.0f, 1.0f, 1.0f});
-
-	const float pi = std::numbers::pi_v<float>;
-	int idx = 0, idx_ = 0;
-	for (int k = 0; k < 6; k++) {
-		for (int i = 0; i <= divNum; i++) {
-			for (int j = 0; j <= divNum; j++) {
-				float u = (float)i / divNum, v = (float)j / divNum;	//[0,1]
-				float p = u * 2 - 1, q = v * 2 - 1;	//[-1,1]
-				uvs[idx] = {u, v};
-				switch (k)
-				{
-				case 0: 
-					vertices[idx] = {p, q, 1};
-					normals[idx] = {0, 0, 1};
-					tangents[idx] = {1, 0, 0, 1};
-					break;
-				case 1:	
-					vertices[idx] = {p, q, -1};
-					normals[idx] = {0, 0, -1};
-					tangents[idx] = {1, 0, 0, 1};
-					break;
-				case 2:
-					vertices[idx] = {p, 1, q};
-					normals[idx] = {0, 1, 0};
-					tangents[idx] = {1, 0, 0, 1};
-					break;
-				case 3:
-					vertices[idx] = {p, -1, q};
-					normals[idx] = {0, -1, 0};
-					tangents[idx] = {1, 0, 0, 1};
-					break;
-				case 4:
-					vertices[idx] = {1, p, q};
-					normals[idx] = {1, 0, 0};
-					tangents[idx] = {0, 1, 0, 1};
-					break;
-				case 5:
-					vertices[idx] = {-1, p, q};
-					normals[idx] = {-1, 0, 0};
-					tangents[idx] = {0, 1, 0, 1};
-					break;
-				default:
-					break;
-				}
-				idx++;
-
-				if (i < divNum && j < divNum) {
-					int vList[4];
-					switch (k)
-					{
-					case 0: case 3: case 4:
-						vList[0] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j;
-						vList[1] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j;
-						vList[2] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j + 1;
-						vList[3] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j + 1;
-						break;	   
-					case 1: case 2: case 5:
-						vList[1] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j;
-						vList[0] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j;
-						vList[3] = k * (divNum + 1) * (divNum + 1) + (i + 1) * (divNum + 1) + j + 1;
-						vList[2] = k * (divNum + 1) * (divNum + 1) + i * (divNum + 1) + j + 1;
-						break;
-					default:
-						break;
-					}
-					triangles[idx_++] = vList[0];
-					triangles[idx_++] = vList[1];
-					triangles[idx_++] = vList[2];
-					triangles[idx_++] = vList[0];
-					triangles[idx_++] = vList[2];
-					triangles[idx_++] = vList[3];
-				}
-
-			}
-		}
-	}
-
-	mesh->setVertices(vertices);
-	mesh->setTangents(tangents);
-	mesh->setUVs(uvs);
-	mesh->setTriangles(triangles);
-	mesh->setColors(colors);
-	mesh->setNormals(normals);
 
 	if (!wallMaterial) {
 		auto path = std::filesystem::current_path() /"assets" / "shaders";
