@@ -1,11 +1,10 @@
-﻿#include<roamer_engine.hpp>
+﻿#include <roamer_engine.hpp>
 #include <cmath>
 #include <numbers>
 #include <random>
-#include<roamer_engine/display/SkyBox.hpp>
-#include<roamer_engine/display/Texture.hpp>
-#include"Maze.hpp"
-#include"Wall.hpp"
+#include <roamer_editor.hpp>
+#include "Maze.hpp"
+#include "Wall.hpp"
 
 using namespace qy::cg;
 
@@ -39,17 +38,15 @@ public:
 		obj->transform()->scale({0.1, 0.1, 0.05});
 		obj->transform()->rotation(glm::vec3({glm::radians(-90.0), 0.0, 0.0}));
 		auto color = Color::hsv2rgb(Random::range(0.0f, 1.0f), 1.0f, 0.5f, 1.0);
-		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
+		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Lit);
 		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
 		auto&& light = obj->addComponent<Light>();
-		light->setType(LightType::Spot);
+		light->setType(LightType::Point);
 		light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
 		light->setDiffuse(color);
 		light->setSpecular(color);
-		light->setIntensity(3.0f);
+		//light->setIntensity(3.0f);
 		light->setRange(30);
-		light->setInnerSpotAngle(20);
-		light->setSpotAngle(60);
 
 		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
 		obj->addComponent<Flicker>();
@@ -57,7 +54,7 @@ public:
 	ptr<DisplayObject> getObj() { return obj; }
 };
 
-class MyApplication: public Application {
+class MyApplication: public RoamerEditor::EditorApplication {
 private:
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<Camera> cam;
@@ -90,27 +87,32 @@ protected:
 		light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
 		light->setDiffuse(Color::rgba(250, 250, 236));
 		light->setSpecular(Color::rgba(250, 250, 236));
-		light->setIntensity(2.0f);
+		light->setIntensity(0.5f);
 		light->setRange(20);
 		light->setInnerSpotAngle(20);
 		light->setSpotAngle(60);
+		light->setShadows(LightShadow::Soft);
 
 		int width = 7;
 		int height = 7;
 		Maze m(width, height);
 		auto maze = m.getMaze();
+		auto mazeContainer = DisplayObject::create()->transform();
+		mazeContainer->obj()->name("Maze container");
+		scene->root()->addChild(mazeContainer);
+		mazeContainer->position({-6.7, -2.5, 2.5});
 		for (int i = 1; i <= width; i++) {
 			for (int j = 1; j <= height; j++) {
 				if ((i == 1 && j == height - 1)) {
 					Wall w1, w2;
 					w1.position({i * 2.0, 2.0, (j - height + 1) * 2.0});
-					scene->root()->addChild(w1.getObj()->transform());
+					mazeContainer->addChild(w1.getObj()->transform());
 					w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
-					scene->root()->addChild(w2.getObj()->transform());
+					mazeContainer->addChild(w2.getObj()->transform());
 					if (i % 2 == 0 && j % 2 == 0) {
 						TopLight light;
 						light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
-						scene->root()->addChild(light.getObj()->transform());
+						mazeContainer->addChild(light.getObj()->transform());
 					}
 					continue;
 				}
@@ -118,20 +120,88 @@ protected:
 				if (maze[i][j] == -1) {
 					Wall w;
 					w.position({i * 2.0, 0.0, (j - height + 1) * 2.0});
-					scene->root()->addChild(w.getObj()->transform());
+					mazeContainer->addChild(w.getObj()->transform());
 				} else {
 					Wall w1, w2;
 					w1.position({i * 2.0, 2.0, (j - height + 1) * 2.0});
-					scene->root()->addChild(w1.getObj()->transform());
+					mazeContainer->addChild(w1.getObj()->transform());
 					w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
-					scene->root()->addChild(w2.getObj()->transform());
+					mazeContainer->addChild(w2.getObj()->transform());
 					if (i % 2 == 0 && j % 2 == 0) {
 						TopLight light;
 						light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
-						scene->root()->addChild(light.getObj()->transform());
+						mazeContainer->addChild(light.getObj()->transform());
 					}
 				}
 			}
+		}
+
+		auto container = DisplayObject::create("Container")->transform();
+		vec3 offset {6.7, 2.5, -2.5};
+		//container->position({6.7, 2.5, -2.5});
+		scene->root()->addChild(container);
+		{
+			auto lightObj = Primitives::createSphere();
+			lightObj->name("Light1");
+			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
+			lightObj->transform()->rotation(glm::radians(vec3 {-90, 0, 0}));
+			container->addChild(lightObj->transform());
+			lightObj->transform()->position(vec3{1, 4, 1}+ offset);
+			auto&& light = lightObj->addComponent<Light>();
+			light->setType(LightType::Spot);
+			light->setIntensity(0.5f);
+			light->setAmbient({0.5f, 0.0f, 0.0f, 1.0f});
+			light->setDiffuse({1.0f, 0.1f, 0.1f, 1.0f});
+			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
+			light->setRange(1000);
+			light->setShadows(LightShadow::Soft);
+		}
+		{
+			auto lightObj = Primitives::createSphere();
+			lightObj->name("Light2");
+			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
+			container->addChild(lightObj->transform());
+			lightObj->transform()->position(vec3{-1, 3, 1} + offset);
+			auto&& light = lightObj->addComponent<Light>();
+			light->setType(LightType::Point);
+			light->setIntensity(0.5f);
+			light->setAmbient({0.0f, 0.5f, 0.0f, 1.0f});
+			light->setDiffuse({0.1f, 1.0f, 0.1f, 1.0f});
+			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
+			light->setRange(1000);
+			light->setShadows(LightShadow::Hard);
+		}
+		{
+			auto lightObj = Primitives::createSphere();
+			lightObj->name("Light3");
+			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
+			container->addChild(lightObj->transform());
+			lightObj->transform()->position(vec3{0, 2, -1} + offset);
+			auto&& light = lightObj->addComponent<Light>();
+			light->setType(LightType::Point);
+			light->setIntensity(0.5f);
+			light->setAmbient({0.0f, 0.0f, 0.5f, 1.0f});
+			light->setDiffuse({0.1f, 0.1f, 1.0f, 1.0f});
+			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
+			light->setRange(1000);
+			light->setShadows(LightShadow::Soft);
+		}
+		//scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
+		{
+			auto obj = Primitives::createCube();
+			obj->name("Ground");
+			obj->transform()->position({0, -4, 0});
+			obj->transform()->scale({100, 1, 100});
+			obj->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/Rock050_1K_Color.jpg"));
+			//obj->getComponent<MeshRenderer>()->getMaterial()->setColor("material.ambient", {0.1f, 0.1f, 0.1f, 1.0f});
+			scene->root()->addChild(obj->transform());
+		}
+		{
+			auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
+			obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
+			container->addChild(obj2->transform());
+			obj2->name("ApexPlasmaMaster");
 		}
 	}
 
@@ -166,8 +236,6 @@ protected:
 				cam->getComponent<Light>()->setSpotAngle(angle);
 			}
 		}
-
-		//monkey->transform()->rotation(glm::vec3(0.0, glm::radians(Time::deltaTime()), 0.0));
 
 		scene->dispatch_update();
 		if (Input::getKeyDown(KeyCode::F11)) {
