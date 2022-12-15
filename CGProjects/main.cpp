@@ -36,12 +36,15 @@ protected:
 		cam->setClearFlags(CameraClearFlags::Skybox);
 		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
+		auto root = scene->root();
+		auto lightContainer = DisplayObject::create("Light Container")->transform();
+		root->addChild(lightContainer);
 		{
 			auto lightObj = Primitives::createSphere();
 			lightObj->name("Light1");
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
 			lightObj->transform()->rotation(glm::radians(vec3 {-90, 0, 0}));
-			scene->root()->addChild(lightObj->transform());
+			lightContainer->addChild(lightObj->transform());
 			lightObj->transform()->position({1, 4, 1});
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Spot);
@@ -55,7 +58,7 @@ protected:
 			auto lightObj = Primitives::createSphere();
 			lightObj->name("Light2");
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
-			scene->root()->addChild(lightObj->transform());
+			lightContainer->addChild(lightObj->transform());
 			lightObj->transform()->position({-1, 3, 1});
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Point);
@@ -64,13 +67,12 @@ protected:
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
 			light->setRange(100);
 			light->setShadows(LightShadow::Hard);
-			lightObj->setActive(false);
 		}
 		{
 			auto lightObj = Primitives::createSphere();
 			lightObj->name("Light3");
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
-			scene->root()->addChild(lightObj->transform());
+			lightContainer->addChild(lightObj->transform());
 			lightObj->transform()->position({0, 2, -1});
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Point);
@@ -79,7 +81,6 @@ protected:
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
 			light->setRange(100);
 			light->setShadows(LightShadow::Soft);
-			lightObj->setActive(false);
 		}
 		//scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
 		{
@@ -91,16 +92,26 @@ protected:
 			scene->root()->addChild(obj->transform());
 		}
 		{
+			auto obj = Primitives::createCube();
+			obj->transform()->position({0, -4, 0});
+			obj->transform()->scale({10, 1, 10});
+			//obj->getComponent<MeshRenderer>()->getMaterial()->setColor("material.ambient", {0.1f, 0.1f, 0.1f, 1.0f});
+			obj->getComponent<MeshRenderer>()->getMaterial()->setTexture("_SpecTex", Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
+			scene->root()->addChild(obj->transform());
+		}
+		auto container2 = DisplayObject::create("Container")->transform();
+		container2->setParent(root);
+		{
 			auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
 			obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
-			scene->root()->addChild(obj2->transform());
+			container2->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 		}
 		{
 			auto testObj = Primitives::createSphere();
 			testObj->name("test sphere");
-			scene->root()->addChild(testObj->transform());
+			container2->addChild(testObj->transform());
 			testObj->transform()->position({-3, 2, 0});
 			auto path = std::filesystem::current_path().parent_path() / "RoamerEngine" / "shaders";
 			auto normalMapShader = Shader::fromSourceFile(path / "normal-map.vert", path / "normal-map.frag");
