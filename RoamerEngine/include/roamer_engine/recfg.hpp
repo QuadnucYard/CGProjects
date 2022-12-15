@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "utils/extglm.hpp"
+
 #include <filesystem>
 #include <numeric>
 #include <ranges>

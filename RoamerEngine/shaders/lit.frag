@@ -87,6 +87,8 @@ const vec3 gridSamplingDisk[20] = vec3[]
 
 float CalcDirectShadow(Light light)
 {
+	if (light.shadows == 0)
+		return 1.0f;
 	int index = light.shadows > 0 ? light.shadows - 1 : -light.shadows - 1;
 	vec4 fragPosLightSpace = v2f.FragPosLightSpace[index];
 	// perform perspective divide
@@ -127,6 +129,8 @@ float CalcDirectShadow(Light light)
 
 float CalcPointShadow(Light light)
 {
+	if (light.shadows == 0)
+		return 1.0f;
 	const float bias = 0.05;
 	float shadow = 0.0;
 	// Get vector between fragment position and light position

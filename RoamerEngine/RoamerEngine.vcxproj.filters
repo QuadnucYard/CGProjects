@@ -256,5 +256,8 @@
     <ClInclude Include="include\roamer_engine\input\Cursor.hpp">
       <Filter>include</Filter>
     </ClInclude>
+    <ClInclude Include="include\roamer_engine\utils\extglm.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
