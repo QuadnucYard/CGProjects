@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\cginc.glsl" />
     <None Include="shaders\direct-shadow-depth.frag" />
     <None Include="shaders\direct-shadow-depth.vert" />
     <None Include="shaders\point-shadow-depth.frag" />

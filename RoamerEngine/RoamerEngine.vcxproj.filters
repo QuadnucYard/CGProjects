@@ -48,6 +48,7 @@
     <None Include="shaders\point-shadow-depth.geom" />
     <None Include="shaders\direct-shadow-depth.vert" />
     <None Include="shaders\direct-shadow-depth.frag" />
+    <None Include="shaders\cginc.glsl" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
