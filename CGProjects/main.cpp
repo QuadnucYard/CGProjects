@@ -114,7 +114,7 @@ protected:
 			container2->addChild(testObj->transform());
 			testObj->transform()->position({-3, 2, 0});
 			auto path = std::filesystem::current_path().parent_path() / "RoamerEngine" / "shaders";
-			auto normalMapShader = Shader::fromSourceFile(path / "normal-map.vert", path / "normal-map.frag");
+			auto normalMapShader = Shader(path / "normal-map.vert", path / "normal-map.frag");
 			auto mat = instantiate<Material>();
 			mat->setShader(normalMapShader);
 			mat->setMainTexture(Assets::load<Texture2D>("assets/Ground054_1K_Color.jpg"));
