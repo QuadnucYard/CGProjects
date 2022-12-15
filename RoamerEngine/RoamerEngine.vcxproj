@@ -57,11 +57,13 @@
     <ClCompile Include="src\roamer_engine\display\Texture2D.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
     <ClCompile Include="src\roamer_engine\rendering\RenderMaster.cpp" />
+    <ClCompile Include="src\roamer_engine\utils\ShaderCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine.hpp" />
     <ClInclude Include="include\roamer_engine\Application.hpp" />
     <ClInclude Include="include\roamer_engine\Color.hpp" />
+    <ClInclude Include="include\roamer_engine\utils\ShaderCompiler.hpp" />
     <ClInclude Include="include\roamer_engine\input\Cursor.hpp" />
     <ClInclude Include="include\roamer_engine\display.hpp" />
     <ClInclude Include="include\roamer_engine\display\Camera.hpp" />

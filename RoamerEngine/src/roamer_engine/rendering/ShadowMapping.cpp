@@ -32,10 +32,7 @@ namespace qy::cg::rendering {
 
 	DirectShadowMapping::DirectShadowMapping() {
 		if (!depthShader) {
-			depthShader = Shader::fromSourceFile(
-				Shaders::ResPath / "direct-shadow-depth.vert",
-				Shaders::ResPath / "direct-shadow-depth.frag"
-			);
+			depthShader = Shaders::DirectShadowDepth;
 		}
 	}
 
@@ -71,11 +68,7 @@ namespace qy::cg::rendering {
 
 	PointShadowMapping::PointShadowMapping() {
 		if (!depthShader) {
-			depthShader = Shader::fromSourceFile(
-				Shaders::ResPath / "point-shadow-depth.vert",
-				Shaders::ResPath / "point-shadow-depth.frag",
-				Shaders::ResPath / "point-shadow-depth.geom"
-			);
+			depthShader = Shaders::PointShadowDepth;
 			depthShader.use();
 			depthShader.setFloat("farPlane", FAR_PLANE);
 		}

@@ -5,13 +5,18 @@ namespace qy::cg {
 
 	void Shaders::__INIT__() {
 
-#define INIT_SHADER(shader, path) \
-				shader = Shader::fromSourceFile(ResPath / path##".vert", ResPath / path##".frag");
+#define INIT_SHADER_VF(shader, path) \
+		shader = Shader(ResPath / path##".vert", ResPath / path##".frag");
+#define INIT_SHADER_VFG(shader, path) \
+		shader = Shader(ResPath / path##".vert", ResPath / path##".frag", ResPath / path##".geom");
 
-		INIT_SHADER(Unlit, "unlit");
-		INIT_SHADER(Skybox, "skybox");
-		INIT_SHADER(Lit, "lit");
+		INIT_SHADER_VF(Unlit, "unlit");
+		INIT_SHADER_VF(Skybox, "skybox");
+		INIT_SHADER_VF(Lit, "lit");
+		INIT_SHADER_VF(DirectShadowDepth, "direct-shadow-depth");
+		INIT_SHADER_VFG(PointShadowDepth, "point-shadow-depth");
 
-#undef INIT_SHADER
+#undef INIT_SHADER_VF
+#undef INIT_SHADER_VFG
 	}
 }

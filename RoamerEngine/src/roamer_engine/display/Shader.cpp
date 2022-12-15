@@ -1,7 +1,6 @@
 ﻿#include "roamer_engine/display/Shader.hpp"
+#include "roamer_engine/utils/ShaderCompiler.hpp"
 #include <iostream>
-#include <fstream>
-#include <sstream>
 
 namespace qy::cg {
 
@@ -9,11 +8,13 @@ namespace qy::cg {
 	public:
 		GLuint shader;
 
-		SubShader(std::string_view code, int type, std::string_view name) {
-			const char* shaderCode = code.data();
+		SubShader(const fs::path& path, int type, std::string_view name) {
+			static ShaderCompiler compiler;
+			const std::string shaderCode = compiler.compile(path);
+			const char* shaderCode2 = shaderCode.data();
 			// 2. compile shaders
 			shader = glCreateShader(type);
-			glShaderSource(shader, 1, &shaderCode, NULL);
+			glShaderSource(shader, 1, &shaderCode2, nullptr);
 			glCompileShader(shader);
 			checkCompileErrors(name);
 		}
@@ -23,95 +24,48 @@ namespace qy::cg {
 			glDeleteShader(shader);
 		}
 
-		static SubShader load(const std::filesystem::path& path, int type, std::string_view name) {
-			return SubShader(readShaderFile(path), type, name);
-		}
-
-		void attachTo(GLuint program) {
+		void attachTo(GLuint program) const {
 			glAttachShader(program, shader);
-		}
-
-		static std::string readShaderFile(const std::filesystem::path& path) {
-			if (!fs::exists(path)) {
-				throw std::runtime_error("File not exist");
-			}
-			// 1. retrieve the vertex/fragment source code from filePath
-			std::string code;
-			std::ifstream shaderFile;
-			// ensure ifstream objects can throw exceptions:
-			shaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-			try {
-				// open files
-				shaderFile.open(path);
-				if (!shaderFile.is_open()) {
-					throw std::runtime_error("Fail to open shader file");
-				}
-				std::stringstream shaderStream;
-				// read file's buffer contents into streams
-				shaderStream << shaderFile.rdbuf();
-				// close file handlers
-				shaderFile.close();
-				// convert stream into string
-				code = shaderStream.str();
-			} catch (std::ifstream::failure& e) {
-				std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
-			}
-			return code;
 		}
 
 	private:
 
 		// utility function for checking shader compilation/linking errors.
-		void checkCompileErrors(std::string_view type) {
+		void checkCompileErrors(std::string_view type) const {
 			int success;
 			char infoLog[1024];
 			glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 			if (!success) {
-				glGetShaderInfoLog(shader, 1024, NULL, infoLog);
+				glGetShaderInfoLog(shader, sizeof(infoLog), nullptr, infoLog);
 				std::cerr << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 			}
 		}
 
 	};
 
-	Shader Shader::fromSourceFile(const std::filesystem::path& vertexPath, const std::filesystem::path& fragmentPath) {
-		return fromSourceString(SubShader::readShaderFile(vertexPath), SubShader::readShaderFile(fragmentPath));
+	Shader::Shader(const fs::path& vert, const fs::path& frag) {
+		ID = glCreateProgram();
+		SubShader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(ID);
+		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(ID);
+		glLinkProgram(ID);
+		checkCompileErrors();
 	}
 
-	Shader Shader::fromSourceFile(const fs::path& vertPath, const fs::path& fragPath, const fs::path& geomPath) {
-		return fromSourceString(SubShader::readShaderFile(vertPath), SubShader::readShaderFile(fragPath), SubShader::readShaderFile(geomPath));
-	}
-
-	Shader Shader::fromSourceString(std::string_view vert, std::string_view frag) {
-		Shader prog;
-		prog.ID = glCreateProgram();
-		SubShader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(prog.ID);
-		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(prog.ID);
-		glLinkProgram(prog.ID);
-		prog.checkCompileErrors();
-		//++refCount[prog.ID];
-		return prog;
-	}
-
-	Shader Shader::fromSourceString(std::string_view vert, std::string_view frag, std::string_view geom) {
-		Shader prog;
-		prog.ID = glCreateProgram();
-		SubShader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(prog.ID);
-		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(prog.ID);
-		SubShader(geom, GL_GEOMETRY_SHADER, "GEOMERTY").attachTo(prog.ID);
-		glLinkProgram(prog.ID);
-		prog.checkCompileErrors();
-		//++refCount[prog.ID];
-		return prog;
+	Shader::Shader(const fs::path& vert, const fs::path& frag, const fs::path& geom) {
+		ID = glCreateProgram();
+		SubShader(vert, GL_VERTEX_SHADER, "VERTEX").attachTo(ID);
+		SubShader(frag, GL_FRAGMENT_SHADER, "FRAGMENT").attachTo(ID);
+		SubShader(geom, GL_GEOMETRY_SHADER, "GEOMERTY").attachTo(ID);
+		glLinkProgram(ID);
+		checkCompileErrors();
 	}
 
 	void Shader::checkCompileErrors() {
-		GLuint shader = ID;
 		int success;
 		char infoLog[1024];
-		glGetProgramiv(shader, GL_LINK_STATUS, &success);
+		glGetProgramiv(ID, GL_LINK_STATUS, &success);
 		if (!success) {
-			glGetProgramInfoLog(shader, 1024, NULL, infoLog);
+			glGetProgramInfoLog(ID, sizeof(infoLog), nullptr, infoLog);
 			std::cerr << "ERROR::PROGRAM_LINKING_ERROR of type: " << "PROGRAM" << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
 		}
 	}
