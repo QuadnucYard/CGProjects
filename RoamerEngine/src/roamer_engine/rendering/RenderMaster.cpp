@@ -9,6 +9,7 @@
 #include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/Screen.hpp"
 #include "roamer_engine/Time.hpp"
+#include "roamer_engine/rendering/RenderSettings.hpp"
 
 namespace qy::cg::rendering {
 
@@ -156,8 +157,17 @@ namespace qy::cg::rendering {
 			glBindTextureUnit(maxTextures - i - 1 - (int)directShadowMaps.size(), pointShadowMaps[i].depthTexture);
 
 		// render scene as normal 
+		if (camera->getGammaCorrection())
+			glEnable(GL_FRAMEBUFFER_SRGB);
+		else
+			glDisable(GL_FRAMEBUFFER_SRGB);
+		if (RenderSettings::hdr) {
+			hdrBuffer.activate();
+		} else {
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
 		glCullFace(GL_BACK);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Screen::width(), Screen::height());
 		camera->clearBuffer();
 
@@ -165,10 +175,6 @@ namespace qy::cg::rendering {
 		lighting(lights);
 
 		// Render
-		if (camera->getGammaCorrection())
-			glEnable(GL_FRAMEBUFFER_SRGB);
-		else
-			glDisable(GL_FRAMEBUFFER_SRGB);
 		for (auto&& r : renderList) {
 			for (auto&& mat : r.renderer->__getMaterials()) {
 				auto&& shader = mat->getShader();
@@ -190,5 +196,8 @@ namespace qy::cg::rendering {
 		if (camera->getClearFlags() == CameraClearFlags::Skybox) {
 			camera->getComponent<SkyBox>()->__render(uboCamera->view, uboCamera->proj);
 		}
+		
+		if (RenderSettings::hdr)
+			hdrBuffer.render();
 	}
 }

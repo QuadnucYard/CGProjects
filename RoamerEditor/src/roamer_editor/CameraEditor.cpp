@@ -1,5 +1,6 @@
 ﻿#include "roamer_editor/CameraEditor.hpp"
 #include <roamer_engine/display/Camera.hpp>
+#include <roamer_engine/rendering/RenderSettings.hpp>
 
 namespace qy::cg::editor {
 
@@ -28,6 +29,8 @@ namespace qy::cg::editor {
 		}
 
 		camera->setGammaCorrection(CheckBox("Gamma Correction", camera->getGammaCorrection()));
+		RenderSettings::hdr = CheckBox("HDR", RenderSettings::hdr);
+		RenderSettings::hdrExposure = DragFloat("HDR Exposure", RenderSettings::hdrExposure, 0.01f);
 	}
 
 }

@@ -15,6 +15,7 @@ namespace qy::cg {
 		INIT_SHADER_VF(Lit, "lit");
 		INIT_SHADER_VF(DirectShadowDepth, "direct-shadow-depth");
 		INIT_SHADER_VFG(PointShadowDepth, "point-shadow-depth");
+		INIT_SHADER_VF(HDR, "hdr");
 
 #undef INIT_SHADER_VF
 #undef INIT_SHADER_VFG

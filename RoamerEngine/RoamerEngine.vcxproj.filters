@@ -49,6 +49,8 @@
     <None Include="shaders\direct-shadow-depth.vert" />
     <None Include="shaders\direct-shadow-depth.frag" />
     <None Include="shaders\cginc.glsl" />
+    <None Include="shaders\hdr.vert" />
+    <None Include="shaders\hdr.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\display\Transform.cpp">
@@ -127,6 +129,9 @@
       <Filter>src\roamer_engine\display</Filter>
     </ClCompile>
     <ClCompile Include="src\roamer_engine\utils\ShaderCompiler.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\roamer_engine\rendering\HDRBuffer.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -264,6 +269,12 @@
       <Filter>include</Filter>
     </ClInclude>
     <ClInclude Include="include\roamer_engine\utils\ShaderCompiler.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\HDRBuffer.hpp">
+      <Filter>include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\roamer_engine\rendering\RenderSettings.hpp">
       <Filter>include</Filter>
     </ClInclude>
   </ItemGroup>

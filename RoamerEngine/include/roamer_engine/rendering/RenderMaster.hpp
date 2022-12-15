@@ -2,6 +2,7 @@
 #include "../Object.hpp"
 #include "UniformBufferObject.hpp"
 #include "ShadowMapping.hpp"
+#include "HDRBuffer.hpp"
 #include <array>
 
 #ifndef NUM_DIRECT_SHADOWMAP
@@ -68,6 +69,7 @@ namespace qy::cg::rendering {
 		UniformBufferObject<LightsUBO> uboLights;
 		std::array<DirectShadowMapping, NUM_DIRECT_SHADOWMAP> directShadowMaps;
 		std::array<PointShadowMapping, NUM_POINT_SHADOWMAP> pointShadowMaps;
+		HDRBuffer hdrBuffer;
 		inline static int maxTextures;
 	};
 
