@@ -26,6 +26,8 @@ namespace qy::cg::editor {
 			case CameraClearFlags::Nothing:
 				break;
 		}
+
+		camera->setGammaCorrection(CheckBox("Gamma Correction", camera->getGammaCorrection()));
 	}
 
 }

@@ -15,6 +15,8 @@ namespace qy::cg {
 		bool orthographic {false}; // Is the camera orthographic (true) or perspective (false)?
 		float orthographicSize {10.0f}; // Camera's half-size when in orthographic mode.
 
+		bool gammaCorrection {false};
+
 		CameraClearFlags clearFlags {CameraClearFlags::SolidColor};
 		glm::vec4 backgroundColor {};
 
@@ -45,6 +47,8 @@ namespace qy::cg {
 	void Camera::setClearFlags(CameraClearFlags value) { pImpl->clearFlags = value; }
 	glm::vec4 Camera::getBackgroundColor() const { return pImpl->backgroundColor; }
 	void Camera::setBackgroundColor(glm::vec4 value) { pImpl->backgroundColor = value; }
+	bool Camera::getGammaCorrection() const { return pImpl->gammaCorrection; }
+	void Camera::setGammaCorrection(bool value) { pImpl->gammaCorrection = value; }
 
 	mat4 Camera::viewMatrix() const {
 		return glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});

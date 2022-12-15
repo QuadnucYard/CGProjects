@@ -165,6 +165,10 @@ namespace qy::cg::rendering {
 		lighting(lights);
 
 		// Render
+		if (camera->getGammaCorrection())
+			glEnable(GL_FRAMEBUFFER_SRGB);
+		else
+			glDisable(GL_FRAMEBUFFER_SRGB);
 		for (auto&& r : renderList) {
 			for (auto&& mat : r.renderer->__getMaterials()) {
 				auto&& shader = mat->getShader();
@@ -180,6 +184,7 @@ namespace qy::cg::rendering {
 			}
 			r.renderer->__render();
 		}
+		glDisable(GL_FRAMEBUFFER_SRGB);
 
 		// Render SkyBox
 		if (camera->getClearFlags() == CameraClearFlags::Skybox) {

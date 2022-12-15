@@ -8,7 +8,7 @@ namespace qy::cg::rendering {
 
 	public:
 
-		UniformBufferObject(GLuint index): index(index) {
+		UniformBufferObject(GLuint index) : index(index), data {} {
 			glGenBuffers(1, &ubo);
 			glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 			glBufferData(GL_UNIFORM_BUFFER, sizeof(T), nullptr, GL_STATIC_DRAW);
