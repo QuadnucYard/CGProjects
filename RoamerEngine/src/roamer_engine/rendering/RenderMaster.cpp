@@ -9,6 +9,7 @@
 #include "roamer_engine/display/Material.hpp"
 #include "roamer_engine/Screen.hpp"
 #include "roamer_engine/Time.hpp"
+#include "roamer_engine/rendering/RenderSettings.hpp"
 
 namespace qy::cg::rendering {
 
@@ -27,7 +28,7 @@ namespace qy::cg::rendering {
 
 	void RenderMaster::setCamera(const Camera* camera) {
 		uboCamera->time = Time::time();
-		uboCamera->viewPos = camera->transform()->position();
+		uboCamera->viewPos = camera->transform()->worldPosition();
 		uboCamera->view = camera->viewMatrix();
 		uboCamera->proj = camera->projMatrix();
 		uboCamera.upload();
@@ -41,12 +42,12 @@ namespace qy::cg::rendering {
 		for (size_t i = 0; i < lightList.size(); i++) {
 			auto&& light = lightList[i];
 			auto&& uboLight = uboLights->lights[i];
-			uboLight.type = static_cast<int>(light->getType());
+			uboLight.type = enum_cast(light->getType());
 			uboLight.ambient = light->getAmbient() * light->getIntensity();
 			uboLight.diffuse = light->getDiffuse() * light->getIntensity();
 			uboLight.specular = light->getSpecular() * light->getIntensity();
-			uboLight.position = light->transform()->position();
-			uboLight.direction = light->transform()->rotation() * glm::vec3(0, 0, -1.0f);
+			uboLight.position = light->transform()->worldPosition();
+			uboLight.direction = light->transform()->worldRotation() * glm::vec3_back;
 			uboLight.range = light->getRange();
 			uboLight.outerCutOff = glm::cos(glm::radians(light->getSpotAngle()));
 			uboLight.cutOff = glm::cos(glm::radians(light->getInnerSpotAngle()));
@@ -150,20 +151,23 @@ namespace qy::cg::rendering {
 		}
 		// All depthMaps should have values.
 		// 
-		for (int i = 0; i < directShadowMaps.size(); i++) {
+		for (int i = 0; i < directShadowMaps.size(); i++)
 			glBindTextureUnit(maxTextures - i - 1, directShadowMaps[i].depthTexture);
-			//glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1);
-			//glBindTexture(GL_TEXTURE_2D, directShadowMaps[i].depthTexture); // 可以赋值0！
-		}
-		for (int i = 0; i < pointShadowMaps.size(); i++) {
+		for (int i = 0; i < pointShadowMaps.size(); i++)
 			glBindTextureUnit(maxTextures - i - 1 - (int)directShadowMaps.size(), pointShadowMaps[i].depthTexture);
-			//glActiveTexture(GL_TEXTURE0 + maxTextures - i - 1 - (int)directShadowMaps.size());
-			//glBindTexture(GL_TEXTURE_CUBE_MAP, pointShadowMaps[i].depthTexture);
-		}
 
 		// render scene as normal 
+		if (camera->getGammaCorrection())
+			glEnable(GL_FRAMEBUFFER_SRGB);
+		else
+			glDisable(GL_FRAMEBUFFER_SRGB);
+		if (RenderSettings::hdr) {
+			hdrBuffer.activate();
+		} else {
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
 		glCullFace(GL_BACK);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, Screen::width(), Screen::height());
 		camera->clearBuffer();
 
@@ -186,10 +190,14 @@ namespace qy::cg::rendering {
 			}
 			r.renderer->__render();
 		}
+		glDisable(GL_FRAMEBUFFER_SRGB);
 
 		// Render SkyBox
 		if (camera->getClearFlags() == CameraClearFlags::Skybox) {
 			camera->getComponent<SkyBox>()->__render(uboCamera->view, uboCamera->proj);
 		}
+		
+		if (RenderSettings::hdr)
+			hdrBuffer.render();
 	}
 }

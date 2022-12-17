@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "Component.hpp"
@@ -14,28 +13,44 @@ namespace qy::cg {
 
 		DECL_OBJECT(Transform);
 
-		glm::vec3 position() const;
-		void position(const glm::vec3& value);
+		vec3 position() const;
+		void position(const vec3& value);
 
-		glm::vec3 scale() const;
-		void scale(const glm::vec3& value);
+		vec3 scale() const;
+		void scale(const vec3& value);
 
-		glm::quat rotation() const;
-		void rotation(const glm::quat& value);
+		quat rotation() const;
+		void rotation(const quat& value);
 
-		glm::mat4 modelMatrix() const;
+		vec3 worldPosition() const;
+		void worldPosition(const vec3& value);
 
-		glm::mat4x4 localToWorldMatrix() const;
+		quat worldRotation() const;
+		void worldRotation(const quat& value);
 
-		void lookAt(const glm::vec3& target);
+		vec3 right() const;
+		vec3 up() const;
+		vec3 forward() const;
+
+		mat4 modelMatrix() const;
+
+		mat4 localToWorldMatrix() const;
+
+		mat4 worldToLocalMatrix() const;
+
+		void lookAt(const vec3& target);
 
 		pointer parent() const;
+
+		pointer root() const;
 
 		size_t childCount() const;
 
 		void addChild(pointer child);
 
 		void removeChild(pointer child);
+
+		void setParent(pointer parent);
 
 		const_iterator begin() const;
 		const_iterator end() const;

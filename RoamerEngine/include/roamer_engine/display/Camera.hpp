@@ -42,6 +42,8 @@ namespace qy::cg {
 		void setClearFlags(CameraClearFlags value);
 		glm::vec4 getBackgroundColor() const;
 		void setBackgroundColor(glm::vec4 value);
+		bool getGammaCorrection() const;
+		void setGammaCorrection(bool value);
 
 		mat4 viewMatrix() const;
 		mat4 projMatrix() const;

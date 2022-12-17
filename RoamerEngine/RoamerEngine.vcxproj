@@ -19,8 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <None Include="shaders\cginc.glsl" />
     <None Include="shaders\direct-shadow-depth.frag" />
     <None Include="shaders\direct-shadow-depth.vert" />
+    <None Include="shaders\hdr.frag" />
+    <None Include="shaders\hdr.vert" />
     <None Include="shaders\point-shadow-depth.frag" />
     <None Include="shaders\point-shadow-depth.geom" />
     <None Include="shaders\point-shadow-depth.vert" />
@@ -34,6 +37,7 @@
   <ItemGroup>
     <ClCompile Include="src\roamer_engine\Application.cpp" />
     <ClCompile Include="src\roamer_engine\display\MoveController.cpp" />
+    <ClCompile Include="src\roamer_engine\rendering\HDRBuffer.cpp" />
     <ClCompile Include="src\roamer_engine\rendering\ShadowMapping.cpp" />
     <ClCompile Include="src\roamer_engine\display\Camera.cpp" />
     <ClCompile Include="src\roamer_engine\display\Component.cpp" />
@@ -57,11 +61,15 @@
     <ClCompile Include="src\roamer_engine\display\Texture2D.cpp" />
     <ClCompile Include="src\roamer_engine\display\Transform.cpp" />
     <ClCompile Include="src\roamer_engine\rendering\RenderMaster.cpp" />
+    <ClCompile Include="src\roamer_engine\utils\ShaderCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\roamer_engine.hpp" />
     <ClInclude Include="include\roamer_engine\Application.hpp" />
     <ClInclude Include="include\roamer_engine\Color.hpp" />
+    <ClInclude Include="include\roamer_engine\rendering\HDRBuffer.hpp" />
+    <ClInclude Include="include\roamer_engine\rendering\RenderSettings.hpp" />
+    <ClInclude Include="include\roamer_engine\utils\ShaderCompiler.hpp" />
     <ClInclude Include="include\roamer_engine\input\Cursor.hpp" />
     <ClInclude Include="include\roamer_engine\display.hpp" />
     <ClInclude Include="include\roamer_engine\display\Camera.hpp" />
@@ -102,6 +110,7 @@
     <ClInclude Include="include\roamer_engine\Screen.hpp" />
     <ClInclude Include="include\roamer_engine\Assets.hpp" />
     <ClInclude Include="include\roamer_engine\Time.hpp" />
+    <ClInclude Include="include\roamer_engine\utils\extglm.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

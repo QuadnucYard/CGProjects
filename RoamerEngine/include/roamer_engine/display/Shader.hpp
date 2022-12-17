@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <filesystem>
-//#include <unordered_map>
 
 namespace qy::cg {
 
@@ -18,50 +17,13 @@ namespace qy::cg {
 
 	private:
 		GLuint ID;
-		//inline static std::unordered_map<GLuint, unsigned> refCount;
 
 	public:
-
-		Shader() noexcept: ID(0) {}
-		//Shader(const Shader& o): ID(o.ID) { ++refCount[ID]; }
-		//Shader(Shader&& o) noexcept:ID(o.ID) { o.ID = 0; }
-
-		~Shader() {
-			//if (ID != 0 && --refCount[ID] == 0) glDeleteProgram(ID);
-		}
-
-		/*Shader& operator= (const Shader& o) {
-			if (this == &o) return *this;
-			--refCount[ID];
-			ID = o.ID;
-			++refCount[ID];
-			return *this;
-		}
-
-		Shader& operator= (Shader&& o) {
-			if (this == &o) return *this;
-			ID = o.ID;
-			o.ID = 0;
-			return *this;
-		}*/
+		Shader() = default;
+		Shader(const fs::path& vertPath, const fs::path& fragPath);
+		Shader(const fs::path& vertPath, const fs::path& fragPath, const fs::path& geomPath);
 
 		operator bool() const { return ID; }
-
-		/// @brief Create shader from source file.
-		/// @param vertexPath Path of vertex shader.
-		/// @param fragmentPath Path of fragment shader.
-		/// @return Created shader.
-		static Shader fromSourceFile(const fs::path& vertPath, const fs::path& fragPath);
-
-		static Shader fromSourceFile(const fs::path& vertPath, const fs::path& fragPath, const fs::path& geomPath);
-
-		/// @brief Create shader from string.
-		/// @param vertexPath String of vertex shader.
-		/// @param fragmentPath String of fragment shader.
-		/// @return Created shader.
-		static Shader fromSourceString(std::string_view vert, std::string_view frag);
-
-		static Shader fromSourceString(std::string_view vert, std::string_view frag, std::string_view geom);
 
 		// activate the shader
 		inline void use() const {

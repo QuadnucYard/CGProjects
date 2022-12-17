@@ -1,59 +1,14 @@
 #version 460
+#include "cginc.glsl"
 
 in VS_OUT {
 	vec3 FragPos;
 	vec3 Normal;
 	vec2 TexCoords;
-	vec4 FragPosLightSpace[8];
+	vec4 FragPosLightSpace[NUM_DIRECT_SHADOWMAP];
 } v2f;
 
 out vec4 FragColor;
-
-struct Light {
-	int type;
-	float range;
-	float cutOff;
-	float outerCutOff;
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
-	vec3 position;
-	int shadows;
-	vec3 direction;
-	float shadowStrength;
-};
-
-struct Material {
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
-	float shininess;
-};
-
-uniform mat4 model;
-uniform sampler2D _MainTex;
-uniform sampler2D _SpecTex;
-uniform vec4 _Color;
-uniform Material material;
-uniform sampler2D depthMaps[8];
-uniform samplerCube depthCubemaps[8];
-
-layout(std140, binding = 0) uniform Camera {
-	vec3 viewPos;
-	float _Time;
-	mat4 view;
-	mat4 proj;
-};
-
-layout(std140, binding = 2) uniform Lights {
-	int numLights;
-	int numDirectShadows;
-	int numPointShadows;
-	float farPlane;
-	vec4 globalAmbient;
-	mat4 lightSpaceMatrices[8];
-	Light lights[256];
-};
 
 float CalcDirectShadow(Light light);
 float CalcPointShadow(Light light);
@@ -87,6 +42,8 @@ const vec3 gridSamplingDisk[20] = vec3[]
 
 float CalcDirectShadow(Light light)
 {
+	if (light.shadows == 0)
+		return 1.0f;
 	int index = light.shadows > 0 ? light.shadows - 1 : -light.shadows - 1;
 	vec4 fragPosLightSpace = v2f.FragPosLightSpace[index];
 	// perform perspective divide
@@ -127,6 +84,8 @@ float CalcDirectShadow(Light light)
 
 float CalcPointShadow(Light light)
 {
+	if (light.shadows == 0)
+		return 1.0f;
 	const float bias = 0.05;
 	float shadow = 0.0;
 	// Get vector between fragment position and light position

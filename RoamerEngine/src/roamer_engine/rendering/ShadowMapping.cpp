@@ -32,10 +32,7 @@ namespace qy::cg::rendering {
 
 	DirectShadowMapping::DirectShadowMapping() {
 		if (!depthShader) {
-			depthShader = Shader::fromSourceFile(
-				Shaders::ResPath / "direct-shadow-depth.vert",
-				Shaders::ResPath / "direct-shadow-depth.frag"
-			);
+			depthShader = Shaders::DirectShadowDepth;
 		}
 	}
 
@@ -54,16 +51,15 @@ namespace qy::cg::rendering {
 	}
 
 	Shader* DirectShadowMapping::shadowing(const Light* light) {
-		static const glm::mat4 DIR_PROJ {glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, NEAR_PLANE, FAR_PLANE)};
-		static const glm::mat4 SPOT_PROJ {glm::perspective(glm::radians(45.0f), SHADOW_ASPECT, NEAR_PLANE, FAR_PLANE)};
+		static const mat4 DIR_PROJ {glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, NEAR_PLANE, FAR_PLANE)};
+		static const mat4 SPOT_PROJ {glm::perspective(45.0_deg, SHADOW_ASPECT, NEAR_PLANE, FAR_PLANE)};
 		
 		ShadowMapping::shadowing(light);
 
-		auto lightPos = light->transform()->position();
-		auto dir = light->transform()->rotation() * vec3(0, 0, 1);
-		// TODO 光源方向
-		const glm::mat4& lightProjection = light->getType() == LightType::Directional ? DIR_PROJ : SPOT_PROJ;
-		glm::mat4 lightView = glm::lookAt(lightPos, lightPos - dir, {0.0, 1.0, 0.0});
+		auto lightPos = light->transform()->worldPosition();
+		auto dir = light->transform()->worldRotation() * vec3_forward;
+		const mat4& lightProjection = light->getType() == LightType::Directional ? DIR_PROJ : SPOT_PROJ;
+		mat4 lightView = glm::lookAt(lightPos, lightPos - dir, vec3_up);
 		lightSpaceMatrix = lightProjection * lightView;
 		depthShader.use();
 		depthShader.setMat4("lightSpaceMatrix", lightSpaceMatrix);
@@ -72,11 +68,7 @@ namespace qy::cg::rendering {
 
 	PointShadowMapping::PointShadowMapping() {
 		if (!depthShader) {
-			depthShader = Shader::fromSourceFile(
-				Shaders::ResPath / "point-shadow-depth.vert",
-				Shaders::ResPath / "point-shadow-depth.frag",
-				Shaders::ResPath / "point-shadow-depth.geom"
-			);
+			depthShader = Shaders::PointShadowDepth;
 			depthShader.use();
 			depthShader.setFloat("farPlane", FAR_PLANE);
 		}
@@ -100,11 +92,11 @@ namespace qy::cg::rendering {
 	Shader* PointShadowMapping::shadowing(const Light* light) {
 		// 0. create depth cubemap transformation matrices
 		// -----------------------------------------------
-		static const glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), SHADOW_ASPECT, NEAR_PLANE, FAR_PLANE);
+		static const glm::mat4 shadowProj = glm::perspective(90.0_deg, SHADOW_ASPECT, NEAR_PLANE, FAR_PLANE);
 
 		ShadowMapping::shadowing(light);
 
-		auto lightPos = light->transform()->position();
+		auto lightPos = light->transform()->worldPosition();
 		glm::mat4 shadowTransforms[] {
 			shadowProj * glm::lookAt(lightPos, lightPos + vec3(1.0f, 0.0f, 0.0f), {0.0f, -1.0f, 0.0f}),
 			shadowProj * glm::lookAt(lightPos, lightPos + vec3(-1.0f, 0.0f, 0.0f), {0.0f, -1.0f, 0.0f}),
