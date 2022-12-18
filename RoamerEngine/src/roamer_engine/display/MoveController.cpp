@@ -9,13 +9,9 @@ namespace qy::cg {
 
 	struct MoveController::Impl {
 		glm::vec3 front_init {0.0, 0.0, -1.0};
-		glm::quat rot_init {};
-		glm::vec3 front;
 		glm::vec3 up {0, 1, 0};
 		glm::vec3 mousePosLast = {0.0f, 0.0f, 0.0f};
-		float sensitivity = 0.1f;
-		float pitch;
-		float yaw;
+		float sensitivity = 1.0f;
 		bool firstMouse = true;
 		MoveType moveType = MoveType::Flat;
 		DirectController directController = DirectController::Mouse;
@@ -26,9 +22,6 @@ namespace qy::cg {
 		bool mouseMidPressed = false;
 
 		Impl() {
-			front = front_init;
-			pitch = glm::degrees(asin(glm::normalize(front_init).y));
-			yaw = glm::degrees(asin(glm::normalize(front_init).z / cos(pitch)));
 			move2keyMap.insert_or_assign(MoveDirection::Front, KeyCode::W);
 			move2keyMap.insert_or_assign(MoveDirection::Left, KeyCode::A);
 			move2keyMap.insert_or_assign(MoveDirection::Right, KeyCode::S);
@@ -38,28 +31,16 @@ namespace qy::cg {
 			move2keyMap.insert_or_assign(MoveDirection::TurnLeft, KeyCode::A);
 			move2keyMap.insert_or_assign(MoveDirection::TurnRight, KeyCode::D);
 		}
-		void update() {
-			front = front_init;
-			pitch = glm::degrees(asin(glm::normalize(front_init).y));
-			yaw = glm::degrees(asin(glm::normalize(front_init).z / cos(pitch)));
-		}
 	};
 
 	DEFINE_OBJECT(MoveController);
 
 	void MoveController::start() {
 		pImpl->front_init = transform()->rotation() * glm::vec3(0.0, 0.0, -1.0);
-		pImpl->rot_init = transform()->rotation();
-		if (pImpl->rot_init == glm::quat {0, 0, 0, 0})
-			pImpl->rot_init = glm::quat(glm::vec3(0.0, 0.0, -1.0));
-		pImpl->update();
 	}
 
 	void MoveController::setUp(glm::vec3 value) { pImpl->up = value; }
 	glm::vec3 MoveController::getUp() const { return pImpl->up; }
-
-	void MoveController::setFront(glm::vec3 value) { pImpl->front = value; }
-	glm::vec3 MoveController::getFront() const { return pImpl->front; }
 
 	float MoveController::getSensitivity() const { return pImpl->sensitivity; }
 	void MoveController::setSensitivity(float value) { pImpl->sensitivity = value; }
@@ -78,14 +59,17 @@ namespace qy::cg {
 		//get basic position information
 		float moveSpeed = Time::deltaTime() * pImpl->speed;
 		auto objPos = transform()->position();
+		auto rot = transform()->rotation();
+		auto front = transform()->rotation() * pImpl->front_init;
+		
 		glm::vec3 goFront;
 		switch (pImpl->moveType)
 		{
 			case(MoveType::Flat):
-				goFront = glm::vec3({pImpl->front.x, 0.0, pImpl->front.z});
+				goFront = glm::vec3({front.x, 0.0, front.z});
 				break;
 			case(MoveType::Free):
-				goFront = pImpl->front;
+				goFront = front ;
 				break;
 			default:
 				break;
@@ -136,8 +120,8 @@ namespace qy::cg {
 				glm::vec3 mousePosNow = Input::mousePosition();
 				glm::vec3 posDelta = mousePosNow - pImpl->mousePosLast;
 				pImpl->mousePosLast = mousePosNow;
-				xOffset = posDelta.x * pImpl->sensitivity;
-				yOffset = -posDelta.y * pImpl->sensitivity;
+				xOffset = posDelta.x;
+				yOffset = -posDelta.y;
 			} else {//control by left mouse button pressed
 				Cursor::setMode(CursorMode::Normal);
 				if (Input::getMouseButtonDown(MouseButton::Left) && !pImpl->mouseLeftPressed) {
@@ -151,54 +135,30 @@ namespace qy::cg {
 					glm::vec3 posNow = Input::mousePosition();
 					glm::vec3 posDelta = posNow - pImpl->mousePosLast;
 					pImpl->mousePosLast = posNow;
-					xOffset = posDelta.x * pImpl->sensitivity;
-					yOffset = -posDelta.y * pImpl->sensitivity;
+					xOffset = posDelta.x;
+					yOffset = -posDelta.y;
 				}
 			}
 		} else if (pImpl->directController == DirectController::KeyBoard) {
 			if (Input::getKey(pImpl->move2keyMap[MoveDirection::TurnRight])) xOffset = 3;
 			if (Input::getKey(pImpl->move2keyMap[MoveDirection::TurnLeft])) xOffset = -3;
 		}
-		pImpl->yaw += xOffset;
-		pImpl->pitch += yOffset;
 
-		if (pImpl->pitch > 89.0f)
-			pImpl->pitch = 89.0f;
-		if (pImpl->pitch < -89.0f)
-			pImpl->pitch = -89.0f;
-
-		glm::vec3 frontNew {
-			cos(glm::radians(pImpl->yaw)) * cos(glm::radians(pImpl->pitch)),
-			sin(glm::radians(pImpl->pitch)),
-			sin(glm::radians(pImpl->yaw)) * cos(glm::radians(pImpl->pitch))
-		};
-
-		//change position and rotation
-		pImpl->front = glm::normalize(frontNew);
+		const float pi = std::numbers::pi_v<float>;
+		auto yaw = -xOffset / 1800 * pi * pImpl->sensitivity;
+		glm::quat rot_yaw = {glm::cos(yaw), glm::sin(yaw)*pImpl->up};
+		auto v = glm::normalize(glm::cross(front, pImpl->up));
+		auto pitch = yOffset / 1800 * pi * pImpl->sensitivity;
+		glm::quat rot_pitch = glm::quat {cos(pitch), sin(pitch) * v};
+		auto rotNew = glm::normalize(rot_pitch * rot_yaw * rot);
+		if ((rotNew * pImpl->front_init).y > 0.99 || (rotNew * pImpl->front_init).y <- 0.99)
+			rotNew = rot_yaw * rot;
 		transform()->position(objPos);
-		transform()->rotation(RotU2V(pImpl->front_init, pImpl->front) * pImpl->rot_init);
+		transform()->rotation(rotNew);
 
 		auto cam = getComponent<Camera>();
 		if (cam) {
 			cam->setFieldOfView(std::clamp(cam->getFieldOfView() + Input::mouseScrollDelta().y, 1.0f, 90.0f));
 		}
-	}
-
-	glm::quat RotU2V(glm::vec3 start, glm::vec3 dest) {
-		start = normalize(start);
-		dest = normalize(dest);
-		float cosTheta = dot(start, dest);
-		glm::vec3 rotationAxis;
-
-		rotationAxis = cross(start, dest);
-		float s = sqrt((1 + cosTheta) * 2);
-		float invs = 1 / s;
-		glm::quat res(
-			s * 0.5f,
-			rotationAxis.x * invs,
-			rotationAxis.y * invs,
-			rotationAxis.z * invs
-		);
-		return res;
 	}
 }
