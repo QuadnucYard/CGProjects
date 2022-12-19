@@ -24,11 +24,8 @@ namespace qy::cg {
 	public:
 		DECL_OBJECT(MoveController);
 
-		void start() override;
 		void update() override;
 
-		glm::vec3 getUp() const;
-		void setUp(glm::vec3 value);
 		float getSensitivity() const;
 		void setSensitivity(float value);
 		MoveType getMoveType() const;
