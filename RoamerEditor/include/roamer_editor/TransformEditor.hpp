@@ -8,7 +8,8 @@ namespace qy::cg::editor {
 	public:
 		void onInspectorGUI() override;
 	private:
-		glm::vec3 eulerAngles;
+		glm::vec3 eulerAngles {0, 0, 0};
+		glm::quat prevRotation {0, 0, 0, 0};
 	};
 
 }

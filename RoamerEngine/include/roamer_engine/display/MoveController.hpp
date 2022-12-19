@@ -24,8 +24,8 @@ namespace qy::cg {
 	public:
 		DECL_OBJECT(MoveController);
 
-		void start();
-		void update();
+		void start() override;
+		void update() override;
 
 		glm::vec3 getUp() const;
 		void setUp(glm::vec3 value);

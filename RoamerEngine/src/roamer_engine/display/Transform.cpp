@@ -25,17 +25,18 @@ namespace qy::cg {
 	void Transform::rotation(const quat& value) { pImpl->rotation = value; }
 
 	vec3 Transform::worldPosition() const {
-		return localToWorldMatrix() * vec4(pImpl->position, 1.0f);
+		if (!pImpl->parent) return pImpl->position;
+		return pImpl->parent->localToWorldMatrix() * vec4(pImpl->position, 1.0f);
 	}
 
 	void Transform::worldPosition(const vec3& value) {
-		pImpl->position = worldToLocalMatrix() * vec4(value, 1.0f);
+		if (!pImpl->parent) pImpl->position = value;
+		else pImpl->position = pImpl->parent->worldToLocalMatrix() * vec4(value, 1.0f);
 	}
 
 	quat Transform::worldRotation() const {
-		if (pImpl->parent)
-			return pImpl->parent->worldRotation() * pImpl->rotation;
-		return pImpl->rotation;
+		if (!pImpl->parent)	return pImpl->rotation;
+		return pImpl->parent->worldRotation() * pImpl->rotation;
 	}
 
 	void Transform::worldRotation(const quat& value) { // TODO
