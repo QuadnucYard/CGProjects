@@ -8,8 +8,6 @@
 namespace qy::cg {
 
 	struct MoveController::Impl {
-		glm::vec3 front_init {0.0, 0.0, -1.0};
-		glm::vec3 up {0, 1, 0};
 		glm::vec3 mousePosLast = {0.0f, 0.0f, 0.0f};
 		float sensitivity = 1.0f;
 		bool firstMouse = true;
@@ -35,13 +33,6 @@ namespace qy::cg {
 
 	DEFINE_OBJECT(MoveController);
 
-	void MoveController::start() {
-		pImpl->front_init = transform()->rotation() * glm::vec3(0.0, 0.0, -1.0);
-	}
-
-	void MoveController::setUp(glm::vec3 value) { pImpl->up = value; }
-	glm::vec3 MoveController::getUp() const { return pImpl->up; }
-
 	float MoveController::getSensitivity() const { return pImpl->sensitivity; }
 	void MoveController::setSensitivity(float value) { pImpl->sensitivity = value; }
 
@@ -60,8 +51,9 @@ namespace qy::cg {
 		float moveSpeed = Time::deltaTime() * pImpl->speed;
 		auto objPos = transform()->position();
 		auto rot = transform()->rotation();
-		auto front = transform()->rotation() * pImpl->front_init;
-		
+		auto front = transform()->rotation() * vec3_back;
+		auto up = transform()->rotation() * vec3_up;
+
 		glm::vec3 goFront;
 		switch (pImpl->moveType)
 		{
@@ -94,13 +86,13 @@ namespace qy::cg {
 		//move, control by keybord
 		if (Input::getKey(pImpl->move2keyMap[MoveDirection::Front])) objPos += moveSpeed * goFront;
 		if (Input::getKey(pImpl->move2keyMap[MoveDirection::Right])) objPos -= moveSpeed * goFront;
-		if (Input::getKey(pImpl->move2keyMap[MoveDirection::Left])) objPos -= glm::normalize(glm::cross(goFront, pImpl->up)) * moveSpeed;
-		if (Input::getKey(pImpl->move2keyMap[MoveDirection::Back])) objPos += glm::normalize(glm::cross(goFront, pImpl->up)) * moveSpeed;
+		if (Input::getKey(pImpl->move2keyMap[MoveDirection::Left])) objPos -= glm::normalize(glm::cross(goFront, up)) * moveSpeed;
+		if (Input::getKey(pImpl->move2keyMap[MoveDirection::Back])) objPos += glm::normalize(glm::cross(goFront, up)) * moveSpeed;
 		switch (pImpl->moveType)
 		{
 			case MoveType::Free:
-				if (Input::getKey(pImpl->move2keyMap[MoveDirection::Up])) objPos += pImpl->up * moveSpeed;
-				if (Input::getKey(pImpl->move2keyMap[MoveDirection::Down])) objPos -= pImpl->up * moveSpeed;
+				if (Input::getKey(pImpl->move2keyMap[MoveDirection::Up])) objPos += up * moveSpeed;
+				if (Input::getKey(pImpl->move2keyMap[MoveDirection::Down])) objPos -= up * moveSpeed;
 				break;
 			case MoveType::Flat:
 				break;
@@ -146,15 +138,19 @@ namespace qy::cg {
 
 		const float pi = std::numbers::pi_v<float>;
 		auto yaw = -xOffset / 1800 * pi * pImpl->sensitivity;
-		glm::quat rot_yaw = {glm::cos(yaw), glm::sin(yaw)*pImpl->up};
-		auto v = glm::normalize(glm::cross(front, pImpl->up));
+		glm::quat rotYaw = {glm::cos(yaw), glm::sin(yaw)*vec3_up};
+		auto rotNew1 = glm::normalize(rotYaw * rot);
+		front = rotNew1 * vec3_back;
+
+		auto v = glm::normalize(glm::cross(front, vec3_up));
 		auto pitch = yOffset / 1800 * pi * pImpl->sensitivity;
-		glm::quat rot_pitch = glm::quat {cos(pitch), sin(pitch) * v};
-		auto rotNew = glm::normalize(rot_pitch * rot_yaw * rot);
-		if ((rotNew * pImpl->front_init).y > 0.99 || (rotNew * pImpl->front_init).y <- 0.99)
-			rotNew = rot_yaw * rot;
+		glm::quat rotPitch = glm::quat {cos(pitch), sin(pitch) * v};
+		auto rotNew2 = glm::normalize(rotPitch * rotYaw * rot);
+		if ((rotNew2 * vec3_back).y > 0.99 || (rotNew2 * vec3_back).y <- 0.99)
+			rotNew2 = rotYaw * rot;
+
 		transform()->position(objPos);
-		transform()->rotation(rotNew);
+		transform()->rotation(rotNew2);
 
 		auto cam = getComponent<Camera>();
 		if (cam) {
