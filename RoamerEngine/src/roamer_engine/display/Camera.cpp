@@ -51,7 +51,13 @@ namespace qy::cg {
 	void Camera::setGammaCorrection(bool value) { pImpl->gammaCorrection = value; }
 
 	mat4 Camera::viewMatrix() const {
-		return glm::lookAt(transform()->position(), transform()->position() + transform()->rotation() * glm::vec3 {0, 0, -1}, {0, 1, 0});
+		vec3 pos = transform()->worldPosition();
+		quat rot = transform()->worldRotation();
+		return glm::lookAt(
+			pos,
+			pos + rot * vec3_back,
+			rot * vec3_up
+		);
 	}
 
 	mat4 Camera::projMatrix() const {
