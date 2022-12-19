@@ -146,15 +146,19 @@ namespace qy::cg {
 
 		const float pi = std::numbers::pi_v<float>;
 		auto yaw = -xOffset / 1800 * pi * pImpl->sensitivity;
-		glm::quat rot_yaw = {glm::cos(yaw), glm::sin(yaw)*pImpl->up};
+		glm::quat rotYaw = {glm::cos(yaw), glm::sin(yaw)*pImpl->up};
+		auto rotNew1 = glm::normalize(rotYaw * rot);
+		front = rotNew1 * pImpl->front_init;
+
 		auto v = glm::normalize(glm::cross(front, pImpl->up));
 		auto pitch = yOffset / 1800 * pi * pImpl->sensitivity;
-		glm::quat rot_pitch = glm::quat {cos(pitch), sin(pitch) * v};
-		auto rotNew = glm::normalize(rot_pitch * rot_yaw * rot);
-		if ((rotNew * pImpl->front_init).y > 0.99 || (rotNew * pImpl->front_init).y <- 0.99)
-			rotNew = rot_yaw * rot;
+		glm::quat rotPitch = glm::quat {cos(pitch), sin(pitch) * v};
+		auto rotNew2 = glm::normalize(rotPitch * rotYaw * rot);
+		if ((rotNew2 * pImpl->front_init).y > 0.99 || (rotNew2 * pImpl->front_init).y <- 0.99)
+			rotNew2 = rotYaw * rot;
+
 		transform()->position(objPos);
-		transform()->rotation(rotNew);
+		transform()->rotation(rotNew2);
 
 		auto cam = getComponent<Camera>();
 		if (cam) {
