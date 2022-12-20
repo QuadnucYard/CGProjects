@@ -110,7 +110,7 @@ Wall::Wall() {
 
 	if (!wallMaterial) {
 		auto path = std::filesystem::current_path() /"assets" / "shaders";
-		auto normalMapShader = Shader::fromSourceFile(path / "wall-map.vert", path / "wall-map.frag");
+		auto normalMapShader = Shader(path / "wall-map.vert", path / "wall-map.frag");
 		wallMaterial = instantiate<Material>();
 		wallMaterial->setShader(normalMapShader);
 		wallMaterial->setColor("material.ambient", { 1.0f, 1.0f, 1.0f, 1.0f });

@@ -8,14 +8,21 @@
 
 using namespace qy::cg;
 
-class Spinning: public Component {
+auto loadModel(std::string_view obj, std::string_view tex) {
+	auto o = ModelLoader::loadObj(fs::path("assets") / obj)->transform();
+	o->position({2, 0, 0});
+	o->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>(fs::path("assets") / tex));
+	return o;
+}
+
+class Spinning : public Component {
 public:
 	void update() override {
 		transform()->rotation(glm::vec3 {0.0, Time::time() * 10, 0.0});
 	}
 };
 
-class Flicker: public Component {
+class Flicker : public Component {
 private:
 	ptr<Light> light;
 	double offset;
@@ -54,7 +61,7 @@ public:
 	ptr<DisplayObject> getObj() { return obj; }
 };
 
-class MyApplication: public RoamerEditor::EditorApplication {
+class MyApplication : public RoamerEditor::EditorApplication {
 private:
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<Camera> cam;
@@ -66,6 +73,7 @@ protected:
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);*/
 		scene = Scene::create();
+		auto root = scene->root();
 		cam = scene->createCamera();
 		cam->setFarClipPlane(100);
 		//cam->setBackgroundColor({ 0.4f, 0.3f, 0.1f, 1.0f });
@@ -80,7 +88,7 @@ protected:
 			"assets/skybox/interstellar_bk.png"
 		));
 		cam->setClearFlags(CameraClearFlags::Skybox);
-		cam->addComponent<MoveController>()->setMoveType(MoveType::Flat);
+		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
 		auto&& light = cam->addComponent<Light>();
 		light->setType(LightType::Spot);
@@ -146,7 +154,7 @@ protected:
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
 			lightObj->transform()->rotation(glm::radians(vec3 {-90, 0, 0}));
 			container->addChild(lightObj->transform());
-			lightObj->transform()->position(vec3{1, 4, 1}+ offset);
+			lightObj->transform()->position(vec3 {1, 4, 1} + offset);
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Spot);
 			light->setIntensity(0.5f);
@@ -161,7 +169,7 @@ protected:
 			lightObj->name("Light2");
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
 			container->addChild(lightObj->transform());
-			lightObj->transform()->position(vec3{-1, 3, 1} + offset);
+			lightObj->transform()->position(vec3 {-1, 3, 1} + offset);
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Point);
 			light->setIntensity(0.5f);
@@ -176,7 +184,7 @@ protected:
 			lightObj->name("Light3");
 			lightObj->transform()->scale({0.1f, 0.1f, 0.1f});
 			container->addChild(lightObj->transform());
-			lightObj->transform()->position(vec3{0, 2, -1} + offset);
+			lightObj->transform()->position(vec3 {0, 2, -1} + offset);
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Point);
 			light->setIntensity(0.5f);
@@ -186,7 +194,7 @@ protected:
 			light->setRange(1000);
 			light->setShadows(LightShadow::Soft);
 		}
-		//scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
+		scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
 		{
 			auto obj = Primitives::createCube();
 			obj->name("Ground");
@@ -197,14 +205,24 @@ protected:
 			scene->root()->addChild(obj->transform());
 		}
 		{
-			auto&& obj2 = ModelLoader::loadObj("assets/ApexPlasmaMasterGeo.obj");
+			auto&& obj2 = loadModel("ApexPlasmaMasterGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			obj2->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
 			container->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 		}
-
-		
+		{
+			auto chicken = loadModel("ChickenGeo.obj", "ApexPlasmaMasterDiffuse.png")->transform();
+			chicken->position({2, 0, 0});
+			root->addChild(chicken);
+			chicken->obj()->name("Chicken");
+		}
+		{
+			auto sungod = loadModel("TrueSunGod.obj", "TrueSunGod.png")->transform();
+			sungod->position({-2, 0, 0});
+			sungod->scale({0.1, 0.1, 0.1});
+			root->addChild(sungod);
+			sungod->obj()->name("TrueSunGod");
+		}
 	}
 
 	void update() override {

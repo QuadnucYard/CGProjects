@@ -56,7 +56,7 @@ namespace qy::cg {
 		return glm::lookAt(
 			pos,
 			pos + rot * vec3_back,
-			rot * vec3_up
+			vec3_up
 		);
 	}
 
