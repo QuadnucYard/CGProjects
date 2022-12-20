@@ -18,21 +18,14 @@ namespace qy::cg {
 		Front, Left, Right, Back, Up, Down, Jump, TurnLeft, TurnRight
 	};
 
-	glm::quat RotU2V(glm::vec3 start, glm::vec3 dest);
-
 	class MoveController : public Component {
 	private:
 		DECL_PIMPL;
 	public:
 		DECL_OBJECT(MoveController);
 
-		void start();
-		void update();
+		void update() override;
 
-		glm::vec3 getFront() const;
-		void setFront(glm::vec3 value);
-		glm::vec3 getUp() const;
-		void setUp(glm::vec3 value);
 		float getSensitivity() const;
 		void setSensitivity(float value);
 		MoveType getMoveType() const;

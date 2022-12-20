@@ -55,10 +55,13 @@ namespace qy::cg {
 	}
 
 	void DisplayObject::update() {
-		for (auto&& t : getComponents()) {
-			if (t->enabled()) {
-				t->update();
-			}
+		for (auto&& c : getComponents()) {
+			if (c->enabled())
+				c->update();
+		}
+		for (auto&& c : transform()) {
+			if (c->obj()->activeSelf())
+				c->obj()->update();
 		}
 	}
 

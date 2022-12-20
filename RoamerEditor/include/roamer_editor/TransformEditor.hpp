@@ -6,10 +6,10 @@ namespace qy::cg::editor {
 	class TransformEditor : public Editor {
 		RegisterEditor(TransformEditor, Transform);
 	public:
-		void start() override;
 		void onInspectorGUI() override;
 	private:
-		glm::vec3 eulerAngles;
+		glm::vec3 eulerAngles {0, 0, 0};
+		glm::quat prevRotation {0, 0, 0, 0};
 	};
 
 }

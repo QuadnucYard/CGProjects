@@ -21,7 +21,13 @@ protected:
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);*/
 		scene = Scene::create();
+		auto root = scene->root();
+
+		auto character = DisplayObject::create("Character")->transform();
+		root->addChild(character);
+
 		cam = scene->createCamera();
+		cam->transform()->setParent(character);
 		cam->setBackgroundColor({0.4f, 0.3f, 0.1f, 1.0f});
 		cam->obj()->transform()->position({0, 2.0f, 5});
 		cam->addComponent(SkyBox::loadFromFile(
@@ -36,7 +42,7 @@ protected:
 		cam->setClearFlags(CameraClearFlags::Skybox);
 		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
-		auto root = scene->root();
+		
 		auto lightContainer = DisplayObject::create("Light Container")->transform();
 		root->addChild(lightContainer);
 		{
@@ -93,7 +99,7 @@ protected:
 		}
 		{
 			auto obj = Primitives::createCube();
-			obj->transform()->position({0, -4, 0});
+			obj->transform()->position(vec3{0, -4, 0}+Random::insideUnitSphere());
 			obj->transform()->scale({10, 1, 10});
 			//obj->getComponent<MeshRenderer>()->getMaterial()->setColor("material.ambient", {0.1f, 0.1f, 0.1f, 1.0f});
 			obj->getComponent<MeshRenderer>()->getMaterial()->setTexture("_SpecTex", Assets::load<Texture2D>("assets/ApexPlasmaMasterDiffuse.png"));
@@ -133,6 +139,7 @@ protected:
 		if (Input::getKeyDown(KeyCode::ESCAPE)) {
 			quit();
 		}
+		//cam->transform()->position(cam->transform()->position() + Random::insideUnitSphere());
 	}
 
 	void display() override {
