@@ -17,9 +17,18 @@ auto loadModel(std::string_view obj, std::string_view tex) {
 }
 
 class Spinning : public Component {
+private:
+	vec3 axis {0, 1, 0};
+	float speed {1};
 public:
 	void update() override {
-		transform()->rotation(glm::vec3 {0.0, Time::time() * 10, 0.0});
+		transform()->rotation(axis * glm::vec3 {0.0, Time::time() * speed, 0.0});
+	}
+	void setAxis(vec3 axis) {
+		this->axis = axis;
+	}
+	void setSpeed(float speed) {
+		this->speed = speed;
 	}
 };
 
@@ -50,12 +59,12 @@ public:
 		auto lightColor = Color::hsv2rgb(hue, 1.0f, 1.0f, 1.0);
 		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
 		auto&& light = obj->addComponent<Light>();
-		light->setType(LightType::Spot);
+		light->setType(LightType::Point);
 		light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
 		light->setDiffuse(color);
 		light->setSpecular(color);
-		light->setIntensity(1.0f);
-		light->setRange(40);
+		//light->setIntensity(3.0f);
+		light->setRange(30);
 
 		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(lightColor);
 		obj->addComponent<Flicker>();
@@ -105,16 +114,16 @@ protected:
 		cam->setClearFlags(CameraClearFlags::Skybox);
 		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
-		//auto&& light = cam->addComponent<Light>();
-		//light->setType(LightType::Spot);
-		//light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
-		//light->setDiffuse(Color::rgba(250, 250, 236));
-		//light->setSpecular(Color::rgba(250, 250, 236));
-		//light->setIntensity(0.5f);
-		//light->setRange(20);
-		//light->setInnerSpotAngle(20);
-		//light->setSpotAngle(60);
-		//light->setShadows(LightShadow::Soft);
+		auto&& light = cam->addComponent<Light>();
+		light->setType(LightType::Spot);
+		light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
+		light->setDiffuse(Color::rgba(250, 250, 236));
+		light->setSpecular(Color::rgba(250, 250, 236));
+		light->setIntensity(0.5f);
+		light->setRange(20);
+		light->setInnerSpotAngle(20);
+		light->setSpotAngle(60);
+		light->setShadows(LightShadow::Soft);
 
 		cam->setNearClipPlane(0.01f);
 		cam->setFieldOfView(160.0f);
@@ -154,9 +163,9 @@ protected:
 					w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
 					mazeContainer->addChild(w2.getObj()->transform());
 					if (i % 2 == 0 && j % 2 == 0) {
-						//TopLight light;
-						//light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
-						//mazeContainer->addChild(light.getObj()->transform());
+						TopLight light;
+						light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
+						mazeContainer->addChild(light.getObj()->transform());
 					}
 				}
 			}
@@ -165,7 +174,7 @@ protected:
 		auto container = DisplayObject::create("Container")->transform();
 		vec3 offset {6.7, 2.5, -2.5};
 		//container->position({6.7, 2.5, -2.5});
-		//scene->root()->addChild(container);
+		scene->root()->addChild(container);
 		{
 			auto lightObj = Primitives::createSphere();
 			lightObj->name("Light1");
@@ -225,23 +234,43 @@ protected:
 		{
 			auto&& obj2 = loadModel("ApexPlasmaMasterGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			container->addChild(obj2->transform());
+			obj2->transform()->position({0, 0.5f, 0});
+			root->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
+			obj2 = loadModel("ApexPlasmaMasterLegsGeo.obj", "ApexPlasmaMasterDiffuse.png");
+			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
+			obj2->transform()->position({0, 0.5f, 0});
+			root->addChild(obj2->transform());
+			obj2->name("ApexPlasmaMasterLegs");
+			obj2->addComponent<Spinning>();
 		}
 		{
-			auto chicken = loadModel("ChickenGeo.obj", "ApexPlasmaMasterDiffuse.png")->transform();
-			chicken->position({2, 0, 0});
-			root->addChild(chicken);
-			chicken->obj()->name("Chicken");
+			auto superChicken = DisplayObject::create("Super Sun Chicken")->transform();
+			superChicken->setParent(root);
+			{
+				auto chicken = loadModel("ChickenGeo.obj", "ChickenDiffuse.png")->transform();
+				chicken->position({-2.3, 0.7, 0});
+				superChicken->addChild(chicken);
+				chicken->obj()->name("Chicken");
+			}
+			{
+				auto sungod = loadModel("TrueSunGod.obj", "TrueSunGod.png")->transform();
+				sungod->position({-2, 0, 0});
+				sungod->scale({0.1, 0.1, 0.1});
+				superChicken->addChild(sungod);
+				sungod->obj()->name("TrueSunGod");
+			}
 		}
 		{
-			auto sungod = loadModel("TrueSunGod.obj", "TrueSunGod.png")->transform();
-			sungod->position({-2, 0, 0});
-			sungod->scale({0.1, 0.1, 0.1});
-			root->addChild(sungod);
-			sungod->obj()->name("TrueSunGod");
+			auto jug = loadModel("JuggernautProjectile_polySurface9.obj", "JuggernautDiffuse.png")->transform();
+			jug->position({0, 2, 2});
+			jug->scale({0.01, 0.01, 0.01});
+			root->addChild(jug);
+			jug->obj()->name("Juggernaut");
+			auto spin = jug->addComponent<Spinning>();
+			spin->setAxis(Random::onUnitSphere());
+			spin->setSpeed(20);
 		}
-
 		{
 			spinPoints = std::make_shared<SpinPointLight>();
 			root->addChild(spinPoints->getObj()->transform());

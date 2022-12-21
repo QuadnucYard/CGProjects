@@ -24,43 +24,47 @@ namespace qy::cg {
 		size_t submeshCount() const { return __indexSizes.size(); }
 
 		void getVertices(std::vector<glm::vec3>& outVertices) const {
-			copyAttributeInto<glm::vec3>(outVertices, offsetof(Vertex, position));
+			copyAttributeInto(outVertices, offsetof(Vertex, position));
 		}
 
 		void getNormals(std::vector<glm::vec3>& outNormals) const {
-			copyAttributeInto<glm::vec3>(outNormals, offsetof(Vertex, normal));
+			copyAttributeInto(outNormals, offsetof(Vertex, normal));
 		}
 
 		void getTangents(std::vector<glm::vec4>& outTangents) const {
-			copyAttributeInto<glm::vec4>(outTangents, offsetof(Vertex, tangent));
+			copyAttributeInto(outTangents, offsetof(Vertex, tangent));
 		}
 
 		void getColors(std::vector<glm::vec4>& outColors) const {
-			copyAttributeInto<glm::vec4>(outColors, offsetof(Vertex, color));
+			copyAttributeInto(outColors, offsetof(Vertex, color));
 		}
 
 		void getUVs(std::vector<glm::vec2>& outUVs) const {
-			copyAttributeInto<glm::vec2>(outUVs, offsetof(Vertex, uv));
+			copyAttributeInto(outUVs, offsetof(Vertex, uv));
 		}
 
 		void setVertices(const std::vector<glm::vec3>& inVertices) {
-			copyAttributeFrom<glm::vec3>(inVertices, offsetof(Vertex, position));
+			copyAttributeFrom(inVertices, offsetof(Vertex, position));
 		}
 
 		void setNormals(const std::vector<glm::vec3>& inNormals) {
-			copyAttributeFrom<glm::vec3>(inNormals, offsetof(Vertex, normal));
+			copyAttributeFrom(inNormals, offsetof(Vertex, normal));
 		}
 
 		void setTangents(const std::vector<glm::vec4>& inTangents) {
-			copyAttributeFrom<glm::vec4>(inTangents, offsetof(Vertex, tangent));
+			copyAttributeFrom(inTangents, offsetof(Vertex, tangent));
 		}
 
 		void setColors(const std::vector<glm::vec4>& inColors) {
-			copyAttributeFrom<glm::vec4>(inColors, offsetof(Vertex, color));
+			copyAttributeFrom(inColors, offsetof(Vertex, color));
+		}
+
+		void setColors(const std::vector<glm::vec3>& inColors) {
+			copyAttributeFrom(inColors, offsetof(Vertex, color));
 		}
 
 		void setUVs(const std::vector<glm::vec2>& inUVs) {
-			copyAttributeFrom<glm::vec2>(inUVs, offsetof(Vertex, uv));
+			copyAttributeFrom(inUVs, offsetof(Vertex, uv));
 		}
 
 	private:
@@ -75,7 +79,8 @@ namespace qy::cg {
 
 		template <class T>
 		void copyAttributeFrom(const std::vector<T>& buffer, size_t offset) {
-			__vertices.resize(buffer.size());
+			if (__vertices.size() < buffer.size())
+				__vertices.resize(buffer.size());
 			auto data = const_cast<Vertex*>(__vertices.data());
 			for (size_t i = 0, s = buffer.size(); i < s; i++) {
 				*reinterpret_cast<T*>(reinterpret_cast<char*>(data + i) + offset) = buffer[i];
@@ -126,6 +131,11 @@ namespace qy::cg {
 	}
 
 	void Mesh::setColors(const std::vector<glm::vec4>& colors) {
+		pImpl->data.setColors(colors);
+		pImpl->dirty = true;
+	}
+
+	void Mesh::setColors(const std::vector<glm::vec3>& colors) {
 		pImpl->data.setColors(colors);
 		pImpl->dirty = true;
 	}

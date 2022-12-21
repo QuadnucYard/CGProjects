@@ -35,6 +35,7 @@ namespace qy::cg {
 		std::vector<glm::vec4> getColors() const;
 
 		void setColors(const std::vector<glm::vec4>& colors);
+		void setColors(const std::vector<glm::vec3>& colors);
 
 		std::vector<glm::vec3> getNormals() const;
 

@@ -72,6 +72,7 @@ void main() {
 		if (lights[i].type == 1) result += CalcPointLight(lights[i], viewDir);
 		if (lights[i].type == 2) result += CalcSpotLight(lights[i], viewDir);
 	}
+	result += (globalAmbient * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
 	
 	FragColor = vec4(result, 1.0f);
 }
@@ -173,7 +174,7 @@ vec3 CalcDirLight(Light light, vec3 viewDir)
 	// specular shading
 	float spec = pow(max(dot(normal, halfwayDir), 0.0), material.shininess);
 	// combine results
-	vec3 ambient = ((globalAmbient + light.ambient) * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
+	vec3 ambient = (light.ambient * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
 	vec3 diffuse = (light.diffuse * diff * texture(_MainTex, v2f.TexCoords) * material.diffuse).rgb;
 	vec3 specular = (light.specular * spec * material.specular).rgb;
 	float shadow = CalcDirectShadow(light);
@@ -197,7 +198,7 @@ vec3 CalcPointLight(Light light, vec3 viewDir)
 	float dist = length(light.position - v2f.FragPos) / light.range;
 	float attenuation = 1.0 / (1 + 4.6 * dist + 80.0 * dist * dist);
 	// combine results
-	vec3 ambient = ((globalAmbient + light.ambient) * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
+	vec3 ambient = (light.ambient * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
 	vec3 diffuse = (light.diffuse * diff * texture(_MainTex, v2f.TexCoords) * material.diffuse).rgb;
 	vec3 specular = (light.specular * spec * material.specular).rgb;
 	ambient *= attenuation;
@@ -228,7 +229,7 @@ vec3 CalcSpotLight(Light light, vec3 viewDir)
 	float epsilon = light.cutOff - light.outerCutOff;
 	float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
 	// combine results
-	vec3 ambient = ((globalAmbient + light.ambient) * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
+	vec3 ambient = (light.ambient * texture(_MainTex, v2f.TexCoords) * material.ambient).rgb;
 	vec3 diffuse = (light.diffuse * diff * texture(_MainTex, v2f.TexCoords) * material.diffuse).rgb;
 	vec3 specular = (light.specular * spec * material.specular).rgb;
 	ambient *= attenuation * intensity;
