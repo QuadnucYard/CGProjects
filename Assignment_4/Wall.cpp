@@ -119,11 +119,11 @@ Wall::Wall() {
 		wallMaterial->setFloat("material.shininess", 0.2);
 		wallMaterial->setMainTexture(Texture2D::load("assets/Rock034_2K_Color.png"));
 		wallMaterial->setTexture("_NormalTex", Texture2D::load("assets/Rock034_2K_NormalGL.png"));
-		wallMaterial->setTexture("_SpecTex", Texture2D::load("assets/Rock034_2K_Roughness.png"));
-		wallMaterial->setTexture("_DisplaceTex", Texture2D::load("assets/Rock034_2K_Displacement_8bits.png"));
+		//wallMaterial->setTexture("_SpecTex", Texture2D::load("assets/Rock034_2K_Roughness.png"));
+		//wallMaterial->setTexture("_DisplaceTex", Texture2D::load("assets/Rock034_2K_Displacement_8bits.png"));
 	}
 	wallObj->addComponent<MeshRenderer>()->setSharedMaterials({wallMaterial});
-	wallObj->transform()->scale({1.05, 1.05, 1.05});
+	wallObj->transform()->scale({1.0, 1.0, 1.0});
 }
 
 void Wall::scale(const glm::vec3& value) {

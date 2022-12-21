@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Maze.hpp" />
+    <ClInclude Include="SpinPointLights.hpp" />
     <ClInclude Include="Wall.hpp" />
   </ItemGroup>
   <ItemGroup>

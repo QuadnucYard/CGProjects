@@ -47,14 +47,14 @@ layout(std140, binding = 2) uniform Lights {
 	Light lights[256];
 };
 
-uniform sampler2D _DisplaceTex;
+//uniform sampler2D _DisplaceTex;
 
 void main() {	
 	//Displace texture
-	float delta = texture(_DisplaceTex, aTexCoords).r;
-	vec3 newPos = aPosition + aNormal * (delta-1)*0.05;
+	//float delta = texture(_DisplaceTex, aTexCoords).r;
+	//vec3 newPos = aPosition + aNormal * delta;
 
-	v2f.FragPos = vec3(model * vec4(newPos, 1.0));
+	v2f.FragPos = vec3(model * vec4(aPosition, 1.0));
 	v2f.Normal = normalize(mat3(transpose(inverse(model))) * aNormal);
 	v2f.TexCoords = aTexCoords;
 	for (int i = 0; i < numDirectShadows; i++)

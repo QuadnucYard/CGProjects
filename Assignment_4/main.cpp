@@ -44,28 +44,100 @@ public:
 		obj = Primitives::createSphere();
 		obj->transform()->scale({0.1, 0.1, 0.05});
 		obj->transform()->rotation(glm::vec3({glm::radians(-90.0), 0.0, 0.0}));
-		auto color = Color::hsv2rgb(Random::range(0.0f, 1.0f), 1.0f, 0.5f, 1.0);
-		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Lit);
-		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
+		auto hue = Random::range(0.0f, 1.0f);
+		auto color = Color::hsv2rgb(hue, 1.0f, 0.4f, 1.0);
+		auto lightColor = Color::hsv2rgb(hue, 1.0f, 1.0f, 1.0);
+		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
 		auto&& light = obj->addComponent<Light>();
-		light->setType(LightType::Point);
+		light->setType(LightType::Spot);
 		light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
 		light->setDiffuse(color);
 		light->setSpecular(color);
-		//light->setIntensity(3.0f);
-		light->setRange(30);
+		light->setIntensity(1.0f);
+		light->setRange(40);
 
-		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
+		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(lightColor);
 		obj->addComponent<Flicker>();
 	}
 	ptr<DisplayObject> getObj() { return obj; }
 };
+
+class roundPointLight {
+private:
+	ptr<DisplayObject> obj;
+	float shootSpeed = 0.01;
+	vec3 deltaPos = {-0.02, 0.01, -0.04};
+
+	struct Point {
+		ptr<DisplayObject> pointLight;
+		float r, theta, height, v, offset;
+	};
+
+	std::vector<Point> points;
+
+public:
+	roundPointLight() {
+		obj = DisplayObject::create();
+
+		for (int i = 0; i < 10;i++) {
+			const float pi = std::numbers::pi_v<float>;
+			auto r = Random::range(0.01f, 0.015f);
+			auto theta = Random::range(0.0f, 2 * pi);
+			auto height = Random::range(-0.005f,  0.005f);
+			auto v = Random::range(2.0f, 3.0f);
+			auto offest = Random::range(1.0f);
+
+			auto pointsObject = Primitives::createSphere();
+			pointsObject->transform()->scale({0.001, 0.001, 0.001});
+			pointsObject->transform()->position(deltaPos + glm::vec3{r * cos(theta), r * sin(theta), height});
+			auto color = glm::vec4 {1.0, 1.0, 1.0, 1.0};
+			pointsObject->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
+			pointsObject->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
+			auto&& light = pointsObject->addComponent<Light>();
+			light->setType(LightType::Point);
+			light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
+			light->setDiffuse(color);
+			light->setSpecular(color);
+			light->setIntensity(0.01f);
+
+			obj->transform()->addChild(pointsObject->transform());
+			points.push_back(Point{pointsObject, r, theta, height, v, offest});
+		}
+	}
+
+	ptr<DisplayObject> getObj() { return obj; }
+
+	void update() {
+		auto t = 0.3 * Time::time();
+		for (auto p : points) {
+			auto r = p.r + 0.01 * sin(t + p.offset);
+			auto theta = p.theta + p.v * t;
+			const float pi = std::numbers::pi_v<float>;
+			if (theta > 2 * pi) theta -= 2 * pi;
+			auto h = p.height + 0.001 * sin(t + p.offset);
+			p.pointLight->transform()->position(deltaPos + glm::vec3{r * cos(theta), r * sin(theta), h});
+		}
+	}
+};
+
+//线性插值
+glm::quat Nlerp(glm::quat q1, glm::quat q2, float t) {
+	return ((1 - t) * q1 + t * q2) * (1.0f / glm::length(((1 - t) * q1 + t * q2)));
+}
+
+//球面插值
+glm::quat Slerp(glm::quat q1, glm::quat q2, float t) {
+	auto theta = glm::acos(glm::dot(q1, q2));
+	if (sin(theta) < 0.001 && sin(theta) > -0.001) return Nlerp(q1, q2, t);
+	return q1 * sin((1.0f - t) * theta) / sin(theta) + q2 * sin(t * theta) / sin(theta);
+}
 
 class MyApplication : public RoamerEditor::EditorApplication {
 private:
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<Camera> cam;
 	ptr<DisplayObject> obj, monkey;
+	ptr<roundPointLight> roundPoints;
 protected:
 	void init() override {
 		/*glEnable(GL_BLEND);
@@ -90,16 +162,19 @@ protected:
 		cam->setClearFlags(CameraClearFlags::Skybox);
 		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
-		auto&& light = cam->addComponent<Light>();
-		light->setType(LightType::Spot);
-		light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
-		light->setDiffuse(Color::rgba(250, 250, 236));
-		light->setSpecular(Color::rgba(250, 250, 236));
-		light->setIntensity(0.5f);
-		light->setRange(20);
-		light->setInnerSpotAngle(20);
-		light->setSpotAngle(60);
-		light->setShadows(LightShadow::Soft);
+		//auto&& light = cam->addComponent<Light>();
+		//light->setType(LightType::Spot);
+		//light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
+		//light->setDiffuse(Color::rgba(250, 250, 236));
+		//light->setSpecular(Color::rgba(250, 250, 236));
+		//light->setIntensity(0.5f);
+		//light->setRange(20);
+		//light->setInnerSpotAngle(20);
+		//light->setSpotAngle(60);
+		//light->setShadows(LightShadow::Soft);
+
+		cam->setNearClipPlane(0.01f);
+		cam->setFieldOfView(160.0f);
 
 		int width = 7;
 		int height = 7;
@@ -147,7 +222,7 @@ protected:
 		auto container = DisplayObject::create("Container")->transform();
 		vec3 offset {6.7, 2.5, -2.5};
 		//container->position({6.7, 2.5, -2.5});
-		scene->root()->addChild(container);
+		//scene->root()->addChild(container);
 		{
 			auto lightObj = Primitives::createSphere();
 			lightObj->name("Light1");
@@ -223,40 +298,51 @@ protected:
 			root->addChild(sungod);
 			sungod->obj()->name("TrueSunGod");
 		}
+
+		{
+			roundPoints = std::make_shared<roundPointLight>();
+			root->addChild(roundPoints->getObj()->transform());
+		}
 	}
 
 	void update() override {
 		using namespace qy::cg;
+		auto&& transform = roundPoints->getObj()->transform();
+		auto dp = cam->transform()->position() - transform->position();
+		transform->position(transform->position() + dp * 0.1f);
+		transform->rotation(Nlerp(transform->rotation(), cam->transform()->rotation(), 0.1));
+		roundPoints->update();
 
-		auto range = cam->getComponent<Light>()->getRange();
-		auto innerAngle = cam->getComponent<Light>()->getInnerSpotAngle();
-		if (Input::getKey(KeyCode::EQUAL)) {
-			if (range < 1000) {
-				range++;
-				cam->getComponent<Light>()->setRange(range);
+		if (cam->getComponent<Light>()) {
+			auto range = cam->getComponent<Light>()->getRange();
+			auto innerAngle = cam->getComponent<Light>()->getInnerSpotAngle();
+			if (Input::getKey(KeyCode::EQUAL)) {
+				if (range < 1000) {
+					range++;
+					cam->getComponent<Light>()->setRange(range);
+				}
 			}
-		}
-		if (Input::getKey(KeyCode::MINUS)) {
-			if (range > 1) {
-				range--;
-				cam->getComponent<Light>()->setRange(range);
+			if (Input::getKey(KeyCode::MINUS)) {
+				if (range > 1) {
+					range--;
+					cam->getComponent<Light>()->setRange(range);
+				}
 			}
-		}
 
-		auto angle = cam->getComponent<Light>()->getSpotAngle();
-		if (Input::getKey(KeyCode::RIGHT_BRACKET)) {
-			if (angle < 90) {
-				angle++;
-				cam->getComponent<Light>()->setSpotAngle(angle);
+			auto angle = cam->getComponent<Light>()->getSpotAngle();
+			if (Input::getKey(KeyCode::RIGHT_BRACKET)) {
+				if (angle < 90) {
+					angle++;
+					cam->getComponent<Light>()->setSpotAngle(angle);
+				}
+			}
+			if (Input::getKey(KeyCode::LEFT_BRACKET)) {
+				if (angle > innerAngle) {
+					angle--;
+					cam->getComponent<Light>()->setSpotAngle(angle);
+				}
 			}
 		}
-		if (Input::getKey(KeyCode::LEFT_BRACKET)) {
-			if (angle > innerAngle) {
-				angle--;
-				cam->getComponent<Light>()->setSpotAngle(angle);
-			}
-		}
-
 		scene->dispatch_update();
 		if (Input::getKeyDown(KeyCode::F11)) {
 			Screen::setFullScreen(!Screen::isFullScreen());

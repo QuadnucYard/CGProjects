@@ -32,6 +32,9 @@
     <ClInclude Include="Wall.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="SpinPointLights.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\shaders\wall-map.frag" />
