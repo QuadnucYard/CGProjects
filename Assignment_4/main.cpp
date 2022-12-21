@@ -16,9 +16,18 @@ auto loadModel(std::string_view obj, std::string_view tex) {
 }
 
 class Spinning : public Component {
+private:
+	vec3 axis {0, 1, 0};
+	float speed {1};
 public:
 	void update() override {
-		transform()->rotation(glm::vec3 {0.0, Time::time() * 10, 0.0});
+		transform()->rotation(axis * glm::vec3 {0.0, Time::time() * speed, 0.0});
+	}
+	void setAxis(vec3 axis) {
+		this->axis = axis;
+	}
+	void setSpeed(float speed) {
+		this->speed = speed;
 	}
 };
 
@@ -56,7 +65,7 @@ public:
 		light->setRange(30);
 
 		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
-		obj->addComponent<Flicker>();
+		//obj->addComponent<Flicker>();
 	}
 	ptr<DisplayObject> getObj() { return obj; }
 };
@@ -207,21 +216,42 @@ protected:
 		{
 			auto&& obj2 = loadModel("ApexPlasmaMasterGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			container->addChild(obj2->transform());
+			obj2->transform()->position({0, 0.5f, 0});
+			root->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
+			obj2 = loadModel("ApexPlasmaMasterLegsGeo.obj", "ApexPlasmaMasterDiffuse.png");
+			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
+			obj2->transform()->position({0, 0.5f, 0});
+			root->addChild(obj2->transform());
+			obj2->name("ApexPlasmaMasterLegs");
+			obj2->addComponent<Spinning>();
 		}
 		{
-			auto chicken = loadModel("ChickenGeo.obj", "ApexPlasmaMasterDiffuse.png")->transform();
-			chicken->position({2, 0, 0});
-			root->addChild(chicken);
-			chicken->obj()->name("Chicken");
+			auto superChicken = DisplayObject::create("Super Sun Chicken")->transform();
+			superChicken->setParent(root);
+			{
+				auto chicken = loadModel("ChickenGeo.obj", "ChickenDiffuse.png")->transform();
+				chicken->position({-2.3, 0.7, 0});
+				superChicken->addChild(chicken);
+				chicken->obj()->name("Chicken");
+			}
+			{
+				auto sungod = loadModel("TrueSunGod.obj", "TrueSunGod.png")->transform();
+				sungod->position({-2, 0, 0});
+				sungod->scale({0.1, 0.1, 0.1});
+				superChicken->addChild(sungod);
+				sungod->obj()->name("TrueSunGod");
+			}
 		}
 		{
-			auto sungod = loadModel("TrueSunGod.obj", "TrueSunGod.png")->transform();
-			sungod->position({-2, 0, 0});
-			sungod->scale({0.1, 0.1, 0.1});
-			root->addChild(sungod);
-			sungod->obj()->name("TrueSunGod");
+			auto jug = loadModel("JuggernautProjectile_polySurface9.obj", "JuggernautDiffuse.png")->transform();
+			jug->position({0, 2, 2});
+			jug->scale({0.01, 0.01, 0.01});
+			root->addChild(jug);
+			jug->obj()->name("Juggernaut");
+			auto spin = jug->addComponent<Spinning>();
+			spin->setAxis(Random::onUnitSphere());
+			spin->setSpeed(20);
 		}
 	}
 
