@@ -31,16 +31,23 @@ namespace qy::cg {
 		auto&& mesh = obj->addComponent<MeshFilter>()->sharedMesh();
 		// 默认各属性的索引是一样的
 		mesh->setVertices({
-			reinterpret_cast<const glm::vec3*>(attrib.vertices.data()), 
+			reinterpret_cast<const glm::vec3*>(attrib.vertices.data()),
 			reinterpret_cast<const glm::vec3*>(attrib.vertices.data() + attrib.vertices.size())
 			});
-		mesh->setNormals({
+		if (!attrib.normals.empty())
+			mesh->setNormals({
 			reinterpret_cast<const glm::vec3*>(attrib.normals.data()),
 			reinterpret_cast<const glm::vec3*>(attrib.normals.data() + attrib.normals.size())
 			});
-		mesh->setUVs({
+		if (!attrib.texcoords.empty())
+			mesh->setUVs({
 			reinterpret_cast<const glm::vec2*>(attrib.texcoords.data()),
 			reinterpret_cast<const glm::vec2*>(attrib.texcoords.data() + attrib.texcoords.size())
+			});
+		if (!attrib.colors.empty())
+			mesh->setColors(std::vector<vec3>{
+			reinterpret_cast<const glm::vec3*>(attrib.colors.data()),
+			reinterpret_cast<const glm::vec3*>(attrib.colors.data() + attrib.colors.size())
 			});
 
 		for (size_t s = 0; s < shapes.size(); s++) {
@@ -50,7 +57,7 @@ namespace qy::cg {
 			}
 			mesh->setTriangles(triangles, s);
 		}
-	
+
 		return obj;
 	}
 
