@@ -5,6 +5,7 @@
 #include <roamer_editor.hpp>
 #include "Maze.hpp"
 #include "Wall.hpp"
+#include "SpinPointLights.hpp"
 
 using namespace qy::cg;
 
@@ -62,64 +63,6 @@ public:
 	ptr<DisplayObject> getObj() { return obj; }
 };
 
-class roundPointLight {
-private:
-	ptr<DisplayObject> obj;
-	float shootSpeed = 0.01;
-	vec3 deltaPos = {-0.02, 0.01, -0.04};
-
-	struct Point {
-		ptr<DisplayObject> pointLight;
-		float r, theta, height, v, offset;
-	};
-
-	std::vector<Point> points;
-
-public:
-	roundPointLight() {
-		obj = DisplayObject::create();
-
-		for (int i = 0; i < 10;i++) {
-			const float pi = std::numbers::pi_v<float>;
-			auto r = Random::range(0.01f, 0.015f);
-			auto theta = Random::range(0.0f, 2 * pi);
-			auto height = Random::range(-0.005f,  0.005f);
-			auto v = Random::range(2.0f, 3.0f);
-			auto offest = Random::range(1.0f);
-
-			auto pointsObject = Primitives::createSphere();
-			pointsObject->transform()->scale({0.001, 0.001, 0.001});
-			pointsObject->transform()->position(deltaPos + glm::vec3{r * cos(theta), r * sin(theta), height});
-			auto color = glm::vec4 {1.0, 1.0, 1.0, 1.0};
-			pointsObject->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
-			pointsObject->getComponent<MeshRenderer>()->getMaterial()->setColor(color);
-			auto&& light = pointsObject->addComponent<Light>();
-			light->setType(LightType::Point);
-			light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
-			light->setDiffuse(color);
-			light->setSpecular(color);
-			light->setIntensity(0.01f);
-
-			obj->transform()->addChild(pointsObject->transform());
-			points.push_back(Point{pointsObject, r, theta, height, v, offest});
-		}
-	}
-
-	ptr<DisplayObject> getObj() { return obj; }
-
-	void update() {
-		auto t = 0.3 * Time::time();
-		for (auto p : points) {
-			auto r = p.r + 0.01 * sin(t + p.offset);
-			auto theta = p.theta + p.v * t;
-			const float pi = std::numbers::pi_v<float>;
-			if (theta > 2 * pi) theta -= 2 * pi;
-			auto h = p.height + 0.001 * sin(t + p.offset);
-			p.pointLight->transform()->position(deltaPos + glm::vec3{r * cos(theta), r * sin(theta), h});
-		}
-	}
-};
-
 //线性插值
 glm::quat Nlerp(glm::quat q1, glm::quat q2, float t) {
 	return ((1 - t) * q1 + t * q2) * (1.0f / glm::length(((1 - t) * q1 + t * q2)));
@@ -137,7 +80,7 @@ private:
 	std::shared_ptr<Scene> scene;
 	std::shared_ptr<Camera> cam;
 	ptr<DisplayObject> obj, monkey;
-	ptr<roundPointLight> roundPoints;
+	ptr<SpinPointLight> spinPoints;
 protected:
 	void init() override {
 		/*glEnable(GL_BLEND);
@@ -211,9 +154,9 @@ protected:
 					w2.position({i * 2.0, -2.0, (j - height + 1) * 2.0});
 					mazeContainer->addChild(w2.getObj()->transform());
 					if (i % 2 == 0 && j % 2 == 0) {
-						TopLight light;
-						light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
-						mazeContainer->addChild(light.getObj()->transform());
+						//TopLight light;
+						//light.getObj()->transform()->position({i * 2.0, 1.0, (j - height + 1) * 2.0});
+						//mazeContainer->addChild(light.getObj()->transform());
 					}
 				}
 			}
@@ -300,18 +243,17 @@ protected:
 		}
 
 		{
-			roundPoints = std::make_shared<roundPointLight>();
-			root->addChild(roundPoints->getObj()->transform());
+			spinPoints = std::make_shared<SpinPointLight>();
+			root->addChild(spinPoints->getObj()->transform());
 		}
 	}
 
 	void update() override {
 		using namespace qy::cg;
-		auto&& transform = roundPoints->getObj()->transform();
+		auto&& transform = spinPoints->getObj()->transform();
 		auto dp = cam->transform()->position() - transform->position();
 		transform->position(transform->position() + dp * 0.1f);
 		transform->rotation(Nlerp(transform->rotation(), cam->transform()->rotation(), 0.1));
-		roundPoints->update();
 
 		if (cam->getComponent<Light>()) {
 			auto range = cam->getComponent<Light>()->getRange();
@@ -349,6 +291,16 @@ protected:
 		}
 		if (Input::getKeyDown(KeyCode::ESCAPE)) {
 			quit();
+		}
+		if (Input::getKeyDown(KeyCode::ENTER)) {
+			if (auto p = spinPoints->popPoint()) {
+				p->addComponent<ShootedPoint>()->setDirection(cam->transform()->rotation() * glm::vec3_back);
+				p->getComponent<Light>()->setIntensity(1);
+				scene->root()->addChild(p->transform());
+			}
+			else {
+				//reload
+			}
 		}
 	}
 
