@@ -11,7 +11,6 @@ namespace qy::cg::editor {
 		transform->scale(DragFloat3("Scale", transform->scale(), 0.01f));
 		auto curRotation = transform->rotation();
 		if (glm::length(curRotation - prevRotation) > 1e-6) {
-			std::cout << "changed\n";
 			eulerAngles = glm::degrees(glm::eulerAngles(curRotation));
 		}
 		eulerAngles = DragFloat3("Rotation", eulerAngles);

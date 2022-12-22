@@ -46,6 +46,21 @@ public:
 	}
 };
 
+class SimpleBody : public Component {
+public:
+	vec3 velocity;
+	float lifetime;
+	void start() override {
+		velocity = vec3 {0, -10, 0} + Random::insideUnitSphere() * 2.0f;
+		transform()->position({Random::range(0, 20), 50, Random::range(0, 20)});
+		lifetime = Random::range(30, 60);
+	}
+	void update() override {
+		transform()->position(transform()->position() + velocity * Time::deltaTime());
+		if ((lifetime -= Time::deltaTime()) < 0) obj()->setActive(false);
+	}
+};
+
 class TopLight {
 private:
 	ptr<DisplayObject> obj;
@@ -90,6 +105,7 @@ private:
 	std::shared_ptr<Camera> cam;
 	ptr<DisplayObject> obj, monkey;
 	ptr<SpinPointLight> spinPoints;
+	TransformPtr jugContainer;
 protected:
 	void init() override {
 		/*glEnable(GL_BLEND);
@@ -129,8 +145,8 @@ protected:
 		cam->setNearClipPlane(0.01f);
 		cam->setFieldOfView(160.0f);
 
-		int width = 21;
-		int height = 21;
+		int width = 15;
+		int height = 15;
 		Maze m(width, height);
 		auto maze = m.getMaze();
 		auto mazeContainer = DisplayObject::create()->transform();
@@ -222,12 +238,12 @@ protected:
 			light->setRange(1000);
 			light->setShadows(LightShadow::Soft);
 		}
-		scene->setAmbientColor({0.05f, 0.05f, 0.05f, 1.0f});
+		scene->setAmbientColor({0.1f, 0.1f, 0.1f, 1.0f});
 		{
 			auto obj = Primitives::createCube();
 			obj->name("Ground");
 			obj->transform()->position({0, -7, 0});
-			obj->transform()->scale({100, 1, 100});
+			obj->transform()->scale({50, 1, 50});
 			obj->getComponent<MeshRenderer>()->getMaterial()->setMainTexture(Assets::load<Texture2D>("assets/Rock050_1K_Color.jpg"));
 			//obj->getComponent<MeshRenderer>()->getMaterial()->setColor("material.ambient", {0.1f, 0.1f, 0.1f, 1.0f});
 			scene->root()->addChild(obj->transform());
@@ -265,19 +281,11 @@ protected:
 			}
 		}
 		{
-			auto jug = loadModel("JuggernautProjectile_polySurface9.obj", "JuggernautDiffuse.png")->transform();
-			jug->position({0, 2, 2});
-			jug->scale({0.01, 0.01, 0.01});
-			root->addChild(jug);
-			jug->obj()->name("Juggernaut");
-			auto spin = jug->addComponent<Spinning>();
-			spin->setAxis(Random::onUnitSphere());
-			spin->setSpeed(20);
-		}
-		{
 			spinPoints = std::make_shared<SpinPointLight>();
 			root->addChild(spinPoints->getObj()->transform());
 		}
+		jugContainer = DisplayObject::create("Jugs") ->transform();
+		root->addChild(jugContainer);
 	}
 
 	void update() override {
@@ -286,6 +294,18 @@ protected:
 		auto dp = cam->transform()->position() - transform->position();
 		transform->position(transform->position() + dp * 0.1f);
 		transform->rotation(Nlerp(transform->rotation(), cam->transform()->rotation(), 0.1));
+
+		if (Random::value() < 0.02) {
+			auto jug = loadModel("JuggernautProjectile_polySurface9.obj", "JuggernautDiffuse.png")->transform();
+			jug->position({0, 2, 2});
+			jug->scale({0.1, 0.1, 0.1});
+			jugContainer->addChild(jug);
+			jug->obj()->name("Juggernaut");
+			auto spin = jug->addComponent<Spinning>();
+			spin->setAxis(Random::onUnitSphere());
+			spin->setSpeed(20);
+			jug->addComponent<SimpleBody>();
+		}
 
 		if (cam->getComponent<Light>()) {
 			auto range = cam->getComponent<Light>()->getRange();
