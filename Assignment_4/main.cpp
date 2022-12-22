@@ -250,15 +250,14 @@ protected:
 		}
 		{
 			auto&& apex = DisplayObject::create("Apex")->transform();
+			apex->position({2, 0.5f, 2});
 			root->addChild(apex);
 			auto&& obj2 = loadModel("ApexPlasmaMasterGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			obj2->transform()->position({1, 0.5f, 2});
 			apex->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 			obj2 = loadModel("ApexPlasmaMasterLegsGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			obj2->transform()->position({2, 0.5f, 2});
 			apex->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMasterLegs");
 			obj2->addComponent<Spinning>();
