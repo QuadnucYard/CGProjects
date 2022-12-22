@@ -67,7 +67,7 @@ public:
 		light->setRange(30);
 
 		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(lightColor);
-		obj->addComponent<Flicker>();
+		//obj->addComponent<Flicker>();
 	}
 	ptr<DisplayObject> getObj() { return obj; }
 };
@@ -99,6 +99,7 @@ protected:
 		scene = Scene::create();
 		auto root = scene->root();
 		cam = scene->createCamera();
+		cam->obj()->name("Camera");
 		cam->setFarClipPlane(100);
 		//cam->setBackgroundColor({ 0.4f, 0.3f, 0.1f, 1.0f });
 		cam->obj()->transform()->position({0, 0, 0});
@@ -128,8 +129,8 @@ protected:
 		cam->setNearClipPlane(0.01f);
 		cam->setFieldOfView(160.0f);
 
-		int width = 7;
-		int height = 7;
+		int width = 21;
+		int height = 21;
 		Maze m(width, height);
 		auto maze = m.getMaze();
 		auto mazeContainer = DisplayObject::create()->transform();
@@ -171,9 +172,9 @@ protected:
 			}
 		}
 
-		auto container = DisplayObject::create("Container")->transform();
+		auto container = DisplayObject::create("Light Container")->transform();
 		vec3 offset {6.7, 2.5, -2.5};
-		//container->position({6.7, 2.5, -2.5});
+		container->position({-8.4, -0.8, 4.6});
 		scene->root()->addChild(container);
 		{
 			auto lightObj = Primitives::createSphere();
@@ -184,11 +185,11 @@ protected:
 			lightObj->transform()->position(vec3 {1, 4, 1} + offset);
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Spot);
-			light->setIntensity(0.5f);
+			light->setIntensity(0.2f);
 			light->setAmbient({0.5f, 0.0f, 0.0f, 1.0f});
 			light->setDiffuse({1.0f, 0.1f, 0.1f, 1.0f});
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
-			light->setRange(1000);
+			light->setRange(100);
 			light->setShadows(LightShadow::Soft);
 		}
 		{
@@ -199,11 +200,11 @@ protected:
 			lightObj->transform()->position(vec3 {-1, 3, 1} + offset);
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Point);
-			light->setIntensity(0.5f);
+			light->setIntensity(0.2f);
 			light->setAmbient({0.0f, 0.5f, 0.0f, 1.0f});
 			light->setDiffuse({0.1f, 1.0f, 0.1f, 1.0f});
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
-			light->setRange(1000);
+			light->setRange(100);
 			light->setShadows(LightShadow::Hard);
 		}
 		{
@@ -214,14 +215,14 @@ protected:
 			lightObj->transform()->position(vec3 {0, 2, -1} + offset);
 			auto&& light = lightObj->addComponent<Light>();
 			light->setType(LightType::Point);
-			light->setIntensity(0.5f);
+			light->setIntensity(0.2f);
 			light->setAmbient({0.0f, 0.0f, 0.5f, 1.0f});
 			light->setDiffuse({0.1f, 0.1f, 1.0f, 1.0f});
 			light->setSpecular({1.0f, 1.0f, 1.0f, 1.0f});
 			light->setRange(1000);
 			light->setShadows(LightShadow::Soft);
 		}
-		scene->setAmbientColor({0.2f, 0.2f, 0.2f, 1.0f});
+		scene->setAmbientColor({0.05f, 0.05f, 0.05f, 1.0f});
 		{
 			auto obj = Primitives::createCube();
 			obj->name("Ground");
@@ -232,15 +233,17 @@ protected:
 			scene->root()->addChild(obj->transform());
 		}
 		{
+			auto&& apex = DisplayObject::create("Apex")->transform();
+			root->addChild(apex);
 			auto&& obj2 = loadModel("ApexPlasmaMasterGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			obj2->transform()->position({0, 0.5f, 0});
-			root->addChild(obj2->transform());
+			obj2->transform()->position({1, 0.5f, 2});
+			apex->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMaster");
 			obj2 = loadModel("ApexPlasmaMasterLegsGeo.obj", "ApexPlasmaMasterDiffuse.png");
 			obj2->transform()->scale({0.05f, 0.05f, 0.05f});
-			obj2->transform()->position({0, 0.5f, 0});
-			root->addChild(obj2->transform());
+			obj2->transform()->position({2, 0.5f, 2});
+			apex->addChild(obj2->transform());
 			obj2->name("ApexPlasmaMasterLegs");
 			obj2->addComponent<Spinning>();
 		}

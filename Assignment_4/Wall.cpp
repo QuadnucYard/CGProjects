@@ -7,7 +7,7 @@ Wall::Wall() {
 	static ptr<Mesh> wallMesh = [] {
 		auto mesh = instantiate<Mesh>();
 
-		static int divNum = 40;
+		static int divNum = 1;
 		static int vertNum = (divNum + 1) * (divNum + 1) * 6;
 
 		std::vector<glm::vec3> vertices(vertNum);
