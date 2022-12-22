@@ -59,11 +59,11 @@ public:
 		auto lightColor = Color::hsv2rgb(hue, 1.0f, 1.0f, 1.0);
 		obj->getComponent<MeshRenderer>()->getMaterial()->setShader(Shaders::Unlit);
 		auto&& light = obj->addComponent<Light>();
-		light->setType(LightType::Point);
+		light->setType(LightType::Spot);
 		light->setAmbient({0.0f, 0.0f, 0.0f, 1.0f});
 		light->setDiffuse(color);
 		light->setSpecular(color);
-		//light->setIntensity(3.0f);
+		light->setIntensity(0.5f);
 		light->setRange(30);
 
 		obj->getComponent<MeshRenderer>()->getMaterial()->setColor(lightColor);
@@ -114,16 +114,16 @@ protected:
 		cam->setClearFlags(CameraClearFlags::Skybox);
 		cam->addComponent<MoveController>()->setMoveType(MoveType::Free);
 
-		auto&& light = cam->addComponent<Light>();
-		light->setType(LightType::Spot);
-		light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
-		light->setDiffuse(Color::rgba(250, 250, 236));
-		light->setSpecular(Color::rgba(250, 250, 236));
-		light->setIntensity(0.5f);
-		light->setRange(20);
-		light->setInnerSpotAngle(20);
-		light->setSpotAngle(60);
-		light->setShadows(LightShadow::Soft);
+		//auto&& light = cam->addComponent<Light>();
+		//light->setType(LightType::Spot);
+		//light->setAmbient({0.1f, 0.1f, 0.1f, 1.0f});
+		//light->setDiffuse(Color::rgba(250, 250, 236));
+		//light->setSpecular(Color::rgba(250, 250, 236));
+		//light->setIntensity(0.5f);
+		//light->setRange(20);
+		//light->setInnerSpotAngle(20);
+		//light->setSpotAngle(60);
+		//light->setShadows(LightShadow::Soft);
 
 		cam->setNearClipPlane(0.01f);
 		cam->setFieldOfView(160.0f);

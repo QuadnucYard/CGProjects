@@ -10,9 +10,9 @@ public:
 	void start() override {
 		activate = true;
 		const float pi = std::numbers::pi_v<float>;
-		r = Random::range(0.1f, 0.3f);
+		r = Random::range(0.1f, 0.15f);
 		theta = Random::range(0.0f, 2 * pi);
-		height = Random::range(-0.005f, 0.005f);
+		height = Random::range(-0.05f, 0.05f);
 		v = Random::range(2.0f, 3.0f);
 		offset1 = Random::range(1.0f);
 		offset2 = Random::range(1.0f);
@@ -22,11 +22,11 @@ public:
 	void update() override {
 		if (activate) {
 			auto t = 0.3 * Time::time();
-			auto r_ = r + 0.01 * sin(t + offset1);
+			auto r_ = r + 0.06 * sin(t + offset1);
 			auto theta_ = theta + v * t;
 			const float pi = std::numbers::pi_v<float>;
 			if (theta_ > 2 * pi) theta -= 2 * pi;
-			auto height_ = height + 0.001 * sin(t + offset2);
+			auto height_ = height + 0.1 * sin(t + offset2);
 			transform()->position(deltaPos + glm::vec3 {r_ * cos(theta_), r_ * sin(theta_), height_});
 		}
 	}
@@ -49,7 +49,7 @@ public:
 		if (Time::time() - shootTime < liveTime)
 			transform()->position(transform()->position() + speed * Time::deltaTime() * direction);
 		else {
-			//如何删除?
+			obj()->transform()->setParent(nullptr);
 		}
 	}
 
