@@ -12,6 +12,16 @@
 namespace qy::cg {
 
 	ptr<DisplayObject> ModelLoader::loadObj(const fs::path& path) {
+		static std::unordered_map<fs::path, ptr<Mesh>> meshCache;
+
+		auto obj = DisplayObject::create();
+		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Lit);
+
+		if (meshCache.contains(path)) {
+			obj->addComponent<MeshFilter>()->setSharedMesh(meshCache.at(path));
+			return obj;
+		}
+
 		tinyobj::ObjReader reader;
 
 		if (!reader.ParseFromFile(path.string())) {
@@ -26,8 +36,6 @@ namespace qy::cg {
 		auto& shapes = reader.GetShapes();
 		auto& materials = reader.GetMaterials();
 
-		auto obj = DisplayObject::create();
-		obj->addComponent<MeshRenderer>()->setSharedMaterial(Materials::Lit);
 		auto&& mesh = obj->addComponent<MeshFilter>()->sharedMesh();
 		// 默认各属性的索引是一样的
 		mesh->setVertices({
@@ -57,6 +65,8 @@ namespace qy::cg {
 			}
 			mesh->setTriangles(triangles, s);
 		}
+
+		meshCache.emplace(path, mesh);
 
 		return obj;
 	}
