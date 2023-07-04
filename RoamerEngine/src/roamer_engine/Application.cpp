@@ -21,7 +21,7 @@ namespace qy::cg {
 	Application::~Application() {
 		if (window) glfwDestroyWindow(window);
 		glfwTerminate();
-		exit(EXIT_SUCCESS);
+		// exit(EXIT_SUCCESS);
 	}
 
 	Application* Application::createWindow(int width, int height, std::string_view title) {

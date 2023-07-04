@@ -1,7 +1,8 @@
 ﻿#include "roamer_engine/display/Shaders.hpp"
 
 namespace qy::cg {
-	fs::path Shaders::ResPath = std::filesystem::current_path().parent_path() / "RoamerEngine" / "shaders";
+	fs::path Shaders::ResPath = std::filesystem::current_path().parent_path().parent_path() / "RoamerEngine" /
+								"shaders";
 
 	void Shaders::__INIT__() {
 

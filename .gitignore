@@ -353,3 +353,12 @@ MigrationBackup/
 **/*.exe
 !**/assets/*
 /CGProjects/imgui.ini
+
+
+# Xmake cache
+.xmake/
+build/
+
+.vscode
+output
+vsxmake*/
