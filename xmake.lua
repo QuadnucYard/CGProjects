@@ -5,6 +5,7 @@ set_warnings("all", "error")
 
 if is_plat("windows") then
     -- add_cxflags("/wd4819") -- Add this if using msvc
+    add_cxxflags("/MP")
     -- add_ldflags("/PROFILE")
 else
     -- add_cxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined")
@@ -25,6 +26,7 @@ add_requires("vcpkg::soil2", {alias = "soil2"})
 add_requires("vcpkg::stb", {alias = "stb"})
 add_requires("vcpkg::tinyobjloader", {alias = "tinyobjloader"})
 add_requires("vcpkg::imgui[docking-experimental,glfw-binding,opengl3-binding]", {alias = "imgui"})
+add_requires("imgui-sugar")
 
 set_rundir("output")
 before_run(function () 
@@ -43,13 +45,29 @@ target("roamer-editor")
     add_deps("roamer-engine")
     add_includedirs("RoamerEditor/include", {public = true})
     add_files("RoamerEditor/src/**/*.cpp")
-    add_packages("imgui")
+    add_packages("imgui", "imgui-sugar")
 
 target("example-beginner")
     add_deps("roamer-editor")
     add_files("examples/beginner/main.cpp")
-    add_packages("glad", "glfw3", "glm", "soil2", "stb", "tinyobjloader")
+    add_packages("glad", "imgui-sugar")
     set_rundir("examples/beginner")
+
+package("imgui-sugar")
+    add_urls("https://github.com/QuadnucYard/imgui_sugar/archive/refs/tags/v1.0.5-fix.tar.gz")
+    add_versions("1.0.5-fix", "af35a8c93a1412214558cfc60a9e4cb44b827676d422658a653970fb58d6e8d3")
+
+    on_install("macosx", "linux", "windows", "mingw", "android", "iphoneos", function (package)
+        io.writefile("xmake.lua", [[
+            target("imgui-sugar")
+                set_kind("headeronly")
+                add_includedirs(".")
+                add_headerfiles("imgui_sugar.hpp")
+        ]])
+        import("package.tools.xmake").install(package)
+    end)
+package_end()
+
 
 --
 -- If you want to known more usage about xmake, please see https://xmake.io
