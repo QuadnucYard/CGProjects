@@ -4,28 +4,24 @@ set_languages("c++23")
 set_warnings("all", "error")
 
 if is_plat("windows") then
-    -- add_cxflags("/wd4819") -- Add this if using msvc
+    add_cxflags("/wd4819") -- Add this if using msvc to ignore encoding issues
     add_cxxflags("/MP")
-    -- add_ldflags("/PROFILE")
-else
-    -- add_cxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined")
-    -- add_mxflags("-Wno-error=deprecated-declarations", "-fno-strict-aliasing", "-Wno-error=expansion-to-defined")
 end
 
 add_rules("mode.debug", "mode.release")
--- add_rules("c.unity_build")
--- add_rules("c++.unity_build")
+add_rules("c.unity_build")
+add_rules("c++.unity_build")
 
 set_runtimes("MD")
 
 add_requireconfs("*", {configs = {shared = true}})
-add_requires("vcpkg::glad[loader]", {alias = "glad"})
-add_requires("vcpkg::glfw3", {alias = "glfw3"})
-add_requires("vcpkg::glm", {alias = "glm"})
+add_requires("glad")
+add_requires("glfw")
+add_requires("glm")
 add_requires("vcpkg::soil2", {alias = "soil2"})
-add_requires("vcpkg::stb", {alias = "stb"})
-add_requires("vcpkg::tinyobjloader", {alias = "tinyobjloader"})
-add_requires("vcpkg::imgui[docking-experimental,glfw-binding,opengl3-binding]", {alias = "imgui"})
+add_requires("stb")
+add_requires("tinyobjloader")
+add_requires("imgui", {configs = {glfw = true, opengl3 = true}})
 add_requires("imgui-sugar")
 
 set_rundir("output")
@@ -38,7 +34,7 @@ target("roamer-engine")
     add_rules("utils.symbols.export_all", {export_classes = true})
     add_includedirs("RoamerEngine/include", {public = true})
     add_files("RoamerEngine/src/**/*.cpp")
-    add_packages("glad", "glfw3", "glm", "soil2", "stb", "tinyobjloader")
+    add_packages("glad", "glfw", "glm", "soil2", "stb", "tinyobjloader")
     add_links("opengl32")
 
 target("roamer-editor")
@@ -47,7 +43,7 @@ target("roamer-editor")
     add_deps("roamer-engine")
     add_includedirs("RoamerEditor/include", {public = true})
     add_files("RoamerEditor/src/**/*.cpp")
-    add_packages("glfw3", "imgui", "imgui-sugar")
+    add_packages("glfw", "imgui", "imgui-sugar")
 
 target("example-beginner")
     add_deps("roamer-editor")
