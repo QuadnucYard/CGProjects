@@ -1,21 +1,14 @@
 ﻿#pragma once
-#include <GLFW/glfw3.h>
 #include "Rect.hpp"
+
+struct GLFWwindow;
 
 namespace qy::cg {
 
 	class Screen {
 
 	public:
-
-		static void __init__(GLFWwindow* window) {
-			_window = window;
-			glfwSetFramebufferSizeCallback(window, cbFramebufferSize);
-			glfwSetWindowSizeCallback(window, cbWindowSize);
-			glfwSetWindowPosCallback(window,cbWindowPos );
-			glfwGetWindowPos(window, &_xpos, &_ypos);
-			glfwGetWindowSize(window, &_width, &_height);
-		}
+		static void __init__(GLFWwindow* window);
 
 		static int width() { return _width; }
 		static int height() { return _height; }
@@ -24,19 +17,7 @@ namespace qy::cg {
 			return _fullScreen;
 		}
 
-		static void setFullScreen(bool value) {
-			static recti savedRect;
-			if (value == _fullScreen) return;
-			auto mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-			if (_fullScreen = value) {
-				savedRect = {_xpos, _ypos, _width, _height};
-				glfwSetWindowMonitor(_window, nullptr, 0, 0, mode->width, mode->height, mode->refreshRate);
-				// 这样有点问题  改了显示器
-				//glfwSetWindowMonitor(_window, glfwGetPrimaryMonitor(), 0, 0, Screen::width(), Screen::height(), mode->refreshRate);
-			} else {
-				glfwSetWindowMonitor(_window, nullptr, savedRect.x(), savedRect.y(), savedRect.width(), savedRect.height(), mode->refreshRate);
-			}
-		}
+		static void setFullScreen(bool value);
 
 	private:
 		static void cbFramebufferSize(GLFWwindow* window, int width, int height) {
